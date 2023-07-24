@@ -1,0 +1,84 @@
+// For format details:
+// see https://aka.ms/vscode-remote/devcontainer.json
+// and https://github.com/devcontainers/images/tree/main/src/cpp
+// https://containers.dev/implementors/json_reference/
+{
+	"name": "C++ DevBox",
+	"build": {
+		"dockerfile": "./Dockerfile",
+		"context": "."
+	},
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// List of features: https://github.com/devcontainers/features/tree/main/src
+	"features": {
+		// git
+		"ghcr.io/devcontainers/features/git:1": {
+			"version": "latest",
+			"ppa": "false"
+		},
+		// cli tools, zsh, setup a non-root user.
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": "true",
+			"configureZshAsDefaultShell": "true",
+			"installOhMyZsh": "true",
+			"upgradePackages": "true"
+		},
+		// vcpkg
+		"ghcr.io/msclock/features/vcpkg:1": {
+			"username": "vscode",
+			"vcpkgversion": "latest",
+			"vcpkgroot": "/usr/local/vcpkg",
+			"vcpkgdownload": "/usr/local/vcpkg-downloads"
+		}
+	},
+	"capAdd": [
+		"SYS_PTRACE"
+	],
+	"securityOpt": [
+		"seccomp=unconfined"
+	],
+	// Set *default* container specific settings.json values on container create.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				// Microsoft C++ related
+				"ms-vscode.cpptools",
+				"ms-vscode.cmake-tools",
+				"ms-vscode.cpptools-extension-pack",
+				// LLVM related
+				"vadimcn.vscode-lldb",
+				// Some additional extensions
+				"Gruntfuggly.todo-tree",
+				"aaron-bond.better-comments",
+				"adam-bender.commit-message-editor",
+				"mhutchie.git-graph"
+			],
+			"settings": {
+				"extensions.ignoreRecommendations": true,
+				"terminal.integrated.shell.linux": "/bin/zsh",
+				// tell VSCode that you want the shell to be a login, interactive shell
+				"terminal.integrated.shellArgs.linux": [
+					"-l",
+					"-i"
+				],
+				"clangd.path": "clangd",
+				"clang-format.executable": "clang-format",
+				"cmake.cmakePath": "cmake",
+				"cmake.ctestPath": "ctest",
+				"cmake.generator": "Ninja",
+				"cmake.configureOnOpen": true,
+				"cmake.configureSettings": {
+					"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+				}
+			}
+		}
+	},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "./.devcontainer/scripts/entrypoint.sh",
+	// Set `remoteUser` to `root` to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "vscode"
+}

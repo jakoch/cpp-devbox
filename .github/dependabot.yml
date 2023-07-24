@@ -1,0 +1,36 @@
+# dependabot.yml
+#
+# Dependabot updates dependencies automatically to their latest versions.
+#
+# Docs: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+
+updates:
+  # Enable automatic version updates for Github Actions
+  - package-ecosystem: "github-actions"
+    # Look for `.github/workflows` in the `root` directory
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "deps(github-actions): "
+    labels:
+      - "dependencies"
+    # ignore all patch level updates
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+  # Enable automatic version updates for Dockerfile
+  - package-ecosystem: "docker"
+    directory: "./devcontainer"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "deps(dockerfile): "
+    labels:
+      - "dependencies"
+    # ignore all patch level updates
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]

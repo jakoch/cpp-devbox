@@ -1,0 +1,39 @@
+# This file configures editors using the EditorConfig scheme.
+# https://editorconfig.org/
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+insert_final_newline = true
+
+# "visual studio" specific
+spelling_languages = en-us
+guidelines = 80 dashed, 130
+
+[CMakeLists.txt]
+indent_size = 2
+indent_style = space
+
+[*.cmake]
+indent_size = 2
+indent_style = space
+
+[*.{cpp,hpp,c,h}]
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.{json,yaml,yml}]
+indent_size = 2
+
+[*.sh]
+indent_size = 2
+
+[*.{js,ts}]
+indent_size = 4
+
+[*.{md,markdown}]
+indent_size = 4
+trim_trailing_whitespace = false

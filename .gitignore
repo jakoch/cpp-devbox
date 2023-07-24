@@ -1,0 +1,14 @@
+# Ignore Visual Studio temporary build folders
+**/*build*
+build/
+out/
+
+.idea/
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/
+
+# VCPKG installation folder for dependencies
+vcpkg_installed/
+
+CMakeSettings.json
