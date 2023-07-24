@@ -14,14 +14,14 @@ The pre-installed tools include: cppcheck, x, y.
 Base: Debian 12 - Bookworm
 
 On top of the base image the following tools are installed:
-- zsh, git, cmake, nano
+- zsh, git, nano
 - curl, wget
+- CMake
 
-Focus on the C++ programming language:
-- C & C++ 
+The following C/C++ compilers and their toolchains are available:
  - LLVM v16
  - GCC v12
- - 
+
 #### Prerequisites
 
 You need the following things to run this:
