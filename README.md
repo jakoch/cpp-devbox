@@ -18,7 +18,8 @@ On top of the base image the following tools are installed:
 - curl, wget
 - cppcheck, valgrind, ccache
 - CMake
-- 
+- vcpkg
+
 The following C/C++ compilers and their toolchains are available:
  - LLVM v16
  - GCC v12
