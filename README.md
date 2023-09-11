@@ -21,7 +21,7 @@ On top of the base image the following tools are installed:
 - vcpkg
 
 The following C/C++ compilers and their toolchains are available:
- - LLVM v16
+ - LLVM v17
  - GCC v12
 
 #### Prerequisites
