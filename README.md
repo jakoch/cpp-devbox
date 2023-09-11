@@ -63,3 +63,11 @@ You might also use this container image as a base image in your own Dockerfile:
 ```
 FROM ghcr.io/jakoch/cpp-devbox:latest
 ```
+
+You can also add a `.devcontainer/devcontainer.json` file to your project and then click `Reopen in container` in VSCode:
+```
+{
+  "name": "My C++ Project DevBox",
+  "image": "ghcr.io/jakoch/cpp-devbox:latest"
+}
+```
