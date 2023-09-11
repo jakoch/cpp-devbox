@@ -21,7 +21,7 @@ LABEL maintainer="Jens A. Koch <jakoch@web.de>"
 # | ARGS                        |
 # +-----------------------------+
 
-ARG LLVM_VERSION=16
+ARG LLVM_VERSION=17
 
 # +-----------------------------+
 # | ENV                         |
