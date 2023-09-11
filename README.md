@@ -54,17 +54,23 @@ This container image is published to the Github Container Registry (GHCR).
 
 You may find the package here: https://github.com/jakoch/cpp-devbox/pkgs/container/cpp-devbox.
 
+**Command Line**
+
 You can install the container image from the command line:
 ```
 docker pull ghcr.io/jakoch/cpp-devbox:latest
 ```
 
-You might also use this container image as a base image in your own Dockerfile:
+**Dockerfile**
+
+You might also use this container image as a base image in your own `Dockerfile`:
 ```
 FROM ghcr.io/jakoch/cpp-devbox:latest
 ```
 
-You can also add a `.devcontainer/devcontainer.json` file to your project and then click `Reopen in container` in VSCode:
+**Devcontainer.json**
+
+You might use this container image in your `.devcontainer/devcontainer.json` file:
 ```
 {
   "name": "My C++ Project DevBox",
