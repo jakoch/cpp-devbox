@@ -7,7 +7,6 @@ A Docker development box for C/C++.
 
 This is a Docker container based on Debian Linux (see [Dockerfile](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/Dockerfile)).
 It sets up a C++ development environment for Visual Studio Code.
-The pre-installed tools include: cppcheck, x, y.
 
 #### What is pre-installed?
 
