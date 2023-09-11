@@ -65,7 +65,7 @@ RUN apt-get update && \
 RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
 RUN add-apt-repository "deb http://apt.llvm.org/bookworm/ llvm-toolchain main" && \
     add-apt-repository "deb http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm-${LLVM_VERSION} main"
-RUN apt update && \
+RUN apt-get update && \
     apt-get install -y \
         clang-$LLVM_VERSION \
         clangd-$LLVM_VERSION \
