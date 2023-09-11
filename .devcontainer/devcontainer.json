@@ -16,12 +16,23 @@
 			"version": "latest",
 			"ppa": "false"
 		},
+		// Github CLI tool
+		"ghcr.io/devcontainers/features/github-cli:1": {
+			"version": "latest"
+		},
 		// cli tools, zsh, setup a non-root user.
 		"ghcr.io/devcontainers/features/common-utils:2": {
 			"installZsh": "true",
 			"configureZshAsDefaultShell": "true",
 			"installOhMyZsh": "true",
-			"upgradePackages": "true"
+			"upgradePackages": "true",
+			"username": "vscode"
+		},
+		// integrate ZSH plugins: git, auto-suggestions, auto-completions
+		"ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
+			"plugins": "git zsh-autosuggestions zsh-completions",
+			"omzPlugins":"https://github.com/zsh-users/zsh-autosuggestions https://github.com/zsh-users/zsh-completions",
+			"username": "vscode"
 		},
 		// vcpkg
 		"ghcr.io/msclock/features/vcpkg:1": {
@@ -43,11 +54,22 @@
 		"vscode": {
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
-				// Microsoft C++ related
+				// EditorConfig
+		        "EditorConfig.EditorConfig",
+		        // Git + Github
+		        "GitHub.vscode-pull-request-github",
+				// C++
 				"ms-vscode.cpptools",
-				"ms-vscode.cmake-tools",
-				"ms-vscode.cpptools-extension-pack",
-				// LLVM related
+		        "ms-vscode.cpptools-extension-pack",
+		        "ms-vscode.cpptools-themes",
+		        // CMake
+		        "ms-vscode.cmake-tools",
+		        "twxs.cmake",
+		        // Testing
+        		"matepek.vscode-catch2-test-adapter",
+        		"ms-vscode.test-adapter-converter",
+        		"hbenl.vscode-test-explorer",
+				// LLVM
 				"vadimcn.vscode-lldb",
 				// Some additional extensions
 				"Gruntfuggly.todo-tree",
@@ -57,6 +79,7 @@
 			],
 			"settings": {
 				"extensions.ignoreRecommendations": true,
+				"terminal.integrated.defaultProfile.linux": "zsh",
 				"terminal.integrated.shell.linux": "/bin/zsh",
 				// tell VSCode that you want the shell to be a login, interactive shell
 				"terminal.integrated.shellArgs.linux": [
@@ -68,10 +91,7 @@
 				"cmake.cmakePath": "cmake",
 				"cmake.ctestPath": "ctest",
 				"cmake.generator": "Ninja",
-				"cmake.configureOnOpen": true,
-				"cmake.configureSettings": {
-					"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
-				}
+				"cmake.configureOnOpen": true
 			}
 		}
 	},

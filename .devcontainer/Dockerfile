@@ -1,37 +1,39 @@
 # +-----------------------------+
-# | BASE IMAGE             ~30MB|        See https://hub.docker.com/_/debian
+# | BASE IMAGE                  |        See https://hub.docker.com/_/debian
 # +-----------------------------+
 
-# GCC 12
+# for GCC 12
 FROM debian:bookworm-slim
 
- # GCC 13
+# for GCC 13
 #FROM gcc:13-bookworm
-
-# https://github.com/devcontainers/images/tree/main/src/cpp
-#FROM mcr.microsoft.com/devcontainers/cpp:debian-12
-
-# +-----------------------------+
-# | METADATA                    |
-# +-----------------------------+
-
-LABEL maintainer="Jens A. Koch <jakoch@web.de>"
 
 # +-----------------------------+
 # | ARGS                        |
 # +-----------------------------+
 
-ARG LLVM_VERSION=16
+ARG DEBIAN_VERSION=12
+ARG DEBIAN_VERSION_NAME=bookworm
+ARG LLVM_VERSION=17
+ARG GCC_VERSION=12
 
 # +-----------------------------+
-# | ENV                         |
+# | METADATA                    |
 # +-----------------------------+
 
-ENV DEBIAN_FRONTEND=noninteractive
+LABEL \
+    maintainer="Jens A. Koch <jakoch@web.de>" \
+    org.opencontainers.image.authors='Jens A. Koch <jakoch@web.de>' \
+    org.opencontainers.image.url='https://github.com/jakoch/cpp-devbox/tree/main' \
+    org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
+    org.opencontainers.image.title='ghcr.io/jakoch/cpp-devbox'\
+    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION} (${DEBIAN_VERSION_NAME}) with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}) (CMake & VCPKG) (zsh & p10k)"
 
 # +-----------------------------+
 # | PRE-REQUISITE/INIT PACKAGES |
 # +-----------------------------+
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 # avoid debconf delaying package configuration, since apt-utils is not installed
 RUN apt-get update && \
@@ -63,29 +65,30 @@ RUN apt-get update && \
 #RUN wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
 
 RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
-RUN add-apt-repository "deb http://apt.llvm.org/bookworm/ llvm-toolchain main" && \
-    add-apt-repository "deb http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm-${LLVM_VERSION} main"
-RUN apt update && \
-    apt-get install -y \
-        clang-$LLVM_VERSION \
-        clangd-$LLVM_VERSION \
-        clang-tidy-$LLVM_VERSION \
-        clang-format-$LLVM_VERSION \
-        clang-tools-$LLVM_VERSION \
-        llvm-$LLVM_VERSION-dev \
-        llvm-$LLVM_VERSION-runtime \
-        llvm-$LLVM_VERSION-tools \
-        lld-$LLVM_VERSION \
-        lldb-$LLVM_VERSION \
-        libomp-$LLVM_VERSION-dev \
-        libc++-$LLVM_VERSION-dev \
-        libc++abi-$LLVM_VERSION-dev \
-        libclang-common-$LLVM_VERSION-dev \
-        libclang-$LLVM_VERSION-dev \
-        libclang-cpp$LLVM_VERSION-dev \
-        libunwind-$LLVM_VERSION-dev \
-        libclang-rt-$LLVM_VERSION-dev \
-        libpolly-$LLVM_VERSION-dev
+
+RUN add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain main" && \
+    add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain-$DEBIAN_VERSION_NAME-$LLVM_VERSION main"
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    clang-$LLVM_VERSION \
+    clangd-$LLVM_VERSION \
+    clang-tidy-$LLVM_VERSION \
+    clang-format-$LLVM_VERSION \
+    clang-tools-$LLVM_VERSION \
+    llvm-$LLVM_VERSION-dev \
+    llvm-$LLVM_VERSION-runtime \
+    llvm-$LLVM_VERSION-tools \
+    lld-$LLVM_VERSION \
+    lldb-$LLVM_VERSION \
+    libomp-$LLVM_VERSION-dev \
+    libc++-$LLVM_VERSION-dev \
+    libc++abi-$LLVM_VERSION-dev \
+    libclang-common-$LLVM_VERSION-dev \
+    libclang-$LLVM_VERSION-dev \
+    libclang-cpp$LLVM_VERSION-dev \
+    libunwind-$LLVM_VERSION-dev \
+    libclang-rt-$LLVM_VERSION-dev \
+    libpolly-$LLVM_VERSION-dev
 
 # add llvm to path
 ENV PATH="/usr/lib/llvm-${LLVM_VERSION}/bin:/usr/lib/llvm-${LLVM_VERSION}/include:${PATH}"
@@ -118,6 +121,7 @@ RUN apt-get autoremove -y && \
 
 ENV TZ=Europe/Berlin
 
+# configure german locale
 RUN echo $TZ > /etc/timezone && \
     dpkg-reconfigure tzdata && \
     sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -126,8 +130,10 @@ RUN echo $TZ > /etc/timezone && \
     dpkg-reconfigure locales && \
     update-locale LANG=de_DE.UTF-8
 
-ENV LANG=de_DE.UTF-8
-ENV LC_ALL=de_DE.UTF-8
+#ENV LANG=de_DE.UTF-8
+#ENV LC_ALL=de_DE.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 
 RUN echo "export PATH=$PATH" > /etc/environment
 

@@ -42,11 +42,11 @@ echo "\033[31mVCPKG Version\033[0m"
 
 vcpkg --version | head -n1
 
-echo "\033[31mcppcheckvalgrind Version\033[0m"
+echo "\033[31mcppcheck Version\033[0m"
 
 cppcheck --version
 
 echo "\033[31mccache Version\033[0m"
 
-cccache --version
+ccache --version
 
