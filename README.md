@@ -82,7 +82,7 @@ FROM ghcr.io/jakoch/cpp-devbox:latest
 
 **Devcontainer.json**
 
-You might use this container image in your `.devcontainer/devcontainer.json` file:
+You might use this container image in the `.devcontainer/devcontainer.json` file of your project:
 ```
 {
   "name": "My C++ Project DevBox",
@@ -92,7 +92,7 @@ You might use this container image in your `.devcontainer/devcontainer.json` fil
 
 **Devcontainer.json + with-vulkansdk image**
 
-You might use this container image in your `.devcontainer/devcontainer.json` file:
+You might use this container image in the `.devcontainer/devcontainer.json` file of your project:
 ```
 {
   "name": "My C++ Project DevBox",

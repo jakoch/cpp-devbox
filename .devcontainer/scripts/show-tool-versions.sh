@@ -17,10 +17,12 @@ cmake --version | head -n1
 echo "\033[31mGCC Version\033[0m"
 
 gcc --version | head -n1
+type -a gcc++
 
 echo "\033[31mClang Version\033[0m"
 
 clang --version
+type -a clang
 
 echo "\033[31mlldb Version\033[0m"
 

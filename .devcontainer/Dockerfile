@@ -27,7 +27,7 @@ LABEL \
     org.opencontainers.image.url='https://github.com/jakoch/cpp-devbox/tree/main' \
     org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
     org.opencontainers.image.title='ghcr.io/jakoch/cpp-devbox'\
-    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION} (${DEBIAN_VERSION_NAME}) with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}) (CMake & VCPKG) (zsh & p10k)" \
+    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}, CMake, VCPKG, zsh)" \
     org.opencontainers.image.licenses=MIT
 
 # +-----------------------------+
@@ -157,7 +157,7 @@ LABEL \
     org.opencontainers.image.url='https://github.com/jakoch/cpp-devbox/tree/main' \
     org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
     org.opencontainers.image.title='ghcr.io/jakoch/cpp-devbox'\
-    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}), VulkanSDK ${VULKAN_SDK_VERSION}), CMake, VCPKG, zsh" \
+    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}, VulkanSDK ${VULKAN_SDK_VERSION}, CMake, VCPKG, zsh)" \
     org.opencontainers.image.licenses=MIT
 
 # +-----------------------------+
