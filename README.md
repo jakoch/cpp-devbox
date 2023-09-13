@@ -6,7 +6,10 @@ A Docker development box for C/C++.
 #### What is this?
 
 This is a Docker container based on Debian Linux (see [Dockerfile](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/Dockerfile)).
+
 It sets up a C++ development environment for Visual Studio Code.
+
+The repo releases 2 images: one with GCC+LLVM and one with Vulkan SDK on-top.
 
 #### What is pre-installed?
 
@@ -22,6 +25,9 @@ On top of the base image the following tools are installed:
 The following C/C++ compilers and their toolchains are available:
  - LLVM v17
  - GCC v12
+
+The `with-vulkansdk` image additionally contains:
+ - Vulkan SDK
 
 #### Prerequisites
 
@@ -48,7 +54,7 @@ Either by building the container image locally or by fetching the prebuild conta
    Then, finally...
 3. Enjoy! :sunglasses:
 
-##### Fetching the prebuild container image
+##### Fetching the prebuild container images
 
 This container image is published to the Github Container Registry (GHCR).
 
@@ -59,6 +65,12 @@ You may find the package here: https://github.com/jakoch/cpp-devbox/pkgs/contain
 You can install the container image from the command line:
 ```
 docker pull ghcr.io/jakoch/cpp-devbox:latest
+```
+
+For the image containing Vulkan SDK append `with-vulkansdk-latest`:
+
+```
+docker pull ghcr.io/jakoch/cpp-devbox:with-vulkansdk-latest
 ```
 
 **Dockerfile**
@@ -75,5 +87,15 @@ You might use this container image in your `.devcontainer/devcontainer.json` fil
 {
   "name": "My C++ Project DevBox",
   "image": "ghcr.io/jakoch/cpp-devbox:latest"
+}
+```
+
+**Devcontainer.json + with-vulkansdk image**
+
+You might use this container image in your `.devcontainer/devcontainer.json` file:
+```
+{
+  "name": "My C++ Project DevBox",
+  "image": "ghcr.io/jakoch/cpp-devbox:with-vulkansdk-latest"
 }
 ```
