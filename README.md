@@ -9,7 +9,7 @@ This is a Docker container based on Debian Linux (see [Dockerfile](https://githu
 
 It sets up a C++ development environment for Visual Studio Code.
 
-The repo releases 2 images: one with GCC+LLVM and one with Vulkan SDK on-top.
+The repo releases 2 images: one with GCC+LLVM (~2GB) and one with Vulkan SDK on-top (~4GB).
 
 #### What is pre-installed?
 
