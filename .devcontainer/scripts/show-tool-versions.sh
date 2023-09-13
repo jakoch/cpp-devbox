@@ -50,3 +50,10 @@ echo "\033[31mccache Version\033[0m"
 
 ccache --version
 
+echo "\033[31mVulkan-SDK Version\033[0m"
+
+echo $VULKAN_SDK
+
+echo "\033[31mPath\033[0m"
+
+echo $PATH

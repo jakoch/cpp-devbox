@@ -38,15 +38,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # https://hub.docker.com/_/debian
-      #- name: Pull Debian Slim manually
-      #  run: |
-      #    docker pull debian:bookworm-slim
-          
       - uses: hadolint/hadolint-action@v3.1.0 # https://github.com/hadolint/hadolint-action
         with:
           dockerfile: .devcontainer/Dockerfile
-          no-fail: true   
+          no-fail: true
 
       - name: 📝 Versionize
         run: |
@@ -61,15 +56,25 @@ jobs:
           fi
           echo "Container Version: $TAG"
 
-      - name: 🙏 Build Image
+      - name: 🙏 Build Image -> cpp-devbox-base
         run: |
-          docker build --no-cache --progress=plain -t ghcr.io/${{ github.repository }}:$TAG .devcontainer/
+          docker build --no-cache --progress=plain --target cpp-devbox-base -t ghcr.io/${{ github.repository }}:$TAG .devcontainer/
 
-      - name: 📦 🚀 Push Image to registry
+      - name: 📦 🚀 Push Image to registry (cpp-devbox-base)
         run: |
           docker push  ghcr.io/${{ github.repository }}:$TAG
           docker tag   ghcr.io/${{ github.repository }}:$TAG ghcr.io/${{ github.repository }}:latest
           docker push  ghcr.io/${{ github.repository }}:latest
+
+      - name: 🙏 Build Image -> cpp-devbox-base + cpp-devbox-with-vulkansdk = with-vulkansdk
+        run: |
+          docker build --no-cache --progress=plain -t ghcr.io/${{ github.repository }}:with-vulkansdk-$TAG .devcontainer/
+
+      - name: 📦 🚀 Push Image to registry (with-vulkansdk)
+        run: |
+          docker push  ghcr.io/${{ github.repository }}:with-vulkansdk-$TAG
+          docker tag   ghcr.io/${{ github.repository }}:with-vulkansdk-$TAG ghcr.io/${{ github.repository }}:with-vulkansdk-latest
+          docker push  ghcr.io/${{ github.repository }}:with-vulkansdk-latest
 
       - name: 🛡️🔍 Scan Image for Vulnerabilities
         uses: aquasecurity/trivy-action@master # https://github.com/aquasecurity/trivy-action

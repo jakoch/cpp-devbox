@@ -6,6 +6,7 @@
 	"name": "C++ DevBox",
 	"build": {
 		"dockerfile": "./Dockerfile",
+    // sets the run context to this .devcontainer folder
 		"context": "."
 	},
 	// Features to add to the dev container. More info: https://containers.dev/features.
@@ -91,7 +92,8 @@
 				"cmake.cmakePath": "cmake",
 				"cmake.ctestPath": "ctest",
 				"cmake.generator": "Ninja",
-				"cmake.configureOnOpen": true
+				"cmake.configureOnOpen": true,
+                "lldb.executable": "/usr/bin/lldb"
 			}
 		}
 	},

@@ -13,6 +13,9 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 - integrated zsh-plugins: git, autosuggestions, autocompletions
 - vscode extensions: editorconfig, test-adapter for catch2 and test-explorer
 - added container labels
+- integrated vulkan sdk
+- added 2 docker stages: cpp-devbox-base and cpp-devbox-with-vulkansdk
+- publish the 2 images
 
 **Changed**
 

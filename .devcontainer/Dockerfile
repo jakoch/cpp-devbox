@@ -3,7 +3,7 @@
 # +-----------------------------+
 
 # for GCC 12
-FROM debian:bookworm-slim
+FROM debian:bookworm-slim as cpp-devbox-base
 
 # for GCC 13
 #FROM gcc:13-bookworm
@@ -14,8 +14,8 @@ FROM debian:bookworm-slim
 
 ARG DEBIAN_VERSION=12
 ARG DEBIAN_VERSION_NAME=bookworm
-ARG LLVM_VERSION=17
 ARG GCC_VERSION=12
+ARG LLVM_VERSION=17
 
 # +-----------------------------+
 # | METADATA                    |
@@ -27,7 +27,7 @@ LABEL \
     org.opencontainers.image.url='https://github.com/jakoch/cpp-devbox/tree/main' \
     org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
     org.opencontainers.image.title='ghcr.io/jakoch/cpp-devbox'\
-    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION} (${DEBIAN_VERSION_NAME}) with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}) (CMake & VCPKG) (zsh & p10k)"
+    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}), CMake, VCPKG, zsh"
 
 # +-----------------------------+
 # | PRE-REQUISITE/INIT PACKAGES |
@@ -36,11 +36,10 @@ LABEL \
 ENV DEBIAN_FRONTEND=noninteractive
 
 # avoid debconf delaying package configuration, since apt-utils is not installed
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends apt-utils dialog 2>&1
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    apt-utils dialog 2>&1
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 ca-certificates software-properties-common \
     build-essential cppcheck valgrind ccache cmake wget git jq \
     # required by Visual Studio
@@ -68,8 +67,7 @@ RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.
 
 RUN add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain main" && \
     add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain-$DEBIAN_VERSION_NAME-$LLVM_VERSION main"
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     clang-$LLVM_VERSION \
     clangd-$LLVM_VERSION \
     clang-tidy-$LLVM_VERSION \
@@ -139,3 +137,39 @@ RUN echo "export PATH=$PATH" > /etc/environment
 
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
+
+# +----------------------------------+
+# | Stage: cpp-devbox-with-vulkansdk |
+# +----------------------------------+
+
+FROM cpp-devbox-base as cpp-devbox-with-vulkansdk
+
+ARG VULKAN_SDK_VERSION=1.3.261.1
+
+# +-----------------------------+
+# | METADATA                    |
+# +-----------------------------+
+
+LABEL \
+    maintainer="Jens A. Koch <jakoch@web.de>" \
+    org.opencontainers.image.authors='Jens A. Koch <jakoch@web.de>' \
+    org.opencontainers.image.url='https://github.com/jakoch/cpp-devbox/tree/main' \
+    org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
+    org.opencontainers.image.title='ghcr.io/jakoch/cpp-devbox'\
+    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}), VulkanSDK ${VULKAN_SDK_VERSION}), CMake, VCPKG, zsh"
+
+# +-----------------------------+
+# | Vulkan SDK                  |
+# +-----------------------------+
+
+RUN wget -q --show-progress --progress=bar:force:noscroll \
+      "https://sdk.lunarg.com/sdk/download/${VULKAN_SDK_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.xz" \
+      -O /tmp/vulkansdk.xz && \
+    mkdir -p /opt/vulkan && \
+    tar xvf /tmp/vulkansdk.xz -C /opt/vulkan && \
+    rm /tmp/vulkansdk.xz
+
+ENV VULKAN_SDK=/opt/vulkan/${VULKAN_SDK_VERSION}/x86_64
+ENV PATH="$VULKAN_SDK/bin:$PATH" \
+    LD_LIBRARY_PATH="$VULKAN_SDK/lib:${LD_LIBRARY_PATH:-}" \
+    VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
