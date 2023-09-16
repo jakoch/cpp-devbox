@@ -16,6 +16,7 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 - integrated vulkan sdk
 - added 2 docker stages: cpp-devbox-base and cpp-devbox-with-vulkansdk
 - publish the 2 images
+- added doxygen
 
 **Changed**
 

@@ -175,3 +175,16 @@ ENV VULKAN_SDK=/opt/vulkan/${VULKAN_SDK_VERSION}/x86_64
 ENV PATH="$VULKAN_SDK/bin:$PATH" \
     LD_LIBRARY_PATH="$VULKAN_SDK/lib:${LD_LIBRARY_PATH:-}" \
     VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
+
+# +-----------------------------+
+# | Doxygen                  |
+# +-----------------------------+
+
+# Lets install v1.9.8 manually, because apt-get installs v1.9.4.
+RUN curl -LO https://github.com/doxygen/doxygen/releases/download/Release_1_9_8/doxygen-1.9.8.linux.bin.tar.gz && \
+    tar xf doxygen-1.9.8.linux.bin.tar.gz && \
+    cd doxygen-1.9.8 && \
+    make INSTALL=/usr install && \
+    cd .. && \
+    rm doxygen-1.9.8.linux.bin.tar.gz && \
+    rm -rf doxygen-1.9.8
