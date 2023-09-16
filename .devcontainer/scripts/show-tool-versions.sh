@@ -17,7 +17,7 @@ cmake --version | head -n1
 echo "\033[31mGCC Version\033[0m"
 
 gcc --version | head -n1
-type -a gcc++
+type -a gcc
 
 echo "\033[31mClang Version\033[0m"
 
@@ -37,12 +37,11 @@ echo "\033[31mlibc Version\033[0m"
 ldd --version | head -n1
 ldd `which cat` | grep libc | awk '{printf ("%s %s %s %s\n", $1, $2, $3, $4)}'
 ldd --verbose /lib/x86_64-linux-gnu/libc.so.6 | grep -E '=>|GLIBC_' | awk '{printf ("%s\t%s\n", $2, $1)}'
-#gcc --print-file-name=libc.a
-#gcc --print-file-name=libc.so
 
 echo "\033[31mVCPKG Version\033[0m"
 
 vcpkg --version | head -n1
+type -a vcpkg
 
 echo "\033[31mcppcheck Version\033[0m"
 
