@@ -1,7 +1,7 @@
 {
     // CMake
     "cmake.buildDirectory": "${workspaceFolder}/out/build/${buildType}",
-    "cmake.buildDirectory": "${workspaceFolder}/out/install/${buildType}",
+    "cmake.installPrefix": "${workspaceFolder}/out/install/${buildType}",
     "cmake.buildBeforeRun": false,
     "cmake.configureOnOpen": true,
     "cmake.loggingLevel": "info",
