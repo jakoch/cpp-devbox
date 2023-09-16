@@ -27,7 +27,7 @@ jobs:
       - name: Update Package List
         run: |
           sudo apt-get update
-          sudo apt-get remove -y '^ dotnet -. *'
+          sudo apt-get remove -y '^dotnet-.*'
 
       - name: ✂️ Free Disk Space
         uses: jlumbroso/free-disk-space@main # https://github.com/jlumbroso/free-disk-space
