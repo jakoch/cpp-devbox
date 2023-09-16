@@ -100,8 +100,3 @@ You might use this container image in the `.devcontainer/devcontainer.json` file
   "image": "ghcr.io/jakoch/cpp-devbox:with-vulkansdk-latest"
 }
 ```
-
-## Path Locations of Tools
-
-Tool | Path
-
