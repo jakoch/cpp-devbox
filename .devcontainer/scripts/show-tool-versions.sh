@@ -17,12 +17,10 @@ cmake --version | head -n1
 echo "\033[31mGCC Version\033[0m"
 
 gcc --version | head -n1
-type -a gcc
 
 echo "\033[31mClang Version\033[0m"
 
 clang --version
-type -a clang
 
 echo "\033[31mlldb Version\033[0m"
 
@@ -41,7 +39,6 @@ ldd --verbose /lib/x86_64-linux-gnu/libc.so.6 | grep -E '=>|GLIBC_' | awk '{prin
 echo "\033[31mVCPKG Version\033[0m"
 
 vcpkg --version | head -n1
-type -a vcpkg
 
 echo "\033[31mcppcheck Version\033[0m"
 

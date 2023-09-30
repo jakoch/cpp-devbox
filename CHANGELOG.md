@@ -7,16 +7,22 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
 
+- changes
+
+## [1.0.0] - 01-10-2023
+
 **Added**
 
 - added devcontainer feature: github-cli, zsh-plugins
 - integrated zsh-plugins: git, autosuggestions, autocompletions
 - vscode extensions: editorconfig, test-adapter for catch2 and test-explorer
 - added container labels
-- integrated vulkan sdk
+- integrated Vulkan SDK
 - added 2 docker stages: cpp-devbox-base and cpp-devbox-with-vulkansdk
-- publish the 2 images
+- changed workflow to publish 2 images
 - added doxygen
+- added libfuzzer-dev
+- added GCC 13.2.0
 
 **Changed**
 
@@ -29,9 +35,7 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 - cmake.configureSetting - CMAKE_EXPORT_COMPILE_COMMANDS ON (you may set this in your project presets)
 
 
-## [1.0.0] - tba
-
 <!-- Backlinks -->
 
-[unreleased]: https://github.com/jakoch/cpp-devbox/compare/v1.2.0...HEAD
+[unreleased]: https://github.com/jakoch/cpp-devbox/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.0

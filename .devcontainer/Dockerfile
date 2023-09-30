@@ -2,11 +2,7 @@
 # | BASE IMAGE                  |        See https://hub.docker.com/_/debian
 # +-----------------------------+
 
-# for GCC 12
 FROM debian:bookworm-slim as cpp-devbox-base
-
-# for GCC 13
-#FROM gcc:13-bookworm
 
 # +-----------------------------+
 # | ARGS                        |
@@ -14,7 +10,7 @@ FROM debian:bookworm-slim as cpp-devbox-base
 
 ARG DEBIAN_VERSION=12
 ARG DEBIAN_VERSION_NAME=bookworm
-ARG GCC_VERSION=12
+ARG GCC_VERSION=13
 ARG LLVM_VERSION=17
 
 # +-----------------------------+
@@ -54,8 +50,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # locale
     locales \
     # shell
-    zsh
-    # iproute2 procps less gnupg
+    zsh    
 
 # +-----------------------------+
 # | LLVM                        |
@@ -85,6 +80,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libclang-common-$LLVM_VERSION-dev \
     libclang-$LLVM_VERSION-dev \
     libclang-cpp$LLVM_VERSION-dev \
+    libfuzzer-$LLVM_VERSION-dev \
     libunwind-$LLVM_VERSION-dev \
     libclang-rt-$LLVM_VERSION-dev \
     libpolly-$LLVM_VERSION-dev
@@ -107,10 +103,53 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
     update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
 
 # +-----------------------------+
+# | GCC                         |
+# +-----------------------------+
+
+RUN apt-get install -y libmpfr-dev libgmp3-dev libmpc-dev
+RUN wget -q --show-progress --progress=bar:force:noscroll \
+    "http://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz" \
+    -O /tmp/gcc-13.2.0.tar.xz && \
+    tar -xf /tmp/gcc-13.2.0.tar.xz && \
+    rm /tmp/gcc-13.2.0.tar.xz
+
+RUN cd gcc-13.2.0 && \
+    ./configure -v \
+    --prefix=/usr/local \
+    --program-suffix=-13 \
+    --build=x86_64-linux-gnu \
+    --host=x86_64-linux-gnu \
+    --target=x86_64-linux-gnu \
+    --disable-multilib \
+    --enable-cet \
+    --enable-checking=release \
+    --enable-clocale=gnu \
+    --enable-default-pie \
+    --enable-gnu-unique-object \
+    --enable-languages=c,c++ \
+    --enable-libstdcxx-debug \
+    --enable-libstdcxx-time=yes \
+    --enable-linker-build-id \
+    --enable-plugin \
+    --enable-shared \
+    --enable-threads=posix \
+    --with-default-libstdcxx-abi=new \
+    --with-gcc-major-version-only \
+    --with-system-zlib && \
+    make -s -j8 2>&1 && \
+    make install
+
+RUN ln -s /usr/local/bin/gcc-13 /usr/local/bin/gcc && \
+    ln -s /usr/local/bin/g++-13 /usr/local/bin/g++ && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 120 --slave /usr/bin/g++ g++ /usr/bin/g++-12 --slave /usr/bin/gcov gcov /usr/bin/gcov-12 &&\
+    update-alternatives --install /usr/bin/gcc gcc /usr/local/bin/gcc-13 130 --slave /usr/bin/g++ g++ /usr/local/bin/g++-13 --slave /usr/bin/gcov gcov /usr/local/bin/gcov-13 && \
+    rm -rf /gcc-13.2.0
+
+# +-----------------------------+
 # | CLEANUP                     |
 # +-----------------------------+
 
-RUN apt-get autoremove -y && \
+RUN apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -165,8 +204,8 @@ LABEL \
 # +-----------------------------+
 
 RUN wget -q --show-progress --progress=bar:force:noscroll \
-      "https://sdk.lunarg.com/sdk/download/${VULKAN_SDK_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.xz" \
-      -O /tmp/vulkansdk.xz && \
+    "https://sdk.lunarg.com/sdk/download/${VULKAN_SDK_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.xz" \
+    -O /tmp/vulkansdk.xz && \
     mkdir -p /opt/vulkan && \
     tar xvf /tmp/vulkansdk.xz -C /opt/vulkan && \
     rm /tmp/vulkansdk.xz
@@ -177,11 +216,12 @@ ENV PATH="$VULKAN_SDK/bin:$PATH" \
     VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
 
 # +-----------------------------+
-# | Doxygen                  |
+# | Doxygen                     |
 # +-----------------------------+
 
 # Lets install v1.9.8 manually, because apt-get installs v1.9.4.
-RUN curl -LO https://github.com/doxygen/doxygen/releases/download/Release_1_9_8/doxygen-1.9.8.linux.bin.tar.gz && \
+RUN wget -q --show-progress --progress=bar:force:noscroll \
+    "https://github.com/doxygen/doxygen/releases/download/Release_1_9_8/doxygen-1.9.8.linux.bin.tar.gz" && \
     tar xf doxygen-1.9.8.linux.bin.tar.gz && \
     cd doxygen-1.9.8 && \
     make INSTALL=/usr install && \

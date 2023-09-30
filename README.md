@@ -25,7 +25,7 @@ On top of the base image the following tools are installed:
 
 The following C/C++ compilers and their toolchains are available:
  - LLVM v17
- - GCC v12
+ - GCC v13.2, v12
 
 The `with-vulkansdk` image additionally contains:
  - Vulkan SDK
