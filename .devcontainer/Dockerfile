@@ -106,16 +106,21 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 # | GCC                         |
 # +-----------------------------+
 
-RUN apt-get install -y libmpfr-dev libgmp3-dev libmpc-dev
+RUN apt-get install -y --no-install-recommends libmpfr-dev libgmp3-dev libmpc-dev
+
 RUN wget -q --show-progress --progress=bar:force:noscroll \
     "http://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz" \
     -O /tmp/gcc-13.2.0.tar.xz && \
     tar -xf /tmp/gcc-13.2.0.tar.xz && \
     rm /tmp/gcc-13.2.0.tar.xz
 
-RUN cd gcc-13.2.0 && \
-    ./configure -v \
-    --prefix=/usr/local \
+WORKDIR /gcc-13.2.0
+
+# installing into /usr instead of /usr/local to have consistent paths in CMakePresets:
+# /usr/bin/g++-12
+# /usr/bin/g++-13
+RUN ./configure -v \
+    --prefix=/usr \
     --program-suffix=-13 \
     --build=x86_64-linux-gnu \
     --host=x86_64-linux-gnu \
@@ -139,17 +144,18 @@ RUN cd gcc-13.2.0 && \
     make -s -j8 > /dev/null 2>&1 && \
     make install
 
-RUN ln -s /usr/local/bin/gcc-13 /usr/local/bin/gcc && \
-    ln -s /usr/local/bin/g++-13 /usr/local/bin/g++ && \
+RUN ln -s /usr/bin/gcc-13 /usr/bin/gcc && \
+    ln -s /usr/bin/g++-13 /usr/bin/g++ && \
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 120 --slave /usr/bin/g++ g++ /usr/bin/g++-12 --slave /usr/bin/gcov gcov /usr/bin/gcov-12 &&\
-    update-alternatives --install /usr/bin/gcc gcc /usr/local/bin/gcc-13 130 --slave /usr/bin/g++ g++ /usr/local/bin/g++-13 --slave /usr/bin/gcov gcov /usr/local/bin/gcov-13 && \
-    rm -rf /gcc-13.2.0
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 130 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13 && \
+    rm -rf /gcc-13.2.0 && \
+    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
 
 # +-----------------------------+
 # | CLEANUP                     |
 # +-----------------------------+
 
-RUN apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev && \
+RUN apt-get autoremove -y && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -222,9 +228,9 @@ ENV PATH="$VULKAN_SDK/bin:$PATH" \
 # Lets install v1.9.8 manually, because apt-get installs v1.9.4.
 RUN wget -q --show-progress --progress=bar:force:noscroll \
     "https://github.com/doxygen/doxygen/releases/download/Release_1_9_8/doxygen-1.9.8.linux.bin.tar.gz" && \
-    tar xf doxygen-1.9.8.linux.bin.tar.gz && \
-    cd doxygen-1.9.8 && \
-    make INSTALL=/usr install && \
-    cd .. && \
-    rm doxygen-1.9.8.linux.bin.tar.gz && \
+    tar xf doxygen-1.9.8.linux.bin.tar.gz
+WORKDIR /doxygen-1.9.8
+RUN make INSTALL=/usr install
+WORKDIR /
+RUN rm doxygen-1.9.8.linux.bin.tar.gz && \
     rm -rf doxygen-1.9.8
