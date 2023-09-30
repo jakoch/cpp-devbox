@@ -50,7 +50,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # locale
     locales \
     # shell
-    zsh    
+    zsh
 
 # +-----------------------------+
 # | LLVM                        |
@@ -135,8 +135,8 @@ RUN cd gcc-13.2.0 && \
     --enable-threads=posix \
     --with-default-libstdcxx-abi=new \
     --with-gcc-major-version-only \
-    --with-system-zlib && \
-    make -s -j8 2>&1 && \
+    --with-system-zlib > /dev/null 2>&1 && \
+    make -s -j8 > /dev/null 2>&1 && \
     make install
 
 RUN ln -s /usr/local/bin/gcc-13 /usr/local/bin/gcc && \
