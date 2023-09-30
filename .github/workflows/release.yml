@@ -30,7 +30,7 @@ jobs:
           sudo apt-get remove -y '^dotnet-.*'
 
       - name: ✂️ Free Disk Space
-        uses: jlumbroso/free-disk-space@main # https://github.com/jlumbroso/free-disk-space
+        uses: jlumbroso/free-disk-space@v1 # https://github.com/jlumbroso/free-disk-space
         with:
           tool-cache: true
           docker-images: false
