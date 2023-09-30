@@ -22,13 +22,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # temporary workaround for an error in free disk space action
-      # https://github.com/jlumbroso/free-disk-space/issues/14
-      - name: Update Package List
-        run: |
-          sudo apt-get update
-          sudo apt-get remove -y '^dotnet-.*'
-
       - name: ✂️ Free Disk Space
         uses: jlumbroso/free-disk-space@v1 # https://github.com/jlumbroso/free-disk-space
         with:
