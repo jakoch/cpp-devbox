@@ -4,12 +4,13 @@
 
 FROM debian:bookworm-slim as downloader
 
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl
 #ENV CURL_OPTIONS "--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
 ENV CURL_OPTIONS_BAR "--progress-bar"
 WORKDIR /tmp
-RUN curl $CURL_OPTIONS_BAR -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz"
-RUN curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/1.3.261.1/linux/vulkansdk-linux-x86_64-1.3.261.1.tar.xz"
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates curl && \
+    curl $CURL_OPTIONS_BAR -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz" && \
+    curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/1.3.261.1/linux/vulkansdk-linux-x86_64-1.3.261.1.tar.xz"
 
 # +-----------------------------+
 # | BASE IMAGE                  |        See https://hub.docker.com/_/debian
@@ -47,9 +48,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # avoid debconf delaying package configuration, since apt-utils is not installed
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    apt-utils dialog 2>&1
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
+    apt-utils dialog 2>&1 && \
+    apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 ca-certificates software-properties-common \
     build-essential cppcheck valgrind ccache cmake wget git jq \
     # required by Visual Studio
@@ -72,11 +72,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # llvm.sh is constantly broken, see https://github.com/llvm/llvm-project/issues/62475
 #RUN wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
     add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain main" && \
-    add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain-$DEBIAN_VERSION_NAME-$LLVM_VERSION main"
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
+    add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain-$DEBIAN_VERSION_NAME-$LLVM_VERSION main" && \
+    apt-get update && apt-get install -y --no-install-recommends \
     clang-$LLVM_VERSION \
     clangd-$LLVM_VERSION \
     clang-tidy-$LLVM_VERSION \
@@ -96,33 +96,33 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfuzzer-$LLVM_VERSION-dev \
     libunwind-$LLVM_VERSION-dev \
     libclang-rt-$LLVM_VERSION-dev \
-    libpolly-$LLVM_VERSION-dev
+    libpolly-$LLVM_VERSION-dev && \
+    apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/*
+
+# unversionize the binaries and update-alternatives
+RUN ln -s /usr/bin/clang-${LLVM_VERSION} /usr/bin/clang && \
+    ln -s /usr/bin/clang++-${LLVM_VERSION} /usr/bin/clang++ && \
+    ln -s /usr/bin/clang-format-${LLVM_VERSION} /usr/bin/clang-format && \
+    update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
+    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
 
 # add llvm to path
 ENV PATH="/usr/lib/llvm-${LLVM_VERSION}/bin:/usr/lib/llvm-${LLVM_VERSION}/include:${PATH}"
 ENV LD_LIBRARY_PATH="/usr/lib/llvm-${LLVM_VERSION}/lib:${LD_LIBRARY_PATH}"
 
-# unversionize the binaries
-RUN ln -s /usr/bin/clang-${LLVM_VERSION} /usr/bin/clang && \
-    ln -s /usr/bin/clang++-${LLVM_VERSION} /usr/bin/clang++ && \
-    ln -s /usr/bin/clang-format-${LLVM_VERSION} /usr/bin/clang-format
-
 # update compiler environment vars
 ENV CC=/usr/bin/clang
-ENV CXX=/usr/bin/clang++
-
-# update alternatives
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
-    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+ENV CXX=/usr/bin/clang+
 
 # +-----------------------------+
 # | GCC                         |
 # +-----------------------------+
 
-RUN apt-get install -y --no-install-recommends libmpfr-dev libgmp3-dev libmpc-dev
-
 COPY --from=downloader /tmp/gcc.xz /tmp/gcc.xz
-RUN tar xf /tmp/gcc.xz && rm /tmp/gcc.xz
+RUN tar xf /tmp/gcc.xz && rm /tmp/gcc.xz && \
+    apt-get install -y --no-install-recommends libmpfr-dev libgmp3-dev libmpc-dev
 
 # installing into /usr instead of /usr/local to have consistent paths in CMakePresets:
 # /usr/bin/g++-12
@@ -151,9 +151,8 @@ RUN ./configure -v \
     --with-gcc-major-version-only \
     --with-system-zlib > /dev/null 2>&1 && \
     make -s -j$(nproc) > /dev/null 2>&1 && \
-    make install
-
- RUN rm -rf /gcc-13.2.0 && \
+    make install && \
+    rm -rf /gcc-13.2.0 && \
     apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
 
 # +-----------------------------+
@@ -219,7 +218,9 @@ RUN mkdir -p /opt/vulkan && \
     tar xf /tmp/vulkansdk.xz -C /opt/vulkan && \
     rm /tmp/vulkansdk.xz
 
-ENV VULKAN_SDK=/opt/vulkan/${VULKAN_SDK_VERSION}/x86_64 \
-    PATH="$VULKAN_SDK/bin:$PATH" \
+# Note: do not combine the 2 ENV statements.
+# (do not refer to env var within the same statement where it is defined)
+ENV VULKAN_SDK=/opt/vulkan/${VULKAN_SDK_VERSION}/x86_64
+ENV PATH="$VULKAN_SDK/bin:$PATH" \
     LD_LIBRARY_PATH="$VULKAN_SDK/lib:${LD_LIBRARY_PATH:-}" \
     VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
