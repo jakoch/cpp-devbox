@@ -101,20 +101,23 @@ RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/*
 
-# unversionize the binaries and update-alternatives
-RUN ln -s /usr/bin/clang-${LLVM_VERSION} /usr/bin/clang && \
-    ln -s /usr/bin/clang++-${LLVM_VERSION} /usr/bin/clang++ && \
-    ln -s /usr/bin/clang-format-${LLVM_VERSION} /usr/bin/clang-format && \
-    update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
-    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
-
 # add llvm to path
 ENV PATH="/usr/lib/llvm-${LLVM_VERSION}/bin:/usr/lib/llvm-${LLVM_VERSION}/include:${PATH}"
 ENV LD_LIBRARY_PATH="/usr/lib/llvm-${LLVM_VERSION}/lib:${LD_LIBRARY_PATH}"
 
+# unversionize the binaries
+RUN ln -s /usr/bin/clang-${LLVM_VERSION} /usr/bin/clang && \
+    ln -s /usr/bin/clang++-${LLVM_VERSION} /usr/bin/clang++ && \
+    ln -s /usr/bin/clang-format-${LLVM_VERSION} /usr/bin/clang-format
+
 # update compiler environment vars
 ENV CC=/usr/bin/clang
-ENV CXX=/usr/bin/clang+
+ENV CXX=/usr/bin/clang++
+
+# update alternatives
+RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
+    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+
 
 # +-----------------------------+
 # | GCC                         |
@@ -122,13 +125,17 @@ ENV CXX=/usr/bin/clang+
 
 COPY --from=downloader /tmp/gcc.xz /tmp/gcc.xz
 RUN tar xf /tmp/gcc.xz && rm /tmp/gcc.xz && \
-    apt-get install -y --no-install-recommends libmpfr-dev libgmp3-dev libmpc-dev
+    apt-get update && apt-get install -y --no-install-recommends \
+    libmpfr-dev libgmp3-dev libmpc-dev
 
 # installing into /usr instead of /usr/local to have consistent paths in CMakePresets:
 # /usr/bin/g++-12
 # /usr/bin/g++-13
 WORKDIR /gcc-13.2.0
-RUN ./configure -v \
+
+SHELL ["/bin/bash", "-c"]
+
+RUN ./configure \
     --prefix=/usr \
     --program-suffix=-13 \
     --build=x86_64-linux-gnu \
@@ -149,10 +156,11 @@ RUN ./configure -v \
     --enable-threads=posix \
     --with-default-libstdcxx-abi=new \
     --with-gcc-major-version-only \
-    --with-system-zlib > /dev/null 2>&1 && \
-    make -s -j$(nproc) > /dev/null 2>&1 && \
-    make install && \
-    rm -rf /gcc-13.2.0 && \
+    --with-system-zlib && \
+    make -s -j"$(nproc)" > /dev/null 2>&1 && \
+    make install
+
+RUN rm -rf /gcc-13.2.0 && \
     apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
 
 # +-----------------------------+
