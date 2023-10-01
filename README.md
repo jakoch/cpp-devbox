@@ -21,7 +21,6 @@ On top of the base image the following tools are installed:
 - cppcheck, valgrind, ccache
 - CMake
 - vcpkg
-- doxygen
 
 The following C/C++ compilers and their toolchains are available:
  - LLVM v17

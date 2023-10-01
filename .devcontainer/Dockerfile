@@ -1,4 +1,17 @@
 # +-----------------------------+
+# | Downloader                  |
+# +-----------------------------+
+
+FROM debian:bookworm-slim as downloader
+
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl
+#ENV CURL_OPTIONS "--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
+ENV CURL_OPTIONS_BAR "--progress-bar"
+WORKDIR /tmp
+RUN curl $CURL_OPTIONS_BAR -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz"
+RUN curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/1.3.261.1/linux/vulkansdk-linux-x86_64-1.3.261.1.tar.xz"
+
+# +-----------------------------+
 # | BASE IMAGE                  |        See https://hub.docker.com/_/debian
 # +-----------------------------+
 
@@ -59,10 +72,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # llvm.sh is constantly broken, see https://github.com/llvm/llvm-project/issues/62475
 #RUN wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
 
-RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
-
-RUN add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain main" && \
+RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
+    add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain main" && \
     add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain-$DEBIAN_VERSION_NAME-$LLVM_VERSION main"
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     clang-$LLVM_VERSION \
     clangd-$LLVM_VERSION \
@@ -108,17 +121,13 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 
 RUN apt-get install -y --no-install-recommends libmpfr-dev libgmp3-dev libmpc-dev
 
-RUN wget -q --show-progress --progress=bar:force:noscroll \
-    "http://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz" \
-    -O /tmp/gcc-13.2.0.tar.xz && \
-    tar -xf /tmp/gcc-13.2.0.tar.xz && \
-    rm /tmp/gcc-13.2.0.tar.xz
-
-WORKDIR /gcc-13.2.0
+COPY --from=downloader /tmp/gcc.xz /tmp/gcc.xz
+RUN tar xf /tmp/gcc.xz && rm /tmp/gcc.xz
 
 # installing into /usr instead of /usr/local to have consistent paths in CMakePresets:
 # /usr/bin/g++-12
 # /usr/bin/g++-13
+WORKDIR /gcc-13.2.0
 RUN ./configure -v \
     --prefix=/usr \
     --program-suffix=-13 \
@@ -144,16 +153,7 @@ RUN ./configure -v \
     make -s -j$(nproc) > /dev/null 2>&1 && \
     make install
 
-# remove existing symbolic links for v12
-# install the alternatives for both versions
-# set the default versions for both GCC and G++ to v13
-RUN update-alternatives --remove gcc /usr/bin/gcc-12 && \
-    update-alternatives --remove g++ /usr/bin/g++-12 && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 120 --slave /usr/bin/g++ g++ /usr/bin/g++-12 --slave /usr/bin/gcov gcov /usr/bin/gcov-12 && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 130 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13 && \
-    update-alternatives --set gcc /usr/bin/gcc-13 && \
-    update-alternatives --set g++ /usr/bin/g++-13 && \
-    rm -rf /gcc-13.2.0 && \
+ RUN rm -rf /gcc-13.2.0 && \
     apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
 
 # +-----------------------------+
@@ -177,14 +177,13 @@ RUN echo $TZ > /etc/timezone && \
     sed -i -e 's/# de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen && \
     echo 'LANG="de_DE.UTF-8"' > /etc/default/locale && \
     dpkg-reconfigure locales && \
-    update-locale LANG=de_DE.UTF-8
+    update-locale LANG=de_DE.UTF-8 && \
+    echo "export PATH=$PATH" > /etc/environment
 
 #ENV LANG=de_DE.UTF-8
 #ENV LC_ALL=de_DE.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
-
-RUN echo "export PATH=$PATH" > /etc/environment
 
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
@@ -195,7 +194,7 @@ ENV DEBIAN_FRONTEND=dialog
 
 FROM cpp-devbox-base as cpp-devbox-with-vulkansdk
 
-ARG VULKAN_SDK_VERSION=1.3.261.1
+ENV VULKAN_SDK_VERSION=1.3.261.1
 
 # +-----------------------------+
 # | METADATA                    |
@@ -214,28 +213,13 @@ LABEL \
 # | Vulkan SDK                  |
 # +-----------------------------+
 
-RUN wget -q --show-progress --progress=bar:force:noscroll \
-    "https://sdk.lunarg.com/sdk/download/${VULKAN_SDK_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.xz" \
-    -O /tmp/vulkansdk.xz && \
-    mkdir -p /opt/vulkan && \
-    tar xvf /tmp/vulkansdk.xz -C /opt/vulkan && \
+COPY --from=downloader /tmp/vulkansdk.xz /tmp/vulkansdk.xz
+
+RUN mkdir -p /opt/vulkan && \
+    tar xf /tmp/vulkansdk.xz -C /opt/vulkan && \
     rm /tmp/vulkansdk.xz
 
-ENV VULKAN_SDK=/opt/vulkan/${VULKAN_SDK_VERSION}/x86_64
-ENV PATH="$VULKAN_SDK/bin:$PATH" \
+ENV VULKAN_SDK=/opt/vulkan/${VULKAN_SDK_VERSION}/x86_64 \
+    PATH="$VULKAN_SDK/bin:$PATH" \
     LD_LIBRARY_PATH="$VULKAN_SDK/lib:${LD_LIBRARY_PATH:-}" \
     VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
-
-# +-----------------------------+
-# | Doxygen                     |
-# +-----------------------------+
-
-# Lets install v1.9.8 manually, because apt-get installs v1.9.4.
-RUN wget -q --show-progress --progress=bar:force:noscroll \
-    "https://github.com/doxygen/doxygen/releases/download/Release_1_9_8/doxygen-1.9.8.linux.bin.tar.gz" && \
-    tar xf doxygen-1.9.8.linux.bin.tar.gz
-WORKDIR /doxygen-1.9.8
-RUN make INSTALL=/usr install
-WORKDIR /
-RUN rm doxygen-1.9.8.linux.bin.tar.gz && \
-    rm -rf doxygen-1.9.8

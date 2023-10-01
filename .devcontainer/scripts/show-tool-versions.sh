@@ -48,7 +48,7 @@ cppcheck --version
 
 echo "\033[31mccache Version\033[0m"
 
-ccache --version
+ccache --version | head -n1
 
 echo "\033[31mVulkan-SDK Version\033[0m"
 

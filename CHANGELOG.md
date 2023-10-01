@@ -20,7 +20,6 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 - integrated Vulkan SDK
 - added 2 docker stages: cpp-devbox-base and cpp-devbox-with-vulkansdk
 - changed workflow to publish 2 images
-- added doxygen
 - added libfuzzer-dev
 - added GCC 13.2.0
 
