@@ -3,15 +3,21 @@
 
 A Docker development box for C/C++.
 
+**Debian Linux 12-bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.261.1, CMake, VCPKG, zsh**
+
+----
+
 #### What is this?
 
-This is a Docker container based on Debian Linux (see [Dockerfile](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/Dockerfile)).
+The container is based on Debian Linux (see [Dockerfile](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/Dockerfile)).
 
-It sets up a C++ development environment for Visual Studio Code.
 
-The repo releases 2 images: one with GCC+LLVM (~2GB) and one with Vulkan SDK on-top (~4GB).
+The repo releases 2 container images: one with GCC+LLVM (~2GB) and one with Vulkan SDK on-top (~4GB).
+
+These images can be used to set up a C++ development environment for Visual Studio Code (devcontainer).
 
 #### What is pre-installed?
+
 
 Base: Debian 12 - Bookworm
 
@@ -23,8 +29,8 @@ On top of the base image the following tools are installed:
 - vcpkg
 
 The following C/C++ compilers and their toolchains are available:
- - LLVM v17
- - GCC v13.2, v12
+ - LLVM 17
+ - GCC 12, 13.2
 
 The `with-vulkansdk` image additionally contains:
  - Vulkan SDK
