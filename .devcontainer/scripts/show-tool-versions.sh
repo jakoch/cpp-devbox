@@ -17,6 +17,8 @@ cmake --version | head -n1
 echo "\033[31mGCC Version\033[0m"
 
 gcc --version | head -n1
+/usr/bin/g++-12 --version | head -n1
+/usr/bin/g++-13 --version | head -n1
 
 echo "\033[31mClang Version\033[0m"
 

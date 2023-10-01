@@ -141,13 +141,18 @@ RUN ./configure -v \
     --with-default-libstdcxx-abi=new \
     --with-gcc-major-version-only \
     --with-system-zlib > /dev/null 2>&1 && \
-    make -s -j8 > /dev/null 2>&1 && \
+    make -s -j$(nproc) > /dev/null 2>&1 && \
     make install
 
-RUN ln -s /usr/bin/gcc-13 /usr/bin/gcc && \
-    ln -s /usr/bin/g++-13 /usr/bin/g++ && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 120 --slave /usr/bin/g++ g++ /usr/bin/g++-12 --slave /usr/bin/gcov gcov /usr/bin/gcov-12 &&\
+# remove existing symbolic links for v12
+# install the alternatives for both versions
+# set the default versions for both GCC and G++ to v13
+RUN update-alternatives --remove gcc /usr/bin/gcc-12 && \
+    update-alternatives --remove g++ /usr/bin/g++-12 && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 120 --slave /usr/bin/g++ g++ /usr/bin/g++-12 --slave /usr/bin/gcov gcov /usr/bin/gcov-12 && \
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 130 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13 && \
+    update-alternatives --set gcc /usr/bin/gcc-13 && \
+    update-alternatives --set g++ /usr/bin/g++-13 && \
     rm -rf /gcc-13.2.0 && \
     apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
 
