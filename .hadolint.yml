@@ -1,20 +1,3 @@
-# Hadolint Config
-
-# Ignore Rules - https://github.com/hadolint/hadolint#rules
-#
-ignored: [
-
-  # DL3008 warning: Pin versions in apt get install.
-  # https://github.com/hadolint/hadolint/wiki/DL3008
-  #
-  # Nope, we want to resolve dynamically step-by-step.
-  #
-  DL3008,
-
-  # DL3009 info: Delete the apt-get lists after installing something
-  # https://github.com/hadolint/hadolint/wiki/DL3009
-  #
-  # I do that. Tool is to stupid to check it. ¯\_(ツ)_/¯
-  #
-  DL3009
-]
+ignored:
+  - DL3008
+  - DL3009
