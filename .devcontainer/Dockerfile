@@ -74,9 +74,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Website: https://cli.github.com/
 # Installation Instructions: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#official-sources
 
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
     chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
     apt-get update && apt-get install -y --no-install-recommends gh -y
 
 # +-----------------------------+
@@ -93,11 +94,12 @@ RUN apt-get autoremove -y && \
 # Latest Release: https://github.com/Kitware/CMake/releases/latest
 # List downloads: curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.assets[] | .browser_download_url'
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: $version" && \
     url="https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version-linux-x86_64.sh"; echo "Download URL: $url" && \
     wget $url && \
     mkdir /opt/cmake && \
-    sudo sh cmake-$version-linux-x86_64.sh --prefix=/opt/cmake --skip-license && \
+    sh cmake-$version-linux-x86_64.sh --prefix=/opt/cmake --skip-license && \
     ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake && \
     rm -rf cmake-$version-linux-x86_64.sh
 
@@ -234,6 +236,7 @@ RUN rm -rf gcc-13.2.0 && \
 ENV TERM=xterm-256color
 ENV ZSH_THEME agnoster
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
     zsh powerline fonts-powerline && \
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
