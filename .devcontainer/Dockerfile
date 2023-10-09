@@ -35,7 +35,7 @@ ARG LLVM_VERSION=17
 
 LABEL \
     maintainer="Jens A. Koch <jakoch@web.de>" \
-    org.opencontainers.image.created="$(date --utc --iso-8601=seconds)"
+    org.opencontainers.image.created="$(date --utc --iso-8601=seconds)" \
     org.opencontainers.image.authors='Jens A. Koch <jakoch@web.de>' \
     org.opencontainers.image.url='https://ghcr.io/jakoch/cpp-devbox' \
     org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
@@ -295,7 +295,7 @@ ENV VULKAN_SDK_VERSION=1.3.261.1
 
 LABEL \
     maintainer="Jens A. Koch <jakoch@web.de>" \
-    org.opencontainers.image.created="$(date --utc --iso-8601=seconds)"
+    org.opencontainers.image.created="$(date --utc --iso-8601=seconds)" \
     org.opencontainers.image.authors='Jens A. Koch <jakoch@web.de>' \
     org.opencontainers.image.url='https://ghcr.io/jakoch/cpp-devbox' \
     org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
