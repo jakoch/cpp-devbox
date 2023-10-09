@@ -1,6 +1,7 @@
 ignored:
   - DL3008
   - DL3009
+  - DL4001
 trustedRegistries:
   - docker.io
   - ghcr.io
