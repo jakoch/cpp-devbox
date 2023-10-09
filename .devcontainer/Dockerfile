@@ -30,11 +30,14 @@ ARG LLVM_VERSION=17
 # +-----------------------------+
 # | METADATA                    |
 # +-----------------------------+
+# Standardized Docker Image Labels
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
 
 LABEL \
     maintainer="Jens A. Koch <jakoch@web.de>" \
+    org.opencontainers.image.created="$(date --utc --iso-8601=seconds)"
     org.opencontainers.image.authors='Jens A. Koch <jakoch@web.de>' \
-    org.opencontainers.image.url='https://github.com/jakoch/cpp-devbox/tree/main' \
+    org.opencontainers.image.url='https://ghcr.io/jakoch/cpp-devbox' \
     org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
     org.opencontainers.image.title='ghcr.io/jakoch/cpp-devbox'\
     org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}, CMake, VCPKG, zsh)" \
@@ -66,6 +69,64 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zsh
 
 # +-----------------------------+
+# | Github CLI                  |
+# +-----------------------------+
+# Website: https://cli.github.com/
+# Installation Instructions: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#official-sources
+
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
+    chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
+    apt-get update && apt-get install -y --no-install-recommends gh -y
+
+# +-----------------------------+
+# | CLEANUP                     |
+# +-----------------------------+
+
+RUN apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/*
+
+# +-----------------------------+
+# | CMake - Latest Version      |
+# +-----------------------------+
+# Latest Release: https://github.com/Kitware/CMake/releases/latest
+# List downloads: curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.assets[] | .browser_download_url'
+
+RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: $version" && \
+    url="https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version-linux-x86_64.sh"; echo "Download URL: $url" && \
+    wget $url && \
+    mkdir /opt/cmake && \
+    sudo sh cmake-$version-linux-x86_64.sh --prefix=/opt/cmake --skip-license && \
+    ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake && \
+    rm -rf cmake-$version-linux-x86_64.sh
+
+# +-----------------------------+
+# | vcpkg                 ~225MB|
+# +-----------------------------+
+
+# Note: vcpkg requires curl, unzip, tar, pkg-config (optional cmake)
+
+ENV VCPKG_ROOT=/opt/vcpkg
+ENV PATH="${PATH}:${VCPKG_ROOT}"
+
+ENV VCPKG_TRIPLET=x64-linux
+
+# Use installed binaries from the system.
+# Do not download latest version of CMake and Ninja during vcpkg bootstrap!
+ENV VCPKG_FORCE_SYSTEM_BINARIES=1
+ENV VCPKG_USE_SYSTEM_BINARIES=1
+
+RUN git clone --depth=1 \
+    -c core.eol=lf \
+    -c core.autocrlf=false \
+    -c fsck.zeroPaddedFilemode=ignore \
+    -c fetch.fsck.zeroPaddedFilemode=ignore \
+    -c receive.fsck.zeroPaddedFilemode=ignore \
+    https://github.com/microsoft/vcpkg "${VCPKG_ROOT}" && \
+    "${VCPKG_ROOT}"/bootstrap-vcpkg.sh -disableMetrics
+
+# +-----------------------------+
 # | LLVM                        |
 # +-----------------------------+
 
@@ -74,7 +135,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
-    add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain main" && \
     add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain-$DEBIAN_VERSION_NAME-$LLVM_VERSION main" && \
     apt-get update && apt-get install -y --no-install-recommends \
     clang-$LLVM_VERSION \
@@ -90,6 +150,7 @@ RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.
     libomp-$LLVM_VERSION-dev \
     libc++-$LLVM_VERSION-dev \
     libc++abi-$LLVM_VERSION-dev \
+    libclang-rt-$LLVM_VERSION-dev \
     libclang-common-$LLVM_VERSION-dev \
     libclang-$LLVM_VERSION-dev \
     libclang-cpp$LLVM_VERSION-dev \
@@ -117,7 +178,6 @@ ENV CXX=/usr/bin/clang++
 # update alternatives
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
     update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
-
 
 # +-----------------------------+
 # | GCC                         |
@@ -160,8 +220,30 @@ RUN ./configure \
     make -s -j"$(nproc)" > /dev/null 2>&1 && \
     make install
 
-RUN rm -rf /gcc-13.2.0 && \
+WORKDIR /
+
+RUN rm -rf gcc-13.2.0 && \
     apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
+
+# +-----------------------------+
+# | ZSH                         |
+# +-----------------------------+
+# setup zsh, omyzsh, powerline fonts
+# setup zsh plugins: autosuggestions, autocompletions, history search
+
+ENV TERM=xterm-256color
+ENV ZSH_THEME agnoster
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    zsh powerline fonts-powerline && \
+    curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
+    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
+    git clone --depth=1 https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions && \
+    git clone --depth=1 https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search && \
+    sed -i "s/plugins=(git)/plugins=(git zsh-completions zsh-autosuggestions zsh-history-substring-search)/" /root/.zshrc && \
+    sed -i "s/ZSH_THEME=\"agnoster\"/ZSH_THEME=\"robbyrussell\"/" /root/.zshrc
+
+ENV SHELL /bin/zsh
 
 # +-----------------------------+
 # | CLEANUP                     |
@@ -178,7 +260,8 @@ RUN apt-get autoremove -y && \
 ENV TZ=Europe/Berlin
 
 # configure german locale
-RUN echo $TZ > /etc/timezone && \
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone && \
     dpkg-reconfigure tzdata && \
     sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     sed -i -e 's/# de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -187,10 +270,11 @@ RUN echo $TZ > /etc/timezone && \
     update-locale LANG=de_DE.UTF-8 && \
     echo "export PATH=$PATH" > /etc/environment
 
-#ENV LANG=de_DE.UTF-8
-#ENV LC_ALL=de_DE.UTF-8
-ENV LANG=en_US.UTF-8
-ENV LC_ALL=en_US.UTF-8
+#RUN localedef -i de_DE -c -f UTF-8 -A /usr/share/locale/locale.alias de_DE.UTF-8 \
+#    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+# ENV LANG=de_DE.UTF-8 LC_ALL=de_DE.UTF-8
+
+ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
@@ -206,11 +290,14 @@ ENV VULKAN_SDK_VERSION=1.3.261.1
 # +-----------------------------+
 # | METADATA                    |
 # +-----------------------------+
+# Standardized Docker Image Labels
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
 
 LABEL \
     maintainer="Jens A. Koch <jakoch@web.de>" \
+    org.opencontainers.image.created="$(date --utc --iso-8601=seconds)"
     org.opencontainers.image.authors='Jens A. Koch <jakoch@web.de>' \
-    org.opencontainers.image.url='https://github.com/jakoch/cpp-devbox/tree/main' \
+    org.opencontainers.image.url='https://ghcr.io/jakoch/cpp-devbox' \
     org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
     org.opencontainers.image.title='ghcr.io/jakoch/cpp-devbox'\
     org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}, VulkanSDK ${VULKAN_SDK_VERSION}, CMake, VCPKG, zsh)" \
@@ -232,3 +319,4 @@ ENV VULKAN_SDK=/opt/vulkan/${VULKAN_SDK_VERSION}/x86_64
 ENV PATH="$VULKAN_SDK/bin:$PATH" \
     LD_LIBRARY_PATH="$VULKAN_SDK/lib:${LD_LIBRARY_PATH:-}" \
     VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
+

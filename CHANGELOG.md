@@ -9,6 +9,27 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 
 - changes
 
+## [1.0.1] - 10-10-2023
+
+**Changed**
+
+- remoteUser is now "root"
+
+**Added**
+
+- integrated all .devcontainer "features" into the Dockerfile
+  - added vcpkg
+  - added zsh, omyzsh, powerline fonts
+  - added zsh plugins: autosuggestions, autocompletions, history search
+  - added github cli
+  - added cmake latest version
+- added libclang-rt-17-dev
+- added "created" annotation to container description
+
+**Removed**
+
+- removed the .devcontainer "features" key
+
 ## [1.0.0] - 01-10-2023
 
 **Added**
@@ -36,5 +57,6 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 
 <!-- Backlinks -->
 
-[unreleased]: https://github.com/jakoch/cpp-devbox/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/jakoch/cpp-devbox/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.1
 [1.0.0]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.0

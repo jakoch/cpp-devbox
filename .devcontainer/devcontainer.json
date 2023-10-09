@@ -11,38 +11,8 @@
   },
   // Features to add to the dev container. More info: https://containers.dev/features.
   // List of features: https://github.com/devcontainers/features/tree/main/src
-  "features": {
-    // git
-    "ghcr.io/devcontainers/features/git:1": {
-      "version": "latest",
-      "ppa": "false"
-    },
-    // Github CLI tool
-    "ghcr.io/devcontainers/features/github-cli:1": {
-      "version": "latest"
-    },
-    // cli tools, zsh, setup a non-root user.
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": "true",
-      "configureZshAsDefaultShell": "true",
-      "installOhMyZsh": "true",
-      "upgradePackages": "true",
-      "username": "vscode"
-    },
-    // integrate ZSH plugins: git, auto-suggestions, auto-completions
-    "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
-      "plugins": "git zsh-autosuggestions zsh-completions",
-      "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions https://github.com/zsh-users/zsh-completions",
-      "username": "vscode"
-    },
-    // vcpkg
-    "ghcr.io/msclock/features/vcpkg:1": {
-      "username": "vscode",
-      "vcpkgversion": "latest",
-      "vcpkgroot": "/usr/local/vcpkg",
-      "vcpkgdownload": "/usr/local/vcpkg-downloads"
-    }
-  },
+  //"features": {
+  //},
   "capAdd": [
     "SYS_PTRACE"
   ],
@@ -102,5 +72,5 @@
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "./.devcontainer/scripts/entrypoint.sh",
   // Set `remoteUser` to `root` to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-  "remoteUser": "vscode"
+  "remoteUser": "root"
 }
