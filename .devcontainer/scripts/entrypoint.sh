@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Copyright Jens A. Koch 2023.
+# SPDX-License-Identifier: MIT
+# This file is part of https://github.com/jakoch/cpp-devbox
+
 SCRIPT_DIR=$(dirname "$0")
 
 # Docker Entrypoint

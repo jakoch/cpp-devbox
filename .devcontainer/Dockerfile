@@ -1,3 +1,20 @@
+# Copyright Jens A. Koch 2023.
+# SPDX-License-Identifier: MIT
+# This file is part of https://github.com/jakoch/cpp-devbox
+
+#
+#
+#   .d8888b.                        8888888b.                    888888b.
+#  d88P  Y88b                       888  "Y88b                   888  "88b
+#  888    888                       888    888                   888  .88P
+#  888          888     888         888    888  .d88b.  888  888 8888888K.   .d88b.  888  888
+#  888        8888888 8888888       888    888 d8P  Y8b 888  888 888  "Y88b d88""88b `Y8bd8P'
+#  888    888   888     888         888    888 88888888 Y88  88P 888    888 888  888   X88K
+#  Y88b  d88P                       888  .d88P Y8b.      Y8bd8P  888   d88P Y88..88P .d8""8b.
+#   "Y8888P"                        8888888P"   "Y8888    Y88P   8888888P"   "Y88P"  888  888
+#
+#
+
 # +-----------------------------+
 # | Downloader                  |
 # +-----------------------------+
@@ -43,6 +60,20 @@ LABEL \
     org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}, CMake, VCPKG, zsh)" \
     org.opencontainers.image.licenses=MIT
 
+
+#
+#  8888888b.                    888
+#  888   Y88b                   888
+#  888    888                   888
+#  888   d88P  8888b.   .d8888b 888  888  8888b.   .d88b.   .d88b.  .d8888b
+#  8888888P"      "88b d88P"    888 .88P     "88b d88P"88b d8P  Y8b 88K
+#  888        .d888888 888      888888K  .d888888 888  888 88888888 "Y8888b.
+#  888        888  888 Y88b.    888 "88b 888  888 Y88b 888 Y8b.          X88
+#  888        "Y888888  "Y8888P 888  888 "Y888888  "Y88888  "Y8888   88888P'
+#                                                      888
+#                                                 Y8b d88P
+#                                                  "Y88P"
+
 # +-----------------------------+
 # | PRE-REQUISITE/INIT PACKAGES |
 # +-----------------------------+
@@ -54,7 +85,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-utils dialog 2>&1 && \
     apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 ca-certificates software-properties-common \
-    build-essential cppcheck valgrind ccache cmake wget git jq \
+    build-essential cppcheck valgrind ccache cmake wget git nano jq \
     # required by Visual Studio
     g++ gdb make ninja-build rsync zip sudo \
     # required by VCPKG
@@ -67,6 +98,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     locales \
     # shell
     zsh
+
+#
+#   .d8888b.  d8b 888    888               888             .d8888b.  888      8888888
+#  d88P  Y88b Y8P 888    888               888            d88P  Y88b 888        888
+#  888    888     888    888               888            888    888 888        888
+#  888        888 888888 88888b.  888  888 88888b.        888        888        888
+#  888  88888 888 888    888 "88b 888  888 888 "88b       888        888        888
+#  888    888 888 888    888  888 888  888 888  888       888    888 888        888
+#  Y88b  d88P 888 Y88b.  888  888 Y88b 888 888 d88P       Y88b  d88P 888        888
+#   "Y8888P88 888  "Y888 888  888  "Y88888 88888P"         "Y8888P"  88888888 8888888
+#
 
 # +-----------------------------+
 # | Github CLI                  |
@@ -88,6 +130,17 @@ RUN apt-get autoremove -y && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/*
 
+#
+#   .d8888b.  888b     d888          888
+#  d88P  Y88b 8888b   d8888          888
+#  888    888 88888b.d88888          888
+#  888        888Y88888P888  8888b.  888  888  .d88b.
+#  888        888 Y888P 888     "88b 888 .88P d8P  Y8b
+#  888    888 888  Y8P  888 .d888888 888888K  88888888
+#  Y88b  d88P 888   "   888 888  888 888 "88b Y8b.
+#   "Y8888P"  888       888 "Y888888 888  888  "Y8888
+#
+
 # +-----------------------------+
 # | CMake - Latest Version      |
 # +-----------------------------+
@@ -103,19 +156,29 @@ RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/lates
     ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake && \
     rm -rf cmake-$version-linux-x86_64.sh
 
+
+#
+#  888     888  .d8888b.  8888888b.  888    d8P   .d8888b.
+#  888     888 d88P  Y88b 888   Y88b 888   d8P   d88P  Y88b
+#  888     888 888    888 888    888 888  d8P    888    888
+#  Y88b   d88P 888        888   d88P 888d88K     888
+#   Y88b d88P  888        8888888P"  8888888b    888  88888
+#    Y88o88P   888    888 888        888  Y88b   888    888
+#     Y888P    Y88b  d88P 888        888   Y88b  Y88b  d88P
+#      Y8P      "Y8888P"  888        888    Y88b  "Y8888P88
+#
+
 # +-----------------------------+
 # | vcpkg                 ~225MB|
 # +-----------------------------+
-
-# Note: vcpkg requires curl, unzip, tar, pkg-config (optional cmake)
+# Notes:
+# - vcpkg requires curl, unzip, tar, pkg-config (optional cmake)
+# - We use the installed binaries from the system and
+#   do not download latest version of CMake and Ninja during vcpkg bootstrap!
 
 ENV VCPKG_ROOT=/opt/vcpkg
 ENV PATH="${PATH}:${VCPKG_ROOT}"
-
 ENV VCPKG_TRIPLET=x64-linux
-
-# Use installed binaries from the system.
-# Do not download latest version of CMake and Ninja during vcpkg bootstrap!
 ENV VCPKG_FORCE_SYSTEM_BINARIES=1
 ENV VCPKG_USE_SYSTEM_BINARIES=1
 
@@ -128,10 +191,20 @@ RUN git clone --depth=1 \
     https://github.com/microsoft/vcpkg "${VCPKG_ROOT}" && \
     "${VCPKG_ROOT}"/bootstrap-vcpkg.sh -disableMetrics
 
+#
+#  888      888      888     888 888b     d888
+#  888      888      888     888 8888b   d8888
+#  888      888      888     888 88888b.d88888
+#  888      888      Y88b   d88P 888Y88888P888
+#  888      888       Y88b d88P  888 Y888P 888
+#  888      888        Y88o88P   888  Y8P  888
+#  888      888         Y888P    888   "   888
+#  88888888 88888888     Y8P     888       888
+#
+
 # +-----------------------------+
 # | LLVM                        |
 # +-----------------------------+
-
 # llvm.sh is constantly broken, see https://github.com/llvm/llvm-project/issues/62475
 #RUN wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
 
@@ -181,6 +254,17 @@ ENV CXX=/usr/bin/clang++
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
     update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
 
+#
+#   .d8888b.   .d8888b.   .d8888b.
+#  d88P  Y88b d88P  Y88b d88P  Y88b
+#  888    888 888    888 888    888
+#  888        888        888
+#  888  88888 888        888
+#  888    888 888    888 888    888
+#  Y88b  d88P Y88b  d88P Y88b  d88P
+#   "Y8888P88  "Y8888P"   "Y8888P"
+#
+
 # +-----------------------------+
 # | GCC                         |
 # +-----------------------------+
@@ -226,6 +310,17 @@ WORKDIR /
 
 RUN rm -rf gcc-13.2.0 && \
     apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
+
+#
+#  8888888888P  .d8888b.  888    888
+#        d88P  d88P  Y88b 888    888
+#       d88P   Y88b.      888    888
+#      d88P     "Y888b.   8888888888
+#     d88P         "Y88b. 888    888
+#    d88P            "888 888    888
+#   d88P       Y88b  d88P 888    888
+#  d8888888888  "Y8888P"  888    888
+#
 
 # +-----------------------------+
 # | ZSH                         |
@@ -306,6 +401,17 @@ LABEL \
     org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}, VulkanSDK ${VULKAN_SDK_VERSION}, CMake, VCPKG, zsh)" \
     org.opencontainers.image.licenses=MIT
 
+#
+#  888     888          888 888                               .d8888b.  8888888b.  888    d8P
+#  888     888          888 888                              d88P  Y88b 888  "Y88b 888   d8P
+#  888     888          888 888                              Y88b.      888    888 888  d8P
+#  Y88b   d88P 888  888 888 888  888  8888b.  88888b.         "Y888b.   888    888 888d88K
+#   Y88b d88P  888  888 888 888 .88P     "88b 888 "88b           "Y88b. 888    888 8888888b
+#    Y88o88P   888  888 888 888888K  .d888888 888  888             "888 888    888 888  Y88b
+#     Y888P    Y88b 888 888 888 "88b 888  888 888  888       Y88b  d88P 888  .d88P 888   Y88b
+#      Y8P      "Y88888 888 888  888 "Y888888 888  888        "Y8888P"  8888888P"  888    Y88b
+#
+
 # +-----------------------------+
 # | Vulkan SDK                  |
 # +-----------------------------+
@@ -323,3 +429,6 @@ ENV PATH="$VULKAN_SDK/bin:$PATH" \
     LD_LIBRARY_PATH="$VULKAN_SDK/lib:${LD_LIBRARY_PATH:-}" \
     VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
 
+
+# The AsciiArt for the VSCode minimap is generated using
+# https://patorjk.com/software/taag/#p=display&h=0&v=0&c=bash&f=Colossal&t=C%2B%2B%20DevBox%0APackages%0AGithub%20CLI%0ACMake%0AVCPKG%0ALLVM%0AGCC%0AZSH%0AVulkan%20SDK

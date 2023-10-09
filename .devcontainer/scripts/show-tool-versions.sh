@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Copyright Jens A. Koch 2023.
+# SPDX-License-Identifier: MIT
+# This file is part of https://github.com/jakoch/cpp-devbox
+
 # This info script shows the version of tools, compilers and libc.
 
 echo "\033[31mGit Version\033[0m"

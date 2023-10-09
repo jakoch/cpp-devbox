@@ -9,6 +9,16 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 
 - changes
 
+**Added**
+
+- added nano
+- added AsciiArt to Dockerfile to utilize the VSCode MiniMap better
+
+**Changed**
+
+- removes usages of sudo
+- ignore hadolint warning diallowing both curl and wget
+
 ## [1.0.1] - 10-10-2023
 
 **Changed**
