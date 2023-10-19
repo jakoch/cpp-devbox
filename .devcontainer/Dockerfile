@@ -21,13 +21,16 @@
 
 FROM debian:bookworm-slim as downloader
 
+ARG VULKAN_VERSION=1.3.261.1
+
 #ENV CURL_OPTIONS "--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
 ENV CURL_OPTIONS_BAR "--progress-bar"
+
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl && \
     curl $CURL_OPTIONS_BAR -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz" && \
-    curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/1.3.261.1/linux/vulkansdk-linux-x86_64-1.3.261.1.tar.xz"
+    curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz"
 
 # +-----------------------------+
 # | BASE IMAGE                  |        See https://hub.docker.com/_/debian
@@ -274,6 +277,10 @@ RUN tar xf /tmp/gcc.xz && rm /tmp/gcc.xz && \
     apt-get update && apt-get install -y --no-install-recommends \
     libmpfr-dev libgmp3-dev libmpc-dev
 
+# set default compiler to gcc
+ENV CC=/usr/bin/gcc
+ENV CXX=/usr/bin/g++
+
 # installing into /usr instead of /usr/local to have consistent paths in CMakePresets:
 # /usr/bin/g++-12
 # /usr/bin/g++-13
@@ -281,14 +288,21 @@ WORKDIR /gcc-13.2.0
 
 SHELL ["/bin/bash", "-c"]
 
+# https://gcc.gnu.org/install/configure.html
 RUN ./configure \
+    --libdir=/usr/lib \
+    --libexecdir=/usr/lib \
     --prefix=/usr \
     --program-suffix=-13 \
     --build=x86_64-linux-gnu \
     --host=x86_64-linux-gnu \
     --target=x86_64-linux-gnu \
     --disable-multilib \
+    --disable-libquadmath \
+    --disable-vtable-verify \
+    --disable-werror \
     --enable-cet \
+    --enable-lto \
     --enable-checking=release \
     --enable-clocale=gnu \
     --enable-default-pie \
@@ -297,19 +311,39 @@ RUN ./configure \
     --enable-libstdcxx-debug \
     --enable-libstdcxx-time=yes \
     --enable-linker-build-id \
+    --enable-nls \
+    --enable-multiarch \
     --enable-plugin \
     --enable-shared \
+    --enable-shared-libgcc \
+    --enable-static \
     --enable-threads=posix \
+    --enable-libsanitizer \
+    --without-included-gettext \
+    --without-cuda-driver \
+    --with-arch-32=i686 \
+    --with-abi=m64 \
+    --with-tune=generic \
     --with-default-libstdcxx-abi=new \
     --with-gcc-major-version-only \
     --with-system-zlib && \
-    make -s -j"$(nproc)" > /dev/null 2>&1 && \
-    make install
+    make -s -j"$(nproc)" all-gcc > /dev/null 2>&1 && \
+    make -s -j"$(nproc)" all-target-libgcc > /dev/null 2>&1 && \
+    make -s -j"$(nproc)" all-target-libsanitizer > /dev/null 2>&1 && \
+    make -s -j"$(nproc)" all-target-libatomic > /dev/null 2>&1 && \
+    make install-gcc && \
+    make install-target-libgcc && \
+    make install-target-libsanitizer && \
+    make install-target-libatomic
 
+# remove gcc source folder and dependencies
 WORKDIR /
-
 RUN rm -rf gcc-13.2.0 && \
-    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
+   apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
+
+# reset default compiler to clang
+ENV CC=/usr/bin/clang
+ENV CXX=/usr/bin/clang++
 
 #
 #  8888888888P  .d8888b.  888    888
@@ -383,7 +417,7 @@ ENV DEBIAN_FRONTEND=dialog
 
 FROM cpp-devbox-base as cpp-devbox-with-vulkansdk
 
-ENV VULKAN_SDK_VERSION=1.3.261.1
+ENV VULKAN_VERSION=1.3.261.1
 
 # +-----------------------------+
 # | METADATA                    |
@@ -398,7 +432,7 @@ LABEL \
     org.opencontainers.image.url='https://ghcr.io/jakoch/cpp-devbox' \
     org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
     org.opencontainers.image.title='ghcr.io/jakoch/cpp-devbox'\
-    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}, VulkanSDK ${VULKAN_SDK_VERSION}, CMake, VCPKG, zsh)" \
+    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}, VulkanSDK ${VULKAN_VERSION}, CMake, VCPKG, zsh)" \
     org.opencontainers.image.licenses=MIT
 
 #
@@ -424,7 +458,7 @@ RUN mkdir -p /opt/vulkan && \
 
 # Note: do not combine the 2 ENV statements.
 # (do not refer to env var within the same statement where it is defined)
-ENV VULKAN_SDK=/opt/vulkan/${VULKAN_SDK_VERSION}/x86_64
+ENV VULKAN_SDK=/opt/vulkan/${VULKAN_VERSION}/x86_64
 ENV PATH="$VULKAN_SDK/bin:$PATH" \
     LD_LIBRARY_PATH="$VULKAN_SDK/lib:${LD_LIBRARY_PATH:-}" \
     VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
