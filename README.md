@@ -9,18 +9,22 @@ A Docker development box for C/C++.
 
 #### What is this?
 
-The container is based on Debian Linux (see [Dockerfile](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/Dockerfile)).
+This repository maintains a Dockerfile for generating two container images based on Debian Linux.
 
-The repo releases 2 container images: one with GCC+LLVM (~2GB) and one with Vulkan SDK on-top (~4GB).
+One image includes GCC and LLVM (container size: ~2GB).
 
-These images can be used to set up a C++ development environment for Visual Studio Code (devcontainer).
+The other image includes GCC, LLVM, and Vulkan SDK (container size: ~4GB).
+
+The purpose these images is to setup a C++ development environment within Visual Studio Code using a [devcontainer config](https://github.com/jakoch/cpp-devbox#fetching-the-prebuild-container-images-using-a-devcontainer-config).
 
 #### What is pre-installed?
+
+Here is a basic overview of the pre-installed tools. For details, please refer to the [Dockerfile](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/Dockerfile).
 
 Base: Debian 12 - Bookworm
 
 On top of the base image the following tools are installed:
-- zsh + plugins: autosuggestions, completions, history substring search
+- zsh with plugins: autosuggestions, completions, history substring search
 - git, nano, jq
 - curl, wget
 - cppcheck, valgrind, ccache
@@ -60,7 +64,7 @@ Either by building the container image locally or by fetching the prebuild conta
    Then, finally...
 3. Enjoy! :sunglasses:
 
-##### Fetching the prebuild container images
+##### Fetching the prebuild container images using Docker
 
 This container image is published to the Github Container Registry (GHCR).
 
@@ -85,6 +89,8 @@ You might also use this container image as a base image in your own `Dockerfile`
 ```
 FROM ghcr.io/jakoch/cpp-devbox:latest
 ```
+
+##### Fetching the prebuild container images using a .devcontainer config
 
 **Devcontainer.json**
 
