@@ -15,6 +15,8 @@ One image includes GCC and LLVM (container size: ~2GB).
 
 The other image includes GCC, LLVM, and Vulkan SDK (container size: ~4GB).
 
+Both images are published to the Github Container Registry (GHCR).
+
 The purpose of these images is to setup a C++ development environment within Visual Studio Code using a [devcontainer config](https://github.com/jakoch/cpp-devbox#fetching-the-prebuild-container-images-using-a-devcontainer-config).
 
 #### What is pre-installed?
