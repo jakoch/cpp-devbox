@@ -18,6 +18,9 @@
 # +-----------------------------+
 # | Downloader                  |
 # +-----------------------------+
+# Download Stage is for caching:
+# - /tmp/gcc.xz
+# - /tmp/vulkansdk.xz
 
 FROM debian:bookworm-slim as downloader
 
@@ -153,7 +156,7 @@ RUN apt-get autoremove -y && \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: $version" && \
     url="https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version-linux-x86_64.sh"; echo "Download URL: $url" && \
-    wget $url && \
+    wget -q $url && \
     mkdir /opt/cmake && \
     sh cmake-$version-linux-x86_64.sh --prefix=/opt/cmake --skip-license && \
     ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake && \
@@ -175,9 +178,9 @@ RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/lates
 # | vcpkg                 ~225MB|
 # +-----------------------------+
 # Notes:
-# - vcpkg requires curl, unzip, tar, pkg-config (optional cmake)
-# - We use the installed binaries from the system and
-#   do not download latest version of CMake and Ninja during vcpkg bootstrap!
+# - vcpkg requires curl, unzip, tar, pkg-config (optional cmake).
+# - We use the installed binaries from the system.
+# - We do not download latest version of CMake and Ninja during vcpkg bootstrap.
 
 ENV VCPKG_ROOT=/opt/vcpkg
 ENV PATH="${PATH}:${VCPKG_ROOT}"
@@ -334,12 +337,21 @@ RUN ./configure \
     make install-gcc && \
     make install-target-libgcc && \
     make install-target-libsanitizer && \
-    make install-target-libatomic
+    make install-target-libatomic && \
+    cd / && \
+    rm -rf gcc-13.2.0 && \
+    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
+
+# we remove the gcc source folder and dependencies on the configure/make/make install step,
+# because then the gcc source folder is not cached, resulting in a smaller layer.
+# but for debugging gcc compilation issues,
+# its nice to have the following RUN command as extra image layer.
+# if you uncomment the following lines, comment the related lines above.
 
 # remove gcc source folder and dependencies
-WORKDIR /
-RUN rm -rf gcc-13.2.0 && \
-   apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
+#RUN cd / && \
+#    rm -rf gcc-13.2.0 && \
+#    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
 
 # reset default compiler to clang
 ENV CC=/usr/bin/clang

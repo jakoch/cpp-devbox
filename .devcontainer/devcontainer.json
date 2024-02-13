@@ -1,7 +1,6 @@
 // For format details:
-// see https://aka.ms/vscode-remote/devcontainer.json
-// and https://github.com/devcontainers/images/tree/main/src/cpp
-// https://containers.dev/implementors/json_reference/
+// - https://containers.dev/implementors/json_reference/
+// - https://github.com/devcontainers/images/tree/main/src/cpp
 {
   "name": "C++ DevBox",
   "build": {
@@ -10,7 +9,6 @@
     "context": "."
   },
   // Features to add to the dev container. More info: https://containers.dev/features.
-  // List of features: https://github.com/devcontainers/features/tree/main/src
   //"features": {
   //},
   "capAdd": [

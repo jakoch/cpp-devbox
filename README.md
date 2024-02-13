@@ -20,6 +20,7 @@ These images can be used to set up a C++ development environment for Visual Stud
 Base: Debian 12 - Bookworm
 
 On top of the base image the following tools are installed:
+
 - zsh + plugins: autosuggestions, completions, history substring search
 - git, nano, jq
 - curl, wget
@@ -28,12 +29,14 @@ On top of the base image the following tools are installed:
 - vcpkg
 
 The following C/C++ compilers and their toolchains are available:
- - LLVM 17.0.2
- - GCC 12.2.0
- - GCC 13.2.0
+
+- LLVM 17.0.2
+- GCC 12.2.0
+- GCC 13.2.0
 
 The `with-vulkansdk` image additionally contains:
- - Vulkan SDK 1.3.261.1
+
+- Vulkan SDK 1.3.261.1
 
 #### Prerequisites
 
@@ -50,15 +53,17 @@ Either by building the container image locally or by fetching the prebuild conta
 
 ##### Building the Container Image locally using VSCode
 
-1. Get the source: clone this repository using git or download the zip
-2. In VSCode open the folder in a container (`Remote Containers: Open Folder in Container`):
+- **Step 1.** Get the source: clone this repository using git or download the zip
+
+- **Step 2.** In VSCode open the folder in a container (`Remote Containers: Open Folder in Container`):
 
    This will build the container image (`Starting Dev Container (show log): Building image..`)
 
    Which takes a while...
 
    Then, finally...
-3. Enjoy! :sunglasses:
+
+- **Step 3.**  Enjoy! :sunglasses:
 
 ##### Fetching the prebuild container images
 
@@ -69,27 +74,30 @@ You may find the package here: https://github.com/jakoch/cpp-devbox/pkgs/contain
 **Command Line**
 
 You can install the container image from the command line:
-```
+
+```bash
 docker pull ghcr.io/jakoch/cpp-devbox:latest
 ```
 
 For the image containing Vulkan SDK append `with-vulkansdk-latest`:
 
-```
+```bash
 docker pull ghcr.io/jakoch/cpp-devbox:with-vulkansdk-latest
 ```
 
 **Dockerfile**
 
 You might also use this container image as a base image in your own `Dockerfile`:
-```
+
+```bash
 FROM ghcr.io/jakoch/cpp-devbox:latest
 ```
 
 **Devcontainer.json**
 
 You might use this container image in the `.devcontainer/devcontainer.json` file of your project:
-```
+
+```json
 {
   "name": "My C++ Project DevBox",
   "image": "ghcr.io/jakoch/cpp-devbox:latest"
@@ -99,7 +107,8 @@ You might use this container image in the `.devcontainer/devcontainer.json` file
 **Devcontainer.json + with-vulkansdk image**
 
 You might use this container image in the `.devcontainer/devcontainer.json` file of your project:
-```
+
+```json
 {
   "name": "My C++ Project DevBox",
   "image": "ghcr.io/jakoch/cpp-devbox:with-vulkansdk-latest"
