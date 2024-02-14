@@ -3,7 +3,7 @@
 
 A Docker development box for C/C++.
 
-**Debian Linux 12-bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.261.1, CMake, VCPKG, zsh**
+**Debian Linux 12-bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.275.0, CMake, VCPKG, zsh**
 
 ----
 
@@ -42,7 +42,7 @@ The following C/C++ compilers and their toolchains are available:
 
 The `with-vulkansdk` image additionally contains:
 
-- Vulkan SDK 1.3.261.1
+- Vulkan SDK 1.3.275.0
 
 #### Prerequisites
 
