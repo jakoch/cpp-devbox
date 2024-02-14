@@ -16,6 +16,17 @@
 #
 
 # +-----------------------------+
+# | GLOBAL ARGS                 |
+# +-----------------------------+
+# To use them, redeclare without value inside each FROM.
+# For example, VULKAN_VERSION is used in the FROM sections of "downloader" and "cpp-devbox-with-vulkansdk".
+ARG DEBIAN_VERSION=12
+ARG DEBIAN_VERSION_NAME=bookworm
+ARG GCC_VERSION=13
+ARG LLVM_VERSION=17
+ARG VULKAN_VERSION=1.3.275.0
+
+# +-----------------------------+
 # | Downloader                  |
 # +-----------------------------+
 # Download Stage is for caching:
@@ -24,7 +35,8 @@
 
 FROM debian:bookworm-slim as downloader
 
-ARG VULKAN_VERSION=1.3.261.1
+# reusing global arg
+ARG VULKAN_VERSION
 
 #ENV CURL_OPTIONS "--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
 ENV CURL_OPTIONS_BAR "--progress-bar"
@@ -42,13 +54,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM debian:bookworm-slim as cpp-devbox-base
 
 # +-----------------------------+
-# | ARGS                        |
+# | REUSE GLOBAL ARGS           |
 # +-----------------------------+
 
-ARG DEBIAN_VERSION=12
-ARG DEBIAN_VERSION_NAME=bookworm
-ARG GCC_VERSION=13
-ARG LLVM_VERSION=17
+ARG DEBIAN_VERSION
+ARG DEBIAN_VERSION_NAME
+ARG GCC_VERSION
+ARG LLVM_VERSION
 
 # +-----------------------------+
 # | METADATA                    |
@@ -182,11 +194,11 @@ RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/lates
 # - We use the installed binaries from the system.
 # - We do not download latest version of CMake and Ninja during vcpkg bootstrap.
 
-ENV VCPKG_ROOT=/opt/vcpkg
+ENV VCPKG_ROOT=/opt/vcpkg \
+    VCPKG_TRIPLET=x64-linux \
+    VCPKG_FORCE_SYSTEM_BINARIES=1 \
+    VCPKG_USE_SYSTEM_BINARIES=1
 ENV PATH="${PATH}:${VCPKG_ROOT}"
-ENV VCPKG_TRIPLET=x64-linux
-ENV VCPKG_FORCE_SYSTEM_BINARIES=1
-ENV VCPKG_USE_SYSTEM_BINARIES=1
 
 RUN git clone --depth=1 \
     -c core.eol=lf \
@@ -253,8 +265,8 @@ RUN ln -s /usr/bin/clang-${LLVM_VERSION} /usr/bin/clang && \
     ln -s /usr/bin/clang-format-${LLVM_VERSION} /usr/bin/clang-format
 
 # update compiler environment vars
-ENV CC=/usr/bin/clang
-ENV CXX=/usr/bin/clang++
+ENV CC=/usr/bin/clang \
+    CXX=/usr/bin/clang++
 
 # update alternatives
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
@@ -281,8 +293,8 @@ RUN tar xf /tmp/gcc.xz && rm /tmp/gcc.xz && \
     libmpfr-dev libgmp3-dev libmpc-dev
 
 # set default compiler to gcc
-ENV CC=/usr/bin/gcc
-ENV CXX=/usr/bin/g++
+ENV CC=/usr/bin/gcc \
+    CXX=/usr/bin/g++
 
 # installing into /usr instead of /usr/local to have consistent paths in CMakePresets:
 # /usr/bin/g++-12
@@ -354,8 +366,8 @@ RUN ./configure \
 #    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
 
 # reset default compiler to clang
-ENV CC=/usr/bin/clang
-ENV CXX=/usr/bin/clang++
+ENV CC=/usr/bin/clang \
+    CXX=/usr/bin/clang++
 
 #
 #  8888888888P  .d8888b.  888    888
@@ -374,8 +386,8 @@ ENV CXX=/usr/bin/clang++
 # setup zsh, omyzsh, powerline fonts
 # setup zsh plugins: autosuggestions, autocompletions, history search
 
-ENV TERM=xterm-256color
-ENV ZSH_THEME agnoster
+ENV TERM=xterm-256color \
+    ZSH_THEME=agnoster
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -429,7 +441,8 @@ ENV DEBIAN_FRONTEND=dialog
 
 FROM cpp-devbox-base as cpp-devbox-with-vulkansdk
 
-ENV VULKAN_VERSION=1.3.261.1
+# reusing global arg
+ARG VULKAN_VERSION
 
 # +-----------------------------+
 # | METADATA                    |
