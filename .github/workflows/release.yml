@@ -90,7 +90,7 @@ jobs:
             ${{ env.GHCR_IMAGE }}
           flavor: |
             latest=auto
-            prefix=${{ matrix.config.debian_codename }}
+            prefix=${{ matrix.config.debian_codename }}-
           tags: |
             type=schedule,pattern={{date 'YYYYMMDD'}}
             type=ref,event=tag
@@ -105,7 +105,7 @@ jobs:
             ${{ env.GHCR_IMAGE }}
           flavor: |
             latest=auto
-            prefix=${{ matrix.config.debian_codename }}-with-vulkansdk
+            prefix=${{ matrix.config.debian_codename }}-with-vulkansdk-
           tags: |
             type=schedule,pattern={{date 'YYYYMMDD'}}
             type=ref,event=tag

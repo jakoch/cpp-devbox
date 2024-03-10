@@ -233,11 +233,14 @@ RUN git clone --depth=1 \
 # llvm.sh is constantly broken, see https://github.com/llvm/llvm-project/issues/62475
 #RUN wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
 
+# https://ftp.debian.org/debian/
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN if [ "$DEBIAN_VERSION_NAME" == "trixie" ]; then DEBIAN_VERSION_NAME="unstable"; fi && \
     if [ "$DEBIAN_VERSION_NAME" == "unstable" ]; then LINKNAME=""; else LINKNAME="-$DEBIAN_VERSION_NAME"; fi && \
     wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
     add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" && \
+    add-apt-repository "deb http://httpredir.debian.org/debian sid main" && \
     apt-get update && apt-get install -y --no-install-recommends \
     clang-$LLVM_VERSION \
     clangd-$LLVM_VERSION \
