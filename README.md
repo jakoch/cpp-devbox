@@ -3,7 +3,9 @@
 
 A Docker development box for C/C++.
 
-**Debian Linux 12-bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.275.0, CMake, VCPKG, zsh**
+Stable:   **Debian Linux 12-bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.275.0, CMake, VCPKG, zsh**
+
+Unstable: **Debian Linux 13-trixie   with LLVM 18 & GCC 13, VulkanSDK 1.3.275.0, CMake, VCPKG, zsh**
 
 ----
 
@@ -82,13 +84,13 @@ You may find the package here: https://github.com/jakoch/cpp-devbox/pkgs/contain
 You can install the container image from the command line:
 
 ```bash
-docker pull ghcr.io/jakoch/cpp-devbox:latest
+docker pull ghcr.io/jakoch/cpp-devbox:bookworm-latest
 ```
 
 For the image containing Vulkan SDK append `with-vulkansdk-latest`:
 
 ```bash
-docker pull ghcr.io/jakoch/cpp-devbox:with-vulkansdk-latest
+docker pull ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-latest
 ```
 
 **Dockerfile**
@@ -96,7 +98,7 @@ docker pull ghcr.io/jakoch/cpp-devbox:with-vulkansdk-latest
 You might also use this container image as a base image in your own `Dockerfile`:
 
 ```bash
-FROM ghcr.io/jakoch/cpp-devbox:latest
+FROM ghcr.io/jakoch/cpp-devbox:bookworm-latest
 ```
 
 ##### Fetching the prebuild container images using a .devcontainer config
@@ -108,7 +110,7 @@ You might use this container image in the `.devcontainer/devcontainer.json` file
 ```json
 {
   "name": "My C++ Project DevBox",
-  "image": "ghcr.io/jakoch/cpp-devbox:latest"
+  "image": "ghcr.io/jakoch/cpp-devbox:bookworm-latest"
 }
 ```
 
@@ -119,6 +121,30 @@ You might use this container image in the `.devcontainer/devcontainer.json` file
 ```json
 {
   "name": "My C++ Project DevBox",
-  "image": "ghcr.io/jakoch/cpp-devbox:with-vulkansdk-latest"
+  "image": "ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-latest"
 }
 ```
+
+##### Fetching the bleeding-edge prebuild container images
+
+The bleeding-edge container versions are build using Debian 13 - Trixie.
+Trixie ships GCC 13.2 and LLVM 16 by default.
+There is no newer version of GCC atm.
+We raise the LLVM version to 18.
+
+These image versions are unstable, because:
+
+- a) the Debian base image Trixie is unstable,
+- b) LLVM 18 has package requirements, which can not be resolved with Trixie packages alone, so several Debian SID packages are required.
+
+The following tags are created only on push, not when tagging:
+
+## Trixie - Base Image
+
+- `ghcr.io/jakoch/cpp-devbox:trixie-20240310-sha-a67831a`
+- `ghcr.io/jakoch/cpp-devbox:trixie-latest`
+
+## Trixie - With VulkanSDK
+
+- `ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-20240310-sha-a67831a`
+- `ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-latest`
