@@ -1,25 +1,22 @@
-// For format details:
-// - https://containers.dev/implementors/json_reference/
-// - https://github.com/devcontainers/images/tree/main/src/cpp
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json
 {
   "name": "C++ DevBox",
   "build": {
-    "dockerfile": "./Dockerfile",
+    // The repository contains two images:
+    // - "./debian/bookworm/Dockerfile" (default)
+    // - "./debian/trixie/Dockerfile"
+    "dockerfile": "./debian/bookworm/Dockerfile",
     // sets the run context to this .devcontainer folder
     "context": "."
   },
-  // Features to add to the dev container. More info: https://containers.dev/features.
-  //"features": {
-  //},
   "capAdd": [
     "SYS_PTRACE"
   ],
   "securityOpt": [
     "seccomp=unconfined"
   ],
-  // Set *default* container specific settings.json values on container create.
+  // config settings you would have in ".vscode/settings.json"
   "customizations": {
-    // Configure properties specific to VS Code.
     "vscode": {
       // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
@@ -65,8 +62,6 @@
       }
     }
   },
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "./.devcontainer/scripts/entrypoint.sh",
   // Set `remoteUser` to `root` to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.

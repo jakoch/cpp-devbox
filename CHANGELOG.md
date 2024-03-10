@@ -13,10 +13,17 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 
 - added nano
 - added AsciiArt to Dockerfile to utilize the VSCode MiniMap better
+- added Trixie Dockerfile into ./devcontainer/debian/trixie
 
 **Changed**
 
-- removes usages of sudo
+- changed Github Release workflow to build 4 images:
+  - bookwork: base + with-vulkan
+  - trixie: base + with-vulkan
+- moved Bookworm Dockerfile into ./devcontainer/debian/bookworm
+- changed Github release workflow file
+  - use docker/metadata-action and docker/build-push-action
+- removed usages of sudo
 - ignore hadolint warning diallowing both curl and wget
 - fixed the need to redeclare the VULKAN_VERSION in multiple build stages
   by introducing global build args and reusing them in FROM sections

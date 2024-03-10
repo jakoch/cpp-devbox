@@ -15,10 +15,15 @@
 #
 #
 
+# Debian Bookworm
+#
+# LLVM: https://packages.debian.org/bookworm/llvm  16.0
+# GCC:  https://packages.debian.org/bookworm/gcc   12.2.0
+
 # +-----------------------------+
 # | GLOBAL ARGS                 |
 # +-----------------------------+
-# To use them, redeclare without value inside each FROM.
+# The following global args need to be redeclared without a value inside each FROM.
 # For example, VULKAN_VERSION is used in the FROM sections of "downloader" and "cpp-devbox-with-vulkansdk".
 ARG DEBIAN_VERSION=12
 ARG DEBIAN_VERSION_NAME=bookworm

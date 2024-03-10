@@ -21,8 +21,8 @@ cmake --version | head -n1
 echo "\033[31mGCC Version\033[0m"
 
 gcc --version | head -n1
-/usr/bin/g++-12 --version | head -n1
-/usr/bin/g++-13 --version | head -n1
+command -v /usr/bin/g++-12 && /usr/bin/g++-12 --version | head -n1 || echo "g++-12 not found"
+command -v /usr/bin/g++-13 && /usr/bin/g++-13 --version | head -n1 || echo "g++-13 not found"
 
 echo "\033[31mClang Version\033[0m"
 

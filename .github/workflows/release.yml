@@ -1,3 +1,9 @@
+#
+# Copyright 2021 Jens A. Koch.
+# SPDX-License-Identifier: MIT
+# This file is part of jakoch/cpp-devbox.
+#
+
 name: Release
 
 on:
@@ -11,16 +17,31 @@ on:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
+env:
+  DOCKERHUB_IMAGE: ${{ github.repository }}
+  GHCR_IMAGE: ghcr.io/${{ github.repository }}
+
 jobs:
 
 # ---------------------------------------------------------------------------------------
 
-  release:
+  build:
 
 # ---------------------------------------------------------------------------------------
 
-    name: "Publish Container on GHCR"
+    name: "Build Container"
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { platform: "linux/amd64", debian_codename: "bookworm" }
+          - { platform: "linux/amd64", debian_codename: "trixie"   }
 
     steps:
       - name: ✂️ Free Disk Space
@@ -29,65 +50,131 @@ jobs:
           tool-cache: true
           docker-images: false
 
-      - name: 🤘 Checkout Code
-        uses: actions/checkout@v4 # https://github.com/actions/checkout
+      #- name: 🔒 Login to DockerHub Container Registry
+      #  if: github.event_name != 'pull_request'
+      #  uses: docker/login-action@v3 # https://github.com/docker/login-action
+      #  with:
+      #    username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #    password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 🔒 Login to Container Registry
+      - name: 🔒 Login to Github Container Registry (GHCR)
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3 # https://github.com/docker/login-action
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: hadolint/hadolint-action@v3.1.0 # https://github.com/hadolint/hadolint-action
+      - name: 🔍 Run hadolint
+        uses: hadolint/hadolint-action@v3.1.0 # https://github.com/hadolint/hadolint-action
         with:
-          dockerfile: .devcontainer/Dockerfile
+          dockerfile: .devcontainer/debian/${{ matrix.config.debian_codename }}/Dockerfile
           no-fail: true
 
-      - name: 📝 Versionize
-        run: |
-          if [[ "$GITHUB_REF" =~ ^refs/tags/v* ]]; then
-            echo "Releasing from tag: $GITHUB_REF_NAME"
-            echo "TAG=$GITHUB_REF_NAME" >> $GITHUB_ENV
-          else
-            echo "Releasing from branch: $GITHUB_REF_NAME"
-            TIMESTAMP=$(TZ=UTC date +%Y%m%d)
-            SHORT_HASH=$(echo ${{ github.sha }} | head -c7)
-            echo "TAG=$TIMESTAMP-$SHORT_HASH" >> $GITHUB_ENV
-          fi
-          echo "Container Version: $TAG"
-
-      - name: 🙏 Build Image -> cpp-devbox-base
-        run: |
-          docker build --no-cache --progress=plain --target cpp-devbox-base -t ghcr.io/${{ github.repository }}:$TAG .devcontainer/
-
-      - name: 📦 🚀 Push Image to registry (cpp-devbox-base)
-        run: |
-          docker push  ghcr.io/${{ github.repository }}:$TAG
-          docker tag   ghcr.io/${{ github.repository }}:$TAG ghcr.io/${{ github.repository }}:latest
-          docker push  ghcr.io/${{ github.repository }}:latest
-
-      - name: 🙏 Build Image -> cpp-devbox-base + cpp-devbox-with-vulkansdk = with-vulkansdk
-        run: |
-          docker build --no-cache --progress=plain -t ghcr.io/${{ github.repository }}:with-vulkansdk-$TAG .devcontainer/
-
-      - name: 📦 🚀 Push Image to registry (with-vulkansdk)
-        run: |
-          docker push  ghcr.io/${{ github.repository }}:with-vulkansdk-$TAG
-          docker tag   ghcr.io/${{ github.repository }}:with-vulkansdk-$TAG ghcr.io/${{ github.repository }}:with-vulkansdk-latest
-          docker push  ghcr.io/${{ github.repository }}:with-vulkansdk-latest
-
-      - name: 🛡️🔍 Scan Image for Vulnerabilities
-        uses: aquasecurity/trivy-action@master # https://github.com/aquasecurity/trivy-action
+      - name: 🔽 Setup QEMU
+        uses: docker/setup-qemu-action@v3 # https://github.com/docker/setup-qemu-action
         with:
-          image-ref: 'ghcr.io/${{ github.repository }}:latest'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
-          ignore-unfixed: true
-          skip-dirs: gcc-13.2.0,usr/lib64
+          platforms: ${{ matrix.config.platform }}
 
-      - name: 🛡️🔼 Upload scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3 # https://github.com/github/codeql-action
+      - name: 🔽 Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: ✏ Setup Docker Metadata
+        id: metadata-base
+        uses: docker/metadata-action@v5 # https://github.com/docker/metadata-action
         with:
-          sarif_file: 'trivy-results.sarif'
+          images: |
+            ${{ env.GHCR_IMAGE }}
+          flavor: |
+            latest=auto
+            prefix=${{ matrix.config.debian_codename }}
+          tags: |
+            type=schedule,pattern={{date 'YYYYMMDD'}}
+            type=ref,event=tag
+            type=sha
+            type=raw,value=latest
+
+      - name: ✏ Setup Docker Metadata
+        id: metadata-base-with-vulkansdk
+        uses: docker/metadata-action@v5 # https://github.com/docker/metadata-action
+        with:
+          images: |
+            ${{ env.GHCR_IMAGE }}
+          flavor: |
+            latest=auto
+            prefix=${{ matrix.config.debian_codename }}-with-vulkansdk
+          tags: |
+            type=schedule,pattern={{date 'YYYYMMDD'}}
+            type=ref,event=tag
+            type=sha
+            type=raw,value=latest
+
+      - name: ✏ Create info.json
+        run: |
+          jq -n --arg version "${{ github.ref_name }}" \
+                --arg commit "${{ github.sha }}" \
+                --arg date "$(date -u +%F)" \
+                '{ version: $version, commit: $commit, date: $date }' > info.json
+
+      # Build Image -> cpp-devbox-base
+      # We set target "cpp-devbox-base", so that only this stage is build.
+      - name: 📦 🚀 Build and Push
+        id: build-base
+        uses: docker/build-push-action@v5 # https://github.com/docker/build-push-action
+        with:
+          context: .
+          file: .devcontainer/debian/${{ matrix.config.debian_codename }}/Dockerfile
+          target: cpp-devbox-base
+          platforms: ${{ matrix.config.platform }}
+          tags: ${{ steps.metadata-base.outputs.tags }}
+          labels: ${{ steps.metadata-base.outputs.labels }}
+          push: true
+
+      # Build Image -> cpp-devbox-base + cpp-devbox-with-vulkansdk = with-vulkansdk
+      # We dont set a target here, so that all stages are build.
+      - name: 📦 🚀 Build and Push
+        id: build-base-with-vulkansdk
+        uses: docker/build-push-action@v5 # https://github.com/docker/build-push-action
+        with:
+          context: .
+          file: .devcontainer/debian/${{ matrix.config.debian_codename }}/Dockerfile
+          platforms: ${{ matrix.config.platform }}
+          tags: ${{ steps.metadata-base-with-vulkansdk.outputs.tags }}
+          labels: ${{ steps.metadata-base-with-vulkansdk.outputs.labels }}
+          push: true
+
+      #- name: 🛡️🔍 Scan Image for Vulnerabilities
+      #  uses: aquasecurity/trivy-action@master # https://github.com/aquasecurity/trivy-action
+      #  with:
+      #    image-ref: '${{ env.GHCR_IMAGE }}:latest'
+      #    format: 'sarif'
+      #    output: 'trivy-results.sarif'
+      #    severity: 'CRITICAL,HIGH'
+      #    ignore-unfixed: true
+      #    skip-dirs: gcc-13.2.0,usr/lib64
+
+      # upload fails: https://github.com/github/codeql-action/issues/2117
+      #- name: 🛡️🔼 Upload scan results to GitHub Security tab
+      #  uses: github/codeql-action/upload-sarif@v3 # https://github.com/github/codeql-action
+      #  with:
+      #    sarif_file: 'trivy-results.sarif'
+
+      # - name: 🙏 Build Image -> cpp-devbox-base
+      #   run: |
+      #     docker build --no-cache --progress=plain --target cpp-devbox-base -t ${{ env.GHCR_IMAGE }}:$TAG .devcontainer/
+
+      # - name: 📦 🚀 Push Image to registry (cpp-devbox-base)
+      #   run: |
+      #     docker push  ${{ env.GHCR_IMAGE }}:$TAG
+      #     docker tag   ${{ env.GHCR_IMAGE }}:$TAG ${{ env.GHCR_IMAGE }}:latest
+      #     docker push  ${{ env.GHCR_IMAGE }}:latest
+
+      # - name: 🙏 Build Image -> cpp-devbox-base + cpp-devbox-with-vulkansdk = with-vulkansdk
+      #   run: |
+      #     docker build --no-cache --progress=plain -t ${{ env.GHCR_IMAGE }}:with-vulkansdk-$TAG .devcontainer/
+
+      # - name: 📦 🚀 Push Image to registry (with-vulkansdk)
+      #   run: |
+      #     docker push  ${{ env.GHCR_IMAGE }}:with-vulkansdk-$TAG
+      #     docker tag   ${{ env.GHCR_IMAGE }}:with-vulkansdk-$TAG ${{ env.GHCR_IMAGE }}:with-vulkansdk-latest
+      #     docker push  ${{ env.GHCR_IMAGE }}:with-vulkansdk-latest

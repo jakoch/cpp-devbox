@@ -1,0 +1,8 @@
+#
+# Excludes files and folders from the Docker context
+#
+# Docs: https://docs.docker.com/engine/reference/builder/#dockerignore-file
+#
+.devcontainer/
+.git/
+.github/

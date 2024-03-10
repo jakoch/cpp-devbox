@@ -51,3 +51,7 @@ trim_trailing_whitespace = false
 # Config files
 [*.{clang-format}]
 indent_size = 2
+
+[Dockerfile]
+indent_style = space
+indent_size = 4
