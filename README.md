@@ -3,29 +3,28 @@
 
 A Docker development box for C/C++.
 
-Stable:   **Debian Linux 12-bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.275.0, CMake, VCPKG, zsh**
+**Debian Linux 12 Bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.275.0, CMake, VCPKG, zsh**
 
-Unstable: **Debian Linux 13-trixie   with LLVM 18 & GCC 13, VulkanSDK 1.3.275.0, CMake, VCPKG, zsh**
+**Debian Linux 13 Trixie with LLVM 18 & GCC 13, VulkanSDK 1.3.275.0, CMake, VCPKG, zsh**
 
-----
 
-#### What is this?
+## What is this?
 
-This repository maintains a Dockerfile for generating two container images based on Debian Linux.
+This repository maintains Dockerfiles for generating two container images based on two Debian Linux versions.
 
 One image includes GCC and LLVM (container size: ~2GB).
 
 The other image includes GCC, LLVM, and Vulkan SDK (container size: ~4GB).
 
-Both images are published to the Github Container Registry (GHCR).
+Both images are build using Debian 12 Bookworm and Debian 13 Trixie.
+
+All images are published to the Github Container Registry (GHCR).
 
 The purpose of these images is to setup a C++ development environment within Visual Studio Code using a [devcontainer config](https://github.com/jakoch/cpp-devbox#fetching-the-prebuild-container-images-using-a-devcontainer-config).
 
-#### What is pre-installed?
+## What is pre-installed?
 
-Here is a basic overview of the pre-installed tools. For details, please refer to the [Dockerfile](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/Dockerfile).
-
-Base: Debian 12 - Bookworm
+Here is a basic overview of the pre-installed tools. For details, please refer to the Dockerfiles.
 
 On top of the base image the following tools are installed:
 
@@ -36,30 +35,41 @@ On top of the base image the following tools are installed:
 - CMake
 - vcpkg
 
+### [Dockerfile for Debian 12 - Bookworm](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/bookworm/Dockerfile) (stable)
+
 The following C/C++ compilers and their toolchains are available:
 
 - LLVM 17.0.2
 - GCC 12.2.0
 - GCC 13.2.0
 
+### [Dockerfile for Debian 13 - Trixie](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/trixie/Dockerfile) (unstable)
+
+The following C/C++ compilers and their toolchains are available:
+
+- LLVM 18
+- GCC 13.2.0
+
+### VulkanSDK
+
 The `with-vulkansdk` image additionally contains:
 
 - Vulkan SDK 1.3.275.0
 
-#### Prerequisites
+## Prerequisites
 
 You need the following things to run this:
 
 - Docker
 - Visual Studio Code
 
-#### How to run this?
+## How to run this?
 
 There are two ways of setting the container up.
 
 Either by building the container image locally or by fetching the prebuild container image from the Github container registry.
 
-##### Building the Container Image locally using VSCode
+### Building the Container Image locally using VSCode
 
 - **Step 1.** Get the source: clone this repository using git or download the zip
 
@@ -73,7 +83,7 @@ Either by building the container image locally or by fetching the prebuild conta
 
 - **Step 3.**  Enjoy! :sunglasses:
 
-##### Fetching the prebuild container images using Docker
+### Fetching the prebuild container images using Docker
 
 This container image is published to the Github Container Registry (GHCR).
 
@@ -101,7 +111,7 @@ You might also use this container image as a base image in your own `Dockerfile`
 FROM ghcr.io/jakoch/cpp-devbox:bookworm-latest
 ```
 
-##### Fetching the prebuild container images using a .devcontainer config
+### Fetching the prebuild container images using a .devcontainer config
 
 **Devcontainer.json**
 
@@ -125,26 +135,51 @@ You might use this container image in the `.devcontainer/devcontainer.json` file
 }
 ```
 
-##### Fetching the bleeding-edge prebuild container images
+#### Developer Notes
+
+### Fetching the bleeding-edge prebuild container images
 
 The bleeding-edge container versions are build using Debian 13 - Trixie.
-Trixie ships GCC 13.2 and LLVM 16 by default.
-There is no newer version of GCC atm.
-We raise the LLVM version to 18.
 
-These image versions are unstable, because:
+The Trixie base image ships GCC 13.2 and LLVM 16 by default.
+For GCC its also the latest available upstream version.
+For LLVM we installed the latest available upstream version: LLVM 18.
 
-- a) the Debian base image Trixie is unstable,
+These images are unstable because:
+
+- a) the Debian base image Trixie itself unstable,
 - b) LLVM 18 has package requirements, which can not be resolved with Trixie packages alone, so several Debian SID packages are required.
 
-The following tags are created only on push, not when tagging:
 
-## Trixie - Base Image
+### Versioning Scheme for Images
 
-- `ghcr.io/jakoch/cpp-devbox:trixie-20240310-sha-a67831a`
-- `ghcr.io/jakoch/cpp-devbox:trixie-latest`
+The container images use the following versioning schemes.
 
-## Trixie - With VulkanSDK
+#### Scheduled
 
-- `ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-20240310-sha-a67831a`
-- `ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-latest`
+The following container tags are created for scheduled builds:
+
+- `ghcr.io/jakoch/cpp-devbox:{DEBIAN_CODENAME}-nightly-DATE-latest`
+- `ghcr.io/jakoch/cpp-devbox:{DEBIAN_CODENAME-with-vulkansdk-nightly-DATE-latest`
+
+#### For git push
+
+The following container tags are created only on push, not when tagging:
+
+- `ghcr.io/jakoch/cpp-devbox:{DEBIAN_CODENAME}-latest`
+- `ghcr.io/jakoch/cpp-devbox:{DEBIAN_CODENAME}-{DATE}-sha-{SHA}`
+
+- `ghcr.io/jakoch/cpp-devbox:{DEBIAN_CODENAME}-with-vulkansdk-latest`
+- `ghcr.io/jakoch/cpp-devbox:{DEBIAN_CODENAME}-with-vulkansdk--{DATE}-sha-{SHA}`
+
+#### For git tag
+
+The following container tags are created for git tags:
+
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-1.0.0`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-1.0`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-latest`
+
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-1.0.0`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-1.0`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-latest`
