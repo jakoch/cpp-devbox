@@ -153,33 +153,35 @@ These images are unstable because:
 
 ### Versioning Scheme for Images
 
-The container images use the following versioning schemes.
+The container images use the following versioning scheme.
 
-#### Scheduled
+#### Scheduled Builds
 
 The following container tags are created for scheduled builds:
 
-- `ghcr.io/jakoch/cpp-devbox:{DEBIAN_CODENAME}-nightly-DATE-latest`
-- `ghcr.io/jakoch/cpp-devbox:{DEBIAN_CODENAME-with-vulkansdk-nightly-DATE-latest`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-nightly-{{date}}`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-nightly-{{date}}`
 
 #### For git push
 
 The following container tags are created only on push, not when tagging:
 
-- `ghcr.io/jakoch/cpp-devbox:{DEBIAN_CODENAME}-latest`
-- `ghcr.io/jakoch/cpp-devbox:{DEBIAN_CODENAME}-{DATE}-sha-{SHA}`
-
-- `ghcr.io/jakoch/cpp-devbox:{DEBIAN_CODENAME}-with-vulkansdk-latest`
-- `ghcr.io/jakoch/cpp-devbox:{DEBIAN_CODENAME}-with-vulkansdk--{DATE}-sha-{SHA}`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-{{date}}-sha-{{sha}}`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-{{date}}-sha-{{sha}}`
 
 #### For git tag
 
 The following container tags are created for git tags:
 
-- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-1.0.0`
-- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-1.0`
-- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-latest`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-{{ version }}`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-{{ major }}.{{ minor }}`
 
-- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-1.0.0`
-- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-1.0`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-{{ version }}`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-{{ major }}.{{ minor }}`
+
+#### Latest
+
+The container tag "latest" is applied to the latest build:
+
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-latest`
 - `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-latest`
