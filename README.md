@@ -3,9 +3,9 @@
 
 A Docker development box for C/C++.
 
-**Debian Linux 12 Bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.275.0, CMake, VCPKG, zsh**
+**Debian Linux 12 Bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.283.0, CMake, VCPKG, mold, zsh**
 
-**Debian Linux 13 Trixie with LLVM 18 & GCC 13, VulkanSDK 1.3.275.0, CMake, VCPKG, zsh**
+**Debian Linux 13 Trixie with LLVM 18 & GCC 13, VulkanSDK 1.3.283.0, CMake, VCPKG, mold, zsh**
 
 
 ## What is this?
@@ -33,7 +33,8 @@ On top of the base image the following tools are installed:
 - curl, wget
 - cppcheck, valgrind, ccache
 - CMake
-- vcpkg
+- vcpkg (latest version)
+- mold (lastet version)
 
 ### [Dockerfile for Debian 12 - Bookworm](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/bookworm/Dockerfile) (stable)
 
@@ -54,7 +55,7 @@ The following C/C++ compilers and their toolchains are available:
 
 The `with-vulkansdk` image additionally contains:
 
-- Vulkan SDK 1.3.275.0
+- Vulkan SDK 1.3.283.0
 
 ## Prerequisites
 

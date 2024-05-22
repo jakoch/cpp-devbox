@@ -28,6 +28,10 @@ echo "\033[31mClang Version\033[0m"
 
 clang --version
 
+echo "\033[31mMold Version\033[0m"
+
+mold --version
+
 echo "\033[31mlldb Version\033[0m"
 
 lldb --version

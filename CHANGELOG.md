@@ -11,6 +11,7 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 
 **Added**
 
+- added mold linker
 - added nano
 - added AsciiArt to Dockerfile to utilize the VSCode MiniMap better
 - added Trixie Dockerfile into ./devcontainer/debian/trixie
@@ -28,7 +29,7 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 - fixed the need to redeclare the VULKAN_VERSION in multiple build stages
   by introducing global build args and reusing them in FROM sections
 - reduced number of ENV declarations by using line continuations
-- updated Vulkan_SDK to v1.3.275.0
+- updated Vulkan_SDK to v1.3.283.0
 
 ## [1.0.1] - 10-10-2023
 

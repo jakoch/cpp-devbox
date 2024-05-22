@@ -29,7 +29,7 @@ ARG DEBIAN_VERSION=12
 ARG DEBIAN_VERSION_NAME=bookworm
 ARG GCC_VERSION=13
 ARG LLVM_VERSION=17
-ARG VULKAN_VERSION=1.3.275.0
+ARG VULKAN_VERSION=1.3.283.0
 
 # +-----------------------------+
 # | Downloader                  |
@@ -276,6 +276,36 @@ ENV CC=/usr/bin/clang \
 # update alternatives
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
     update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+
+#
+#  888b     d888          888      888
+#  8888b   d8888          888      888
+#  88888b.d88888          888      888
+#  888Y88888P888  .d88b.  888  .d88888
+#  888 Y888P 888 d88""88b 888 d88" 888
+#  888  Y8P  888 888  888 888 888  888
+#  888   "   888 Y88..88P 888 Y88b 888
+#  888       888  "Y88P"  888  "Y88888
+#
+
+# +-----------------------------+
+# | Mold Linker            ~10MB|
+# +-----------------------------+
+# We are using Clang++ here, so this download/compile step must happen after LLVM+Clang install.
+# Latest Release: https://github.com/rui314/mold/releases/latest
+# List downloads: curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.assets[] | .browser_download_url'
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: $version" && \
+    cd /opt && \
+    git clone https://github.com/rui314/mold.git && \
+    cd mold && \
+    git checkout v$version && \
+    ./install-build-deps.sh && \
+    mkdir build && cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ .. && \
+    cmake --build . -j $(nproc) && \
+    cmake --install .
 
 #
 #   .d8888b.   .d8888b.   .d8888b.

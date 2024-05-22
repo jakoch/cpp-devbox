@@ -26,6 +26,10 @@ echo "\033[31mClang\033[0m"
 
 type -a clang
 
+echo "\033[31mMold\033[0m"
+
+type -a mold
+
 echo "\033[31mlldb Version\033[0m"
 
 type -a lldb
