@@ -7,20 +7,33 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
 
-- changes
+- tba
+
+## [1.0.3] - 05-23-2024
 
 **Added**
 
 - added mold linker
-- added nano
-- added AsciiArt to Dockerfile to utilize the VSCode MiniMap better
-- added Trixie Dockerfile into ./devcontainer/debian/trixie
 
 **Changed**
 
 - changed Github Release workflow to build 4 images:
   - bookwork: base + with-vulkan
   - trixie: base + with-vulkan
+- changed versioning scheme
+
+## [1.0.2] - 02-15-2024
+
+- changes
+
+**Added**
+
+- added nano
+- added AsciiArt to Dockerfile to utilize the VSCode MiniMap better
+- added Trixie Dockerfile into ./devcontainer/debian/trixie
+
+**Changed**
+
 - moved Bookworm Dockerfile into ./devcontainer/debian/bookworm
 - changed Github release workflow file
   - use docker/metadata-action and docker/build-push-action
@@ -79,6 +92,8 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 
 <!-- Backlinks -->
 
-[unreleased]: https://github.com/jakoch/cpp-devbox/compare/v1.0.1...HEAD
+[unreleased]: https://github.com/jakoch/cpp-devbox/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.3
+[1.0.2]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.2
 [1.0.1]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.1
 [1.0.0]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.0
