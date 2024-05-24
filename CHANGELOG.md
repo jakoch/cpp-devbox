@@ -4,11 +4,12 @@ All changes to the project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-The date format in this file is YYYY-MM-DD.
+The date format in this file is `YYYY-MM-DD`.
+The upcomming release version is named `vNext` and links to the changes between latest version tag and git HEAD.
 
-## [Unreleased]
+## [vNext] - unreleased
 
-- tba
+- "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
 ## [1.0.3] - 2024-05-23
 
@@ -25,8 +26,6 @@ The date format in this file is YYYY-MM-DD.
 - updated Vulkan_SDK to v1.3.283.0
 
 ## [1.0.2] - 2024-02-15
-
-- changes
 
 **Added**
 
@@ -48,10 +47,6 @@ The date format in this file is YYYY-MM-DD.
 
 ## [1.0.1] - 2023-10-09
 
-**Changed**
-
-- remoteUser is now "root"
-
 **Added**
 
 - integrated all .devcontainer "features" into the Dockerfile
@@ -62,6 +57,10 @@ The date format in this file is YYYY-MM-DD.
   - added cmake latest version
 - added libclang-rt-17-dev
 - added "created" annotation to container description
+
+**Changed**
+
+- remoteUser is now "root"
 
 **Removed**
 
@@ -91,10 +90,9 @@ The date format in this file is YYYY-MM-DD.
 
 - cmake.configureSetting - CMAKE_EXPORT_COMPILE_COMMANDS ON (you may set this in your project presets)
 
+<!-- Section for Reference Links -->
 
-<!-- Backlinks -->
-
-[unreleased]: https://github.com/jakoch/cpp-devbox/compare/v1.0.3...HEAD
+[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.3...HEAD
 [1.0.3]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.3
 [1.0.2]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.2
 [1.0.1]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.1
