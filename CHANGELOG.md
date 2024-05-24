@@ -2,14 +2,15 @@
 
 All changes to the project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The date format in this file is YYYY-MM-DD.
 
 ## [Unreleased]
 
 - tba
 
-## [1.0.3] - 05-23-2024
+## [1.0.3] - 2024-05-23
 
 **Added**
 
@@ -23,7 +24,7 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 - changed versioning scheme
 - updated Vulkan_SDK to v1.3.283.0
 
-## [1.0.2] - 02-15-2024
+## [1.0.2] - 2024-02-15
 
 - changes
 
@@ -45,7 +46,7 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 - reduced number of ENV declarations by using line continuations
 - updated Vulkan_SDK to v1.3.275.0
 
-## [1.0.1] - 10-10-2023
+## [1.0.1] - 2023-10-09
 
 **Changed**
 
@@ -66,7 +67,7 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 
 - removed the .devcontainer "features" key
 
-## [1.0.0] - 01-10-2023
+## [1.0.0] - 2023-10-01
 
 **Added**
 
