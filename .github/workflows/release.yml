@@ -137,7 +137,7 @@ jobs:
       # Build Image -> Stage: cpp-devbox-base
       - name: 📦 🚀 Build and Push
         id: build-base
-        uses: docker/build-push-action@v5 # https://github.com/docker/build-push-action
+        uses: docker/build-push-action@v6 # https://github.com/docker/build-push-action
         with:
           context: .
           file: .devcontainer/debian/${{ matrix.config.debian_codename }}/Dockerfile
@@ -150,7 +150,7 @@ jobs:
       # Build Image -> Stages: cpp-devbox-base + cpp-devbox-with-vulkansdk = with-vulkansdk
       - name: 📦 🚀 Build and Push
         id: build-base-with-vulkansdk
-        uses: docker/build-push-action@v5 # https://github.com/docker/build-push-action
+        uses: docker/build-push-action@v6 # https://github.com/docker/build-push-action
         with:
           context: .
           file: .devcontainer/debian/${{ matrix.config.debian_codename }}/Dockerfile
