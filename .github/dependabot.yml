@@ -14,7 +14,7 @@ updates:
     schedule:
       interval: "monthly"
     commit-message:
-      prefix: "deps(github-actions): "
+      prefix: "deps(gha): "
     labels:
       - "dependencies"
     # ignore all patch level updates
@@ -27,7 +27,7 @@ updates:
     schedule:
       interval: "monthly"
     commit-message:
-      prefix: "deps(dockerfile): "
+      prefix: "deps(docker): "
     labels:
       - "dependencies"
     # ignore all patch level updates

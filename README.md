@@ -57,6 +57,8 @@ The `with-vulkansdk` image additionally contains:
 
 - Vulkan SDK 1.3.283.0
 
+[What is the latest version of VulkanSDK?](https://vulkan.lunarg.com/sdk/latest.json)
+
 ## Prerequisites
 
 You need the following things to run this:
@@ -160,8 +162,8 @@ The container images use the following versioning scheme.
 
 The following container tags are created for scheduled builds:
 
-- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-nightly-{{date}}`
-- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-nightly-{{date}}`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-{date}}`
+- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-{{date}}`
 
 #### For git push
 

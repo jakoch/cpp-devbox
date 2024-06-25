@@ -85,9 +85,9 @@ jobs:
       - name: 🔽 Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # cpp-devbox:{debian_codename}-nightly-{{date}}        # only on scheduled builds
-      # cpp-devbox:{debian_codename}-{{ version }}           # only on git tag
-      # cpp-devbox:{debian_codename}-{{ major }}.{{ minor }} # only on git tag
+      # cpp-devbox:{debian_codename}-{{date}}                # only on scheduled builds
+      # cpp-devbox:{debian_codename}-{{version}}             # only on git tag
+      # cpp-devbox:{debian_codename}-{{major}}.{{minor}}     # only on git tag
       # cpp-devbox:{debian_codename}-{{date}}-sha-{{sha}}    # only on push, not when tagging
       # cpp-devbox:{debian_codename}-latest                  # always
       - name: ✏ Setup Docker Metadata
@@ -100,15 +100,15 @@ jobs:
             latest=auto
             prefix=${{ matrix.config.debian_codename }}-
           tags: |
-            type=schedule,pattern=nightly-{{ date 'YYYYMMDD' }},enabled=${{ github.event_name == 'schedule' }}
+            type=schedule,pattern={{ date 'YYYYMMDD' }}
             type=semver,pattern={{ version }}
             type=semver,pattern={{ major }}.{{ minor }}
             type=raw,value={{ date 'YYYYMMDD' }}-sha-{{ sha }},enabled=${{ github.event_name == 'push' }}
             type=raw,value=latest
 
-      # cpp-devbox:{debian_codename}-with-vulkansdk-nightly-{{date}}        # only on scheduled builds
-      # cpp-devbox:{debian_codename}-with-vulkansdk-{{ version }}           # only on git tag
-      # cpp-devbox:{debian_codename}-with-vulkansdk-{{ major }}.{{ minor }} # only on git tag
+      # cpp-devbox:{debian_codename}-with-vulkansdk-{{date}}                # only on scheduled builds
+      # cpp-devbox:{debian_codename}-with-vulkansdk-{{version}}             # only on git tag
+      # cpp-devbox:{debian_codename}-with-vulkansdk-{{major}}.{{minor}}     # only on git tag
       # cpp-devbox:{debian_codename}-with-vulkansdk-{{date}}-sha-{{sha}}    # only on push, not when tagging
       # cpp-devbox:{debian_codename}-with-vulkansdk-latest                  # always
       - name: ✏ Setup Docker Metadata
@@ -121,7 +121,7 @@ jobs:
             latest=auto
             prefix=${{ matrix.config.debian_codename }}-with-vulkansdk-
           tags: |
-            type=schedule,pattern=nightly-{{ date 'YYYYMMDD' }},enabled=${{ github.event_name == 'schedule' }}
+            type=schedule,pattern={{ date 'YYYYMMDD' }}
             type=semver,pattern={{ version }}
             type=semver,pattern={{ major }}.{{ minor }}
             type=raw,value={{ date 'YYYYMMDD' }}-sha-{{ sha }},enabled=${{ github.event_name == 'push' }}

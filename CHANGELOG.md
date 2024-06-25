@@ -2,14 +2,19 @@
 
 All changes to the project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-The date format in this file is `YYYY-MM-DD`.
-The upcomming release version is named `vNext` and links to the changes between latest version tag and git HEAD.
+- The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+- The date format is YYYY-MM-DD.
+- The upcoming release version is named `vNext` and links to the changes between latest version tag and git HEAD.
 
 ## [vNext] - unreleased
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
+
+**Changed**
+
+- changed versioning scheme 
+  - removed "nightly-" from scheduled builds; now date only
 
 ## [1.0.3] - 2024-05-23
 
@@ -39,7 +44,7 @@ The upcomming release version is named `vNext` and links to the changes between 
 - changed Github release workflow file
   - use docker/metadata-action and docker/build-push-action
 - removed usages of sudo
-- ignore hadolint warning diallowing both curl and wget
+- ignore hadolint warning disallowing both curl and wget
 - fixed the need to redeclare the VULKAN_VERSION in multiple build stages
   by introducing global build args and reusing them in FROM sections
 - reduced number of ENV declarations by using line continuations
