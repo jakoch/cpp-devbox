@@ -6,3 +6,6 @@
 .devcontainer/
 .git/
 .github/
+CHANGELOG.md
+LICENSE
+README.md
