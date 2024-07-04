@@ -11,10 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.4] - 2024-07-04
+
 **Changed**
 
-- changed versioning scheme 
-  - removed "nightly-" from scheduled builds; now date only
+- changed versioning scheme
+  - removed "nightly-" from scheduled builds; its now date only
+- ccache: switched from distro provided ccache to latest version from github
+- switched to SPDX-FileCopyrightText on copyright lines
 
 ## [1.0.3] - 2024-05-23
 
@@ -97,7 +101,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Section for Reference Links -->
 
-[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.3...HEAD
+[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.4...HEAD
+[1.0.4]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.4
 [1.0.3]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.3
 [1.0.2]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.2
 [1.0.1]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.1

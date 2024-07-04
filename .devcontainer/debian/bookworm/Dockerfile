@@ -1,4 +1,4 @@
-# Copyright Jens A. Koch 2023.
+# SPDX-FileCopyrightText: 2023,2024 Jens A. Koch
 # SPDX-License-Identifier: MIT
 # This file is part of https://github.com/jakoch/cpp-devbox
 
@@ -23,7 +23,7 @@
 # +-----------------------------+
 # | GLOBAL ARGS                 |
 # +-----------------------------+
-# The following global args need to be redeclared without a value inside each FROM.
+# The following global args need to be redeclared without a value inside each FROM section.
 # For example, VULKAN_VERSION is used in the FROM sections of "downloader" and "cpp-devbox-with-vulkansdk".
 ARG DEBIAN_VERSION=12
 ARG DEBIAN_VERSION_NAME=bookworm
@@ -108,7 +108,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-utils dialog 2>&1 && \
     apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 ca-certificates software-properties-common \
-    build-essential cppcheck valgrind ccache cmake wget git nano jq \
+    build-essential cppcheck valgrind cmake wget git nano jq \
     # required by Visual Studio
     g++ gdb make ninja-build rsync zip sudo \
     # required by VCPKG
@@ -194,10 +194,9 @@ RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/lates
 # +-----------------------------+
 # | vcpkg                 ~225MB|
 # +-----------------------------+
-# Notes:
-# - vcpkg requires curl, unzip, tar, pkg-config (optional cmake).
-# - We use the installed binaries from the system.
-# - We do not download latest version of CMake and Ninja during vcpkg bootstrap.
+# vcpkg requires curl, unzip, tar, pkg-config (optional cmake).
+# We use the installed binaries from the system.
+# We do not download latest version of CMake and Ninja during vcpkg bootstrap.
 
 ENV VCPKG_ROOT=/opt/vcpkg \
     VCPKG_TRIPLET=x64-linux \
@@ -215,6 +214,28 @@ RUN git clone --depth=1 \
     "${VCPKG_ROOT}"/bootstrap-vcpkg.sh -disableMetrics
 
 #
+#   .d8888b.   .d8888b.         d8888  .d8888b.  888    888 8888888888
+#  d88P  Y88b d88P  Y88b       d88888 d88P  Y88b 888    888 888
+#  888    888 888    888      d88P888 888    888 888    888 888
+#  888        888            d88P 888 888        8888888888 8888888
+#  888        888           d88P  888 888        888    888 888
+#  888    888 888    888   d88P   888 888    888 888    888 888
+#  Y88b  d88P Y88b  d88P  d8888888888 Y88b  d88P 888    888 888
+#   "Y8888P"   "Y8888P"  d88P     888  "Y8888P"  888    888 8888888888
+#
+
+# +-----------------------------+
+# | ccache - Latest Version     |
+# +-----------------------------+
+
+RUN version="$(curl -s https://api.github.com/repos/ccache/ccache/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: $version" && \
+    url="https://github.com/ccache/ccache/releases/download/v$version/ccache-$version-linux-x86_64.tar.xz" && \
+    wget -q $url && \
+	tar xf ccache-$version-linux-x86_64.tar.xz -C /opt && \
+	ln -s /opt/ccache-$version-linux-x86_64/ccache /usr/local/bin && \
+	rm ccache-$version-linux-x86_64.tar.xz
+
+#
 #  888      888      888     888 888b     d888
 #  888      888      888     888 8888b   d8888
 #  888      888      888     888 88888b.d88888
@@ -228,8 +249,8 @@ RUN git clone --depth=1 \
 # +-----------------------------+
 # | LLVM                        |
 # +-----------------------------+
-# llvm.sh is constantly broken, see https://github.com/llvm/llvm-project/issues/62475
-#RUN wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
+# For an installation using the llvm.sh setup script:
+# RUN wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
@@ -291,9 +312,7 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 # +-----------------------------+
 # | Mold Linker            ~10MB|
 # +-----------------------------+
-# We are using Clang++ here, so this download/compile step must happen after LLVM+Clang install.
-# Latest Release: https://github.com/rui314/mold/releases/latest
-# List downloads: curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.assets[] | .browser_download_url'
+# We are using Clang++ for compilation, so this download + compile step must happen after installing LLVM+Clang.
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: $version" && \
@@ -418,8 +437,8 @@ ENV CC=/usr/bin/clang \
 # +-----------------------------+
 # | ZSH                         |
 # +-----------------------------+
-# setup zsh, omyzsh, powerline fonts
-# setup zsh plugins: autosuggestions, autocompletions, history search
+# Setup zsh, ohmyzsh, powerline fonts.
+# Setup zsh plugins: autosuggestions, autocompletions, history search.
 
 ENV TERM=xterm-256color \
     ZSH_THEME=agnoster
@@ -525,4 +544,4 @@ ENV PATH="$VULKAN_SDK/bin:$PATH" \
 
 
 # The AsciiArt for the VSCode minimap is generated using
-# https://patorjk.com/software/taag/#p=display&h=0&v=0&c=bash&f=Colossal&t=C%2B%2B%20DevBox%0APackages%0AGithub%20CLI%0ACMake%0AVCPKG%0ALLVM%0AGCC%0AZSH%0AVulkan%20SDK
+# https://patorjk.com/software/taag/#p=display&h=0&v=0&c=bash&f=Colossal&t=C%2B%2B%20DevBox%0APackages%0AGithub%20CLI%0ACMake%0AVCPKG%0ACCACHE%0ALLVM%0AGCC%0AZSH%0AVulkan%20SDK

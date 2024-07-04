@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright Jens A. Koch 2023.
+# SPDX-FileCopyrightText: 2023,2024 Jens A. Koch
 # SPDX-License-Identifier: MIT
 # This file is part of https://github.com/jakoch/cpp-devbox
 
@@ -55,6 +55,10 @@ type -a cppcheck
 echo "\033[31mccache\033[0m"
 
 type -a ccache | head -n1
+
+echo "\033[31mGitHub CLI\033[0m"
+
+type -a gh | head -n1
 
 echo "\033[31mVulkan-SDK Version\033[0m"
 
