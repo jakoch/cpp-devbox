@@ -31,8 +31,9 @@ On top of the base image the following tools are installed:
 - zsh with plugins: autosuggestions, completions, history substring search
 - git, nano, jq
 - curl, wget
-- cppcheck, valgrind, ccache
+- cppcheck, valgrind
 - CMake
+- ccache (latest version)
 - vcpkg (latest version)
 - mold (lastet version)
 
