@@ -40,7 +40,7 @@ ARG VULKAN_VERSION=1.3.283.0
 # - /tmp/gcc.xz
 # - /tmp/vulkansdk.xz
 
-FROM debian:trixie-slim as downloader
+FROM debian:trixie-slim AS downloader
 
 # reusing global arg
 ARG VULKAN_VERSION
@@ -58,7 +58,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # | BASE IMAGE                  |        See https://hub.docker.com/_/debian
 # +-----------------------------+
 
-FROM debian:trixie-slim as cpp-devbox-base
+FROM debian:trixie-slim AS cpp-devbox-base
 
 # +-----------------------------+
 # | REUSE GLOBAL ARGS           |
@@ -499,7 +499,7 @@ ENV DEBIAN_FRONTEND=dialog
 # | Stage: cpp-devbox-with-vulkansdk |
 # +----------------------------------+
 
-FROM cpp-devbox-base as cpp-devbox-with-vulkansdk
+FROM cpp-devbox-base AS cpp-devbox-with-vulkansdk
 
 # reusing global arg
 ARG VULKAN_VERSION
