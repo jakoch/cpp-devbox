@@ -5,63 +5,68 @@
 # This file is part of https://github.com/jakoch/cpp-devbox
 
 # This info script shows the version of tools, compilers and libc.
+# Output format is markdown.
 
-echo "\033[31mGit Version\033[0m"
+# Function to print a table row in Markdown format
+print_row() {
+    printf "| %-13s | %-19s |\n" "$1" "$2"
+}
 
-git --version
+# Function to check and print GCC versions if installed
+print_row_gcc() {
+    for version in 12 13 14; do
+        gcc_path="/usr/bin/g++-$version"
+        if [ -x "$gcc_path" ]; then
+            gcc_version=$("$gcc_path" --version | awk 'NR==1 {print $NF}')
+            print_row "GCC $version" "$gcc_version"
+        fi
+    done
+}
 
-echo "\033[31mNinja Version\033[0m"
+# Function to check and print GCC versions if installed
+print_row_clang() {
+    for version in 16 17 18 19; do
+        clang_path="/usr/bin/clang++-$version"
+        if [ -x "$clang_path" ]; then
+            clang_version=$("$clang_path" --version | head -n1 | awk '{print $4}')
+            print_row "Clang $version" "$clang_version"
+        fi
+    done
+}
 
-ninja --version
+# Assign versions to variables
+clang_version=$(clang --version | head -n1 | awk '{print $4}')
+ninja_version=$(ninja --version)
+cmake_version=$(cmake --version | head -n1 | awk '{print $3}')
+ccache_version=$(ccache --version | head -n1 | awk '{print $3}')
+mold_version=$(mold --version | awk '{print $2}')
+vcpkg_version=$(vcpkg --version | head -n1 | awk '{print substr($6, 0, 19)}')
+lldb_version=$(lldb --version | awk '{print $3}')
+valgrind_version=$(valgrind --version | cut -c 10-)
+cppcheck_version=$(cppcheck --version | awk '{print $2}')
+vulkan_version=$(echo $VULKAN_SDK | awk -F '/' '{print $4}')
+git_version=$(git --version | cut -c 13-)
+doxygen_version=$(doxygen -v | awk '{print $1}')
+github_cli_version=$(gh --version | awk '{print $3}')
 
-echo "\033[31mCMake Version\033[0m"
+printf "## Version Overview\n\n"
 
-cmake --version | head -n1
+# Print table header in Markdown format
+printf "| Tool          | Version             |\n"
+printf "|:--------------|:--------------------|\n"
 
-echo "\033[31mGCC Version\033[0m"
-
-gcc --version | head -n1
-command -v /usr/bin/g++-12 && /usr/bin/g++-12 --version | head -n1 || echo "g++-12 not found"
-command -v /usr/bin/g++-13 && /usr/bin/g++-13 --version | head -n1 || echo "g++-13 not found"
-
-echo "\033[31mClang Version\033[0m"
-
-clang --version
-
-echo "\033[31mMold Version\033[0m"
-
-mold --version
-
-echo "\033[31mlldb Version\033[0m"
-
-lldb --version
-
-echo "\033[31mValgrind Version\033[0m"
-
-valgrind --version
-
-echo "\033[31mlibc Version\033[0m"
-
-ldd --version | head -n1
-ldd `which cat` | grep libc | awk '{printf ("%s %s %s %s\n", $1, $2, $3, $4)}'
-ldd --verbose /lib/x86_64-linux-gnu/libc.so.6 | grep -E '=>|GLIBC_' | awk '{printf ("%s\t%s\n", $2, $1)}'
-
-echo "\033[31mVCPKG Version\033[0m"
-
-vcpkg --version | head -n1
-
-echo "\033[31mcppcheck Version\033[0m"
-
-cppcheck --version
-
-echo "\033[31mccache Version\033[0m"
-
-ccache --version | head -n1
-
-echo "\033[31mVulkan-SDK Version\033[0m"
-
-echo $VULKAN_SDK
-
-echo "\033[31mPath\033[0m"
-
-echo $PATH
+# Print each row of the table in Markdown format
+print_row_clang
+print_row_gcc
+print_row "Ninja" "$ninja_version"
+print_row "CMake" "$cmake_version"
+print_row "ccache" "$ccache_version"
+print_row "mold" "$mold_version"
+print_row "vcpkg" "$vcpkg_version"
+print_row "lldb" "$lldb_version"
+print_row "Valgrind" "$valgrind_version"
+print_row "cppcheck" "$cppcheck_version"
+print_row "Doxygen" "$doxygen_version"
+print_row "git" "$git_version"
+print_row "gh" "$github_cli_version"
+print_row "Vulkan SDK" "$vulkan_version"

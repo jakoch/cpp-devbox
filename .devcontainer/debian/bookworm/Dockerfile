@@ -43,13 +43,13 @@ FROM debian:bookworm-slim AS downloader
 # reusing global arg
 ARG VULKAN_VERSION
 
-#ENV CURL_OPTIONS "--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
-ENV CURL_OPTIONS_BAR "--progress-bar"
+#ENV CURL_OPTIONS="--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
+ENV CURL_OPTIONS_BAR="--progress-bar"
 
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl && \
-    curl $CURL_OPTIONS_BAR -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz" && \
+    curl $CURL_OPTIONS_BAR -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.3.0/gcc-13.3.0.tar.xz" && \
     curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz"
 
 # +-----------------------------+
@@ -108,7 +108,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-utils dialog 2>&1 && \
     apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 ca-certificates software-properties-common \
-    build-essential cppcheck valgrind cmake wget git nano jq \
+    build-essential cppcheck valgrind lcov wget git nano jq \
     # required by Visual Studio
     g++ gdb make ninja-build rsync zip sudo \
     # required by VCPKG
@@ -145,14 +145,6 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
     apt-get update && apt-get install -y --no-install-recommends gh -y
 
-# +-----------------------------+
-# | CLEANUP                     |
-# +-----------------------------+
-
-RUN apt-get autoremove -y && \
-    apt-get clean autoclean && \
-    rm -rf /var/lib/apt/lists/*
-
 #
 #   .d8888b.  888b     d888          888
 #  d88P  Y88b 8888b   d8888          888
@@ -168,7 +160,6 @@ RUN apt-get autoremove -y && \
 # | CMake - Latest Version      |
 # +-----------------------------+
 # Latest Release: https://github.com/Kitware/CMake/releases/latest
-# List downloads: curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.assets[] | .browser_download_url'
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: $version" && \
@@ -176,9 +167,8 @@ RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/lates
     wget -q $url && \
     mkdir /opt/cmake && \
     sh cmake-$version-linux-x86_64.sh --prefix=/opt/cmake --skip-license && \
-    ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake && \
+    ln -s /opt/cmake/bin/cmake /usr/bin/cmake && \
     rm -rf cmake-$version-linux-x86_64.sh
-
 
 #
 #  888     888  .d8888b.  8888888b.  888    d8P   .d8888b.
@@ -231,9 +221,36 @@ RUN git clone --depth=1 \
 RUN version="$(curl -s https://api.github.com/repos/ccache/ccache/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: $version" && \
     url="https://github.com/ccache/ccache/releases/download/v$version/ccache-$version-linux-x86_64.tar.xz" && \
     wget -q $url && \
-	tar xf ccache-$version-linux-x86_64.tar.xz -C /opt && \
-	ln -s /opt/ccache-$version-linux-x86_64/ccache /usr/local/bin && \
+    mkdir -p /opt/ccache/bin &&\
+    tar xf ccache-$version-linux-x86_64.tar.xz --strip-components=1 -C /opt/ccache/bin && \
+	ln -s /opt/ccache/bin/ccache /usr/bin && \
 	rm ccache-$version-linux-x86_64.tar.xz
+
+#
+#  8888888b.   .d88888b.  Y88b   d88P Y88b   d88P  .d8888b.  8888888888 888b    888
+#  888  "Y88b d88P" "Y88b  Y88b d88P   Y88b d88P  d88P  Y88b 888        8888b   888
+#  888    888 888     888   Y88o88P     Y88o88P   888    888 888        88888b  888
+#  888    888 888     888    Y888P       Y888P    888        8888888    888Y88b 888
+#  888    888 888     888    d888b        888     888  88888 888        888 Y88b888
+#  888    888 888     888   d88888b       888     888    888 888        888  Y88888
+#  888  .d88P Y88b. .d88P  d88P Y88b      888     Y88b  d88P 888        888   Y8888
+#  8888888P"   "Y88888P"  d88P   Y88b     888      "Y8888P88 8888888888 888    Y888
+#
+
+# +-----------------------------+
+# | Doxygen - Latest Version    |
+# +-----------------------------+
+# We are using the prebuilt binaries for x64.
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN version_string="$(curl -s https://api.github.com/repos/doxygen/doxygen/releases/latest | jq -r '.tag_name')"; echo "Latest Version: $version_string" && \
+    version_number="$(echo $version_string | cut -c 9- | sed 's/_/./g')" && \
+    url="https://github.com/doxygen/doxygen/releases/download/$version_string/doxygen-$version_number.linux.bin.tar.gz"; echo "Download URL: $url" && \
+    wget -q $url && \
+    mkdir /opt/doxygen && \
+    tar xf doxygen-$version_number.linux.bin.tar.gz --strip-components=1 -C /opt/doxygen && \
+	ln -s /opt/doxygen/bin/doxygen /usr/bin && \
+	rm doxygen-$version_number.linux.bin.tar.gz
 
 #
 #  888      888      888     888 888b     d888
@@ -283,7 +300,7 @@ RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.
 
 # add llvm to path
 ENV PATH="/usr/lib/llvm-${LLVM_VERSION}/bin:/usr/lib/llvm-${LLVM_VERSION}/include:${PATH}"
-ENV LD_LIBRARY_PATH="/usr/lib/llvm-${LLVM_VERSION}/lib:${LD_LIBRARY_PATH}"
+ENV LD_LIBRARY_PATH="/usr/lib/llvm-${LLVM_VERSION}/lib:${LD_LIBRARY_PATH:-}"
 
 # unversionize the binaries
 RUN ln -s /usr/bin/clang-${LLVM_VERSION} /usr/bin/clang && \
@@ -313,18 +330,16 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 # | Mold Linker            ~10MB|
 # +-----------------------------+
 # We are using Clang++ for compilation, so this download + compile step must happen after installing LLVM+Clang.
+# We don't need to call mold's ./install-build-deps.sh, because all build dependencies are present.
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: $version" && \
-    cd /opt && \
-    git clone https://github.com/rui314/mold.git && \
-    cd mold && \
-    git checkout v$version && \
-    ./install-build-deps.sh && \
-    mkdir build && cd build && \
-    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ .. && \
-    cmake --build . -j $(nproc) && \
-    cmake --install .
+    git clone --depth=1 --branch "v$version" https://github.com/rui314/mold.git "/tmp/mold" && \
+    cmake -S /tmp/mold -B /tmp/mold/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ && \
+    cmake --build /tmp/mold/build -j $(nproc) && \
+    cmake --install /tmp/mold/build --prefix=/opt/mold && \
+    ln -s /opt/mold/bin/mold /usr/bin && \
+    rm -rf /tmp/mold
 
 #
 #   .d8888b.   .d8888b.   .d8888b.
@@ -353,7 +368,7 @@ ENV CC=/usr/bin/gcc \
 # installing into /usr instead of /usr/local to have consistent paths in CMakePresets:
 # /usr/bin/g++-12
 # /usr/bin/g++-13
-WORKDIR /gcc-13.2.0
+WORKDIR /gcc-13.3.0
 
 SHELL ["/bin/bash", "-c"]
 
@@ -405,7 +420,7 @@ RUN ./configure \
     make install-target-libsanitizer && \
     make install-target-libatomic && \
     cd / && \
-    rm -rf gcc-13.2.0 && \
+    rm -rf gcc-13.3.0 && \
     apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
 
 # we remove the gcc source folder and dependencies on the configure/make/make install step,
@@ -416,7 +431,7 @@ RUN ./configure \
 
 # remove gcc source folder and dependencies
 #RUN cd / && \
-#    rm -rf gcc-13.2.0 && \
+#    rm -rf gcc-13.3.0 && \
 #    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
 
 # reset default compiler to clang
@@ -453,7 +468,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sed -i "s/plugins=(git)/plugins=(git zsh-completions zsh-autosuggestions zsh-history-substring-search)/" /root/.zshrc && \
     sed -i "s/ZSH_THEME=\"agnoster\"/ZSH_THEME=\"robbyrussell\"/" /root/.zshrc
 
-ENV SHELL /bin/zsh
+ENV SHELL=/bin/zsh
 
 # +-----------------------------+
 # | CLEANUP                     |
@@ -544,4 +559,5 @@ ENV PATH="$VULKAN_SDK/bin:$PATH" \
 
 
 # The AsciiArt for the VSCode minimap is generated using
-# https://patorjk.com/software/taag/#p=display&h=0&v=0&c=bash&f=Colossal&t=C%2B%2B%20DevBox%0APackages%0AGithub%20CLI%0ACMake%0AVCPKG%0ACCACHE%0ALLVM%0AGCC%0AZSH%0AVulkan%20SDK
+# shellcheck disable=SC2046
+# https://patorjk.com/software/taag/#p=display&h=0&v=0&c=bash&f=Colossal&t=C%2B%2B%20DevBox%0APackages%0AGithub%20CLI%0ACMake%0ADOXYGEN%0AVCPKG%0ACCACHE%0ALLVM%0AGCC%0AZSH%0AVulkan%20SDK

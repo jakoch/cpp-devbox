@@ -11,6 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.5] - 2024-07-xx
+
+**Added**
+- added doxygen (latest binary)
+- trixie image: added gcc-14 (from distro)
+- added lcov
+
+**Changed**
+- bookworm image: updated gcc to 13.3.0
+- cleanup mold setup
+- tools are symlinked into /usr/bin instead of /usr/local/bin
+- updated show-tool-versions.sh to display a markdown table
+- updated show-tool-location.sh to output markdown section
+
 ## [1.0.4] - 2024-07-04
 
 **Changed**
@@ -101,7 +115,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Section for Reference Links -->
 
-[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.4...HEAD
+[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.5...HEAD
+[1.0.5]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.5
 [1.0.4]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.4
 [1.0.3]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.3
 [1.0.2]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.2
