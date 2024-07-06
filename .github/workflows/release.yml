@@ -188,8 +188,8 @@ jobs:
           name: version-info
           path: |
             info.json
-            versions-base.md
-            versions-with-vulkan.md
+            versions-${{ matrix.config.debian_codename }}-base.md
+            versions-${{ matrix.config.debian_codename }}-with-vulkan.md
             README-${{ matrix.config.debian_codename }}-base.md
             README-${{ matrix.config.debian_codename }}-with-vulkansdk.md
 
