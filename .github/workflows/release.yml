@@ -160,27 +160,27 @@ jobs:
           labels: ${{ steps.metadata-base-with-vulkansdk.outputs.labels }}
           push: true
 
-      - name: ℹ️ Run Docker Container (cpp-devbox-with-vulkansdk) to grab version info
+      - name: ℹ️ Run cpp-devbox Container to grab version info
         id: run-container-base
         run: |
-          "# cpp-devbox version ($(date '+%Y-%m-%d'))" >> README-base.md
-          "\n" >> README-base.md
-          "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> README-base.md
-          "Image: ${{ steps.metadata-base.outputs.tags }}" >> README-base.md
-          "\n" >> README-base.md
+          echo "# cpp-devbox ${{ github.ref_name }} ($(date '+%Y-%m-%d'))" >> README-base.md
+          echo "\n" >> README-base.md
+          echo "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> README-base.md
+          echo "Image: ${{ steps.metadata-base.outputs.tags }}" >> README-base.md
+          echo "\n" >> README-base.md
           docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.metadata-base.outputs.tags }} /bin/bash -c "./workspace/show-tool-versions.sh" > versions-base.md
-          versions-base.md >> README-base.md
+          cat versions-base.md >> README-base.md
 
-      - name: ℹ️ Run Docker Container (cpp-devbox-with-vulkansdk) to grab version info
+      - name: ℹ️ Run cpp-devbox-with-vulkansdk Container to grab version info
         id: run-container-with-vulkan
         run: |
-          "# cpp-devbox version ($(date '+%Y-%m-%d'))" >> README-with-vulkansdk.md
-          "\n" >> README-with-vulkansdk.md
-          "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> README-with-vulkansdk.md
-          "Image: ${{ steps.metadata-base-with-vulkansdk.outputs.tags }}" >> README-with-vulkansdk.md
-          "\n" >> README-with-vulkansdk.md
+          echo "# cpp-devbox ${{ github.ref_name }} ($(date '+%Y-%m-%d'))" >> README-with-vulkansdk.md
+          echo "\n" >> README-with-vulkansdk.md
+          echo "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> README-with-vulkansdk.md
+          echo "Image: ${{ steps.metadata-base-with-vulkansdk.outputs.tags }}" >> README-with-vulkansdk.md
+          echo "\n" >> README-with-vulkansdk.md
           docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.metadata-base-with-vulkansdk.outputs.tags }} /bin/bash -c "./workspace/show-tool-versions.sh" > versions-with-vulkan.md
-          versions-with-vulkan.md >> README-with-vulkansdk.md
+          cat versions-with-vulkan.md >> README-with-vulkansdk.md
 
       - name: 📦 Provide the version info and info.json as a release asset
         uses: actions/upload-artifact@v4 # https://github.com/actions/upload-artifact
