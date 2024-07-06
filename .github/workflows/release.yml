@@ -43,8 +43,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { platform: "linux/amd64", debian_codename: "bookworm" }
-          - { platform: "linux/amd64", debian_codename: "trixie"   }
+          - { platform: "linux/amd64", debian_codename: "bookworm", debian_version: "12"}
+          - { platform: "linux/amd64", debian_codename: "trixie", debian_version: "13" }
 
     steps:
       - name: ✂️ Free Disk Space
@@ -159,6 +159,39 @@ jobs:
           tags: ${{ steps.metadata-base-with-vulkansdk.outputs.tags }}
           labels: ${{ steps.metadata-base-with-vulkansdk.outputs.labels }}
           push: true
+
+      - name: ℹ️ Run Docker Container (cpp-devbox-with-vulkansdk) to grab version info
+        id: run-container
+        run: |
+          "# cpp-devbox version ($(date '+%Y-%m-%d'))" >> README-base.md
+          "\n" >> README-base.md
+          "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> README-base.md
+          "Image: ${{ steps.metadata-base.outputs.tags }}" >> README-base.md
+          "\n" >> README-base.md
+          docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.metadata-base.outputs.tags }} /bin/bash -c "./workspace/show-tool-versions.sh" > versions-base.md
+          versions-base.md >> README-base.md
+
+      - name: ℹ️ Run Docker Container (cpp-devbox-with-vulkansdk) to grab version info
+        id: run-container
+        run: |
+          "# cpp-devbox version ($(date '+%Y-%m-%d'))" >> README-with-vulkansdk.md
+          "\n" >> README-with-vulkansdk.md
+          "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> README-with-vulkansdk.md
+          "Image: ${{ steps.metadata-base-with-vulkansdk.outputs.tags }}" >> README-with-vulkansdk.md
+          "\n" >> README-with-vulkansdk.md
+          docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.metadata-base-with-vulkansdk.outputs.tags }} /bin/bash -c "./workspace/show-tool-versions.sh" > versions-with-vulkan.md
+          versions-with-vulkan.md >> README-with-vulkansdk.md
+
+      - name: 📦 Provide the version info and info.json as a release asset
+        uses: actions/upload-artifact@v4 # https://github.com/actions/upload-artifact
+        with:
+          name: version-info
+          path: |
+            info.json
+            versions-base.md
+            versions-with-vulkan.md
+            README-base.md
+            README-with-vulkansdk.md
 
       #- name: 🛡️🔍 Scan Image for Vulnerabilities
       #  uses: aquasecurity/trivy-action@master # https://github.com/aquasecurity/trivy-action

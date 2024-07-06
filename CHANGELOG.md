@@ -15,15 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Added**
 - added doxygen (latest binary)
-- trixie image: added gcc-14 (from distro)
+- added python3-sphinx, python3-sphinx-rtd-theme
 - added lcov
+- trixie image: added gcc-14 (from distro)
+- 
 
 **Changed**
 - bookworm image: updated gcc to 13.3.0
 - cleanup mold setup
 - tools are symlinked into /usr/bin instead of /usr/local/bin
-- updated show-tool-versions.sh to display a markdown table
-- updated show-tool-location.sh to output markdown section
+- updated scripts (show-tool-version/show-tool-locations) to output markdown
 
 ## [1.0.4] - 2024-07-04
 

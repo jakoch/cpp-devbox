@@ -50,8 +50,7 @@ ARG VULKAN_VERSION
 ENV CURL_OPTIONS_BAR="--progress-bar"
 
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates curl && \
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && \
 #   curl $CURL_OPTIONS_BAR -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.3.0/gcc-13.3.0.tar.xz" && \
     curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz"
 
@@ -107,8 +106,7 @@ LABEL \
 ENV DEBIAN_FRONTEND=noninteractive
 
 # avoid debconf delaying package configuration, since apt-utils is not installed
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    apt-utils dialog 2>&1 && \
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog 2>&1 && \
     apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 ca-certificates software-properties-common \
     build-essential cppcheck valgrind lcov wget git nano jq \
@@ -123,7 +121,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # locale
     locales \
     # shell
-    zsh
+    zsh \
+    # optional tools for Doxygen
+    python3 python3-pip \
+    python3-sphinx python3-sphinx-rtd-theme python3-defusedxml sphinx-common \
+    graphviz
 
 #
 #   .d8888b.  d8b 888    888               888             .d8888b.  888      8888888
@@ -146,7 +148,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
     chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
-    apt-get update && apt-get install -y --no-install-recommends gh -y
+    apt-get update && apt-get install -y --no-install-recommends gh
 
 #
 #   .d8888b.  888b     d888          888
@@ -319,7 +321,8 @@ ENV CC=/usr/bin/clang \
 
 # update alternatives
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
-    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100 && \
+    update-alternatives --install /usr/bin/ld ld /usr/bin/lld 100
 
 #
 #  888b     d888          888      888
@@ -337,6 +340,7 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 # +-----------------------------+
 # We are using Clang++ for compilation, so this download + compile step must happen after installing LLVM+Clang.
 # We don't need to call mold's ./install-build-deps.sh, because all build dependencies are present.
+# Note to overwrite ld: sudo ln -sf /opt/mold/bin/mold $(realpath /usr/bin/ld)
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: $version" && \
@@ -362,8 +366,7 @@ RUN version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest 
 # | GCC                         |
 # +-----------------------------+
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    cpp-14 g++-14
+RUN apt-get update && apt-get install -y --no-install-recommends cpp-14 g++-14
 
 # COPY --from=downloader /tmp/gcc.xz /tmp/gcc.xz
 # RUN tar xf /tmp/gcc.xz && rm /tmp/gcc.xz && \
@@ -468,8 +471,7 @@ ENV TERM=xterm-256color \
     ZSH_THEME=agnoster
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    zsh powerline fonts-powerline && \
+RUN apt-get update && apt-get install -y --no-install-recommends zsh powerline fonts-powerline && \
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
     git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
     git clone --depth=1 https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions && \
