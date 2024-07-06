@@ -161,7 +161,7 @@ jobs:
           push: true
 
       - name: ℹ️ Run Docker Container (cpp-devbox-with-vulkansdk) to grab version info
-        id: run-container
+        id: run-container-base
         run: |
           "# cpp-devbox version ($(date '+%Y-%m-%d'))" >> README-base.md
           "\n" >> README-base.md
@@ -172,7 +172,7 @@ jobs:
           versions-base.md >> README-base.md
 
       - name: ℹ️ Run Docker Container (cpp-devbox-with-vulkansdk) to grab version info
-        id: run-container
+        id: run-container-with-vulkan
         run: |
           "# cpp-devbox version ($(date '+%Y-%m-%d'))" >> README-with-vulkansdk.md
           "\n" >> README-with-vulkansdk.md
