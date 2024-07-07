@@ -57,6 +57,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 
 FROM debian:bookworm-slim AS cpp-devbox-base
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # +-----------------------------+
 # | REUSE GLOBAL ARGS           |
 # +-----------------------------+
@@ -141,7 +143,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialo
 # Website: https://cli.github.com/
 # Installation Instructions: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#official-sources
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
     chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
@@ -163,7 +164,6 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
 # +-----------------------------+
 # Latest Release: https://github.com/Kitware/CMake/releases/latest
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: $version" && \
     url="https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version-linux-x86_64.sh"; echo "Download URL: $url" && \
     wget -q $url && \
@@ -244,7 +244,6 @@ RUN version="$(curl -s https://api.github.com/repos/ccache/ccache/releases/lates
 # +-----------------------------+
 # We are using the prebuilt binaries for x64.
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN version_string="$(curl -s https://api.github.com/repos/doxygen/doxygen/releases/latest | jq -r '.tag_name')"; echo "Latest Version: $version_string" && \
     version_number="$(echo $version_string | cut -c 9- | sed 's/_/./g')" && \
     url="https://github.com/doxygen/doxygen/releases/download/$version_string/doxygen-$version_number.linux.bin.tar.gz"; echo "Download URL: $url" && \
@@ -271,7 +270,6 @@ RUN version_string="$(curl -s https://api.github.com/repos/doxygen/doxygen/relea
 # For an installation using the llvm.sh setup script:
 # RUN wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
     add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain-$DEBIAN_VERSION_NAME-$LLVM_VERSION main" && \
     apt-get update && apt-get install -y --no-install-recommends \
@@ -338,7 +336,6 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 # We don't need to call mold's ./install-build-deps.sh, because all build dependencies are present.
 # Note to overwrite ld: sudo ln -sf /opt/mold/bin/mold $(realpath /usr/bin/ld)
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: $version" && \
     git clone --depth=1 --branch "v$version" https://github.com/rui314/mold.git "/tmp/mold" && \
     cmake -S /tmp/mold -B /tmp/mold/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ && \
@@ -464,7 +461,6 @@ ENV CC=/usr/bin/clang \
 ENV TERM=xterm-256color \
     ZSH_THEME=agnoster
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends zsh powerline fonts-powerline && \
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
     git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
@@ -514,6 +510,8 @@ ENV DEBIAN_FRONTEND=dialog
 # +----------------------------------+
 
 FROM cpp-devbox-base AS cpp-devbox-with-vulkansdk
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # reusing global arg
 ARG VULKAN_VERSION
