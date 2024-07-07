@@ -427,20 +427,13 @@ RUN ./configure \
     make install-target-libgcc && \
     make install-target-libsanitizer && \
     make install-target-libatomic && \
-    cd / && \
-    rm -rf gcc-13.3.0 && \
-    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
 
-# we remove the gcc source folder and dependencies on the configure/make/make install step,
-# because then the gcc source folder is not cached, resulting in a smaller layer.
-# but for debugging gcc compilation issues,
-# its nice to have the following RUN command as extra image layer.
-# if you uncomment the following lines, comment the related lines above.
+# return from /gcc-x.y.z folder
+WORKDIR /
 
 # remove gcc source folder and dependencies
-#RUN cd / && \
-#    rm -rf gcc-13.3.0 && \
-#    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
+RUN rm -rf gcc-13.3.0 && \
+    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
 
 # reset default compiler to clang
 ENV CC=/usr/bin/clang \

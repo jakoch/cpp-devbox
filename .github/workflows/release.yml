@@ -133,7 +133,7 @@ jobs:
           jq -n --arg version "${{ github.ref_name }}" \
                 --arg commit "${{ github.sha }}" \
                 --arg date "$(date -u +%F)" \
-                '{ version: $version, commit: $commit, date: $date }' > info.json
+                '{ version: $version, commit: $commit, date: $date }' > info-${{ matrix.config.debian_codename }}.json
 
       - name: Check show-tool-versions.sh and make executable
         run: |
@@ -222,9 +222,9 @@ jobs:
       - name: 📦 Provide the version info and info.json as a release asset
         uses: actions/upload-artifact@v4 # https://github.com/actions/upload-artifact
         with:
-          name: version-info
+          name: version-info-${{ matrix.config.debian_codename }}
           path: |
-            info.json
+            info-${{ matrix.config.debian_codename }}.json
             versions-${{ matrix.config.debian_codename }}-base.md
             versions-${{ matrix.config.debian_codename }}-with-vulkan.md
             README-${{ matrix.config.debian_codename }}-base.md
