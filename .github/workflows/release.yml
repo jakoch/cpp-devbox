@@ -177,7 +177,7 @@ jobs:
       - name: ℹ️ Run cpp-devbox Container to grab version info
         id: run-container-base
         run: |
-          README="README-${{ matrix.config.debian_codename }}-with-vulkansdk.md"
+          README="README-${{ matrix.config.debian_codename }}-base.md"
           VERSIONS="versions-${{ matrix.config.debian_codename }}-base.md"
           echo "# cpp-devbox ${{ github.ref_name }} ($(date '+%Y-%m-%d'))" >> $README
           echo -e "\n" >> $README
