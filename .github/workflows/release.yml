@@ -151,7 +151,8 @@ jobs:
           platforms: ${{ matrix.config.platform }}
           tags: ${{ steps.metadata-base.outputs.tags }}
           labels: ${{ steps.metadata-base.outputs.labels }}
-          push: true
+          push: false
+          load: true
 
       # Build Image -> Stages: cpp-devbox-base + cpp-devbox-with-vulkansdk = with-vulkansdk
       - name: 📦 🚀 Build and Push
@@ -164,7 +165,13 @@ jobs:
           platforms: ${{ matrix.config.platform }}
           tags: ${{ steps.metadata-base-with-vulkansdk.outputs.tags }}
           labels: ${{ steps.metadata-base-with-vulkansdk.outputs.labels }}
-          push: true
+          push: false
+          load: true
+
+      - name: List Docker Images
+        run: |
+          docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"
+          docker images --digests
 
       # This provides: ${{ steps.get_image_name_base.outputs.name }}
       - name: Get image name for base
@@ -205,6 +212,10 @@ jobs:
           echo -e "\n" >> $README
           docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base_with_vulkan.outputs.name }} /bin/bash -c "./workspace/show-tool-versions.sh" > $VERSIONS
           cat $VERSIONS >> $README
+
+      - name: Push all images and all tags
+        run: |
+          docker push --all-tags ${{ env.GHCR_IMAGE }}
 
       - name: 📦 Provide the version info and info.json as a release asset
         uses: actions/upload-artifact@v4 # https://github.com/actions/upload-artifact
