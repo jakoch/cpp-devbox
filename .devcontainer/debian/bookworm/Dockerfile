@@ -426,7 +426,7 @@ RUN ./configure \
     make install-gcc && \
     make install-target-libgcc && \
     make install-target-libsanitizer && \
-    make install-target-libatomic && \
+    make install-target-libatomic
 
 # return from /gcc-x.y.z folder
 WORKDIR /
