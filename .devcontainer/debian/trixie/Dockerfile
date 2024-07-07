@@ -129,12 +129,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialo
     python3-sphinx python3-sphinx-rtd-theme python3-defusedxml sphinx-common \
     graphviz
 
-# +-----------------------------+
-# | REMOVE PACKAGES             |
-# +-----------------------------+
-
-RUN apt-get remove python3.11 python3.11-minimal -y
-
 #
 #   .d8888b.  d8b 888    888               888             .d8888b.  888      8888888
 #  d88P  Y88b Y8P 888    888               888            d88P  Y88b 888        888
