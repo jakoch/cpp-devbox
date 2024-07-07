@@ -160,45 +160,47 @@ jobs:
           labels: ${{ steps.metadata-base-with-vulkansdk.outputs.labels }}
           push: true
 
-      # OUT: ${{ steps.get_image_name_base.outputs.name }}
+      # This provides: ${{ steps.get_image_name_base.outputs.name }}
       - name: Get image name for base
         id: get_image_name_base
         run: |
           name=$(echo '${{ steps.build-base.outputs.metadata }}' | jq -r '."image.name" | split(",") | .[0]')
           echo "name=$name" >> $GITHUB_OUTPUT
 
-      # OUT: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}
+      # This provides: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}
       - name: Get image name for base with vulkan
         id: get_image_name_base_with_vulkan
         run: |
           name=$(echo '${{ steps.build-base-with-vulkansdk.outputs.metadata }}' | jq -r '."image.name" | split(",") | .[0]')
           echo "name=$name" >> $GITHUB_OUTPUT
 
-      #  ${{ env.GHCR_IMAGE }}:${{ steps.metadata-base.outputs.version }}
       - name: ℹ️ Run cpp-devbox Container to grab version info
         id: run-container-base
         run: |
-          echo "# cpp-devbox ${{ github.ref_name }} ($(date '+%Y-%m-%d'))" >> README-${{ matrix.config.debian_codename }}-base.md
-          echo "\n" >> README-${{ matrix.config.debian_codename }}-base.md
-          echo "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> README-${{ matrix.config.debian_codename }}-base.md
-          echo "Image: ${{ steps.get_image_name_base.outputs.name }}" >> README-${{ matrix.config.debian_codename }}-base.md
-          echo "\n" >> README-${{ matrix.config.debian_codename }}-base.md
+          README="README-${{ matrix.config.debian_codename }}-with-vulkansdk.md"
+          VERSIONS="versions-${{ matrix.config.debian_codename }}-base.md"
+          echo "# cpp-devbox ${{ github.ref_name }} ($(date '+%Y-%m-%d'))" >> $README
+          echo -e "\n" >> $README
+          echo "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> $README
+          echo "Image: ${{ steps.get_image_name_base.outputs.name }}" >> $README
+          echo -e "\n" >> $README
           chmod +x ${{ github.workspace }}/.devcontainer/scripts/show-tool-versions.sh
-          docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base.outputs.name }} /bin/bash -c "./workspace/show-tool-versions.sh" > versions-${{ matrix.config.debian_codename }}-base.md
-          cat versions-${{ matrix.config.debian_codename }}-base.md >> README-${{ matrix.config.debian_codename }}-base.md
+          docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base.outputs.name }} /bin/bash -c "./workspace/show-tool-versions.sh" > $VERSIONS
+          cat $VERSIONS >> $README
 
-      # ${{ env.GHCR_IMAGE }}:${{ steps.metadata-base-with-vulkansdk.outputs.version }}
       - name: ℹ️ Run cpp-devbox-with-vulkansdk Container to grab version info
         id: run-container-with-vulkan
         run: |
-          echo "# cpp-devbox ${{ github.ref_name }} ($(date '+%Y-%m-%d'))" >> README-${{ matrix.config.debian_codename }}-with-vulkansdk.md
-          echo "\n" >> README-${{ matrix.config.debian_codename }}-with-vulkansdk.md
-          echo "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> README-${{ matrix.config.debian_codename }}-with-vulkansdk.md
-          echo "Image: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}" >> README-${{ matrix.config.debian_codename }}-with-vulkansdk.md
-          echo "\n" >> README-${{ matrix.config.debian_codename }}-with-vulkansdk.md
+          README="README-${{ matrix.config.debian_codename }}-with-vulkansdk.md"
+          VERSIONS="versions-${{ matrix.config.debian_codename }}-with-vulkan.md"
+          echo "# cpp-devbox ${{ github.ref_name }} ($(date '+%Y-%m-%d'))" >> $README
+          echo -e "\n" >> $README
+          echo "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }} with Vulkan SDK" >> $README
+          echo "Image: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}" >> $README
+          echo -e "\n" >> $README
           chmod +x ${{ github.workspace }}/.devcontainer/scripts/show-tool-versions.sh
-          docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base_with_vulkan.outputs.name }} /bin/bash -c "./workspace/show-tool-versions.sh" > versions-${{ matrix.config.debian_codename }}-with-vulkan.md
-          cat versions-${{ matrix.config.debian_codename }}-with-vulkan.md >> README-${{ matrix.config.debian_codename }}-with-vulkansdk.md
+          docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base_with_vulkan.outputs.name }} /bin/bash -c "./workspace/show-tool-versions.sh" > $VERSIONS
+          cat $VERSIONS >> $README
 
       - name: 📦 Provide the version info and info.json as a release asset
         uses: actions/upload-artifact@v4 # https://github.com/actions/upload-artifact
