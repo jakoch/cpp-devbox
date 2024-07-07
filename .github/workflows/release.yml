@@ -33,7 +33,8 @@ jobs:
 # ---------------------------------------------------------------------------------------
 
     name: "Build Container"
-    runs-on: ubuntu-latest
+    # https://github.com/actions/runner-images
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: read
@@ -134,6 +135,11 @@ jobs:
                 --arg date "$(date -u +%F)" \
                 '{ version: $version, commit: $commit, date: $date }' > info.json
 
+      - name: Check show-tool-versions.sh and make executable
+        run: |
+          ls -l ${{ github.workspace }}/.devcontainer/scripts/show-tool-versions.sh
+          chmod +x ${{ github.workspace }}/.devcontainer/scripts/show-tool-versions.sh
+
       # Build Image -> Stage: cpp-devbox-base
       - name: 📦 🚀 Build and Push
         id: build-base
@@ -145,7 +151,7 @@ jobs:
           platforms: ${{ matrix.config.platform }}
           tags: ${{ steps.metadata-base.outputs.tags }}
           labels: ${{ steps.metadata-base.outputs.labels }}
-          push: true
+          push: false
 
       # Build Image -> Stages: cpp-devbox-base + cpp-devbox-with-vulkansdk = with-vulkansdk
       - name: 📦 🚀 Build and Push
@@ -158,7 +164,7 @@ jobs:
           platforms: ${{ matrix.config.platform }}
           tags: ${{ steps.metadata-base-with-vulkansdk.outputs.tags }}
           labels: ${{ steps.metadata-base-with-vulkansdk.outputs.labels }}
-          push: true
+          push: false
 
       # This provides: ${{ steps.get_image_name_base.outputs.name }}
       - name: Get image name for base
@@ -184,7 +190,6 @@ jobs:
           echo "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> $README
           echo "Image: ${{ steps.get_image_name_base.outputs.name }}" >> $README
           echo -e "\n" >> $README
-          chmod +x ${{ github.workspace }}/.devcontainer/scripts/show-tool-versions.sh
           docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base.outputs.name }} /bin/bash -c "./workspace/show-tool-versions.sh" > $VERSIONS
           cat $VERSIONS >> $README
 
@@ -198,7 +203,6 @@ jobs:
           echo "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }} with Vulkan SDK" >> $README
           echo "Image: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}" >> $README
           echo -e "\n" >> $README
-          chmod +x ${{ github.workspace }}/.devcontainer/scripts/show-tool-versions.sh
           docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base_with_vulkan.outputs.name }} /bin/bash -c "./workspace/show-tool-versions.sh" > $VERSIONS
           cat $VERSIONS >> $README
 
