@@ -55,7 +55,7 @@ ENV CURL_OPTIONS_BAR="--progress-bar"
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && \
 #   curl $CURL_OPTIONS_BAR -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.3.0/gcc-13.3.0.tar.xz" && \
-    curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
+    curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz"
 #    curl $CURL_OPTIONS_BAR -o mesa.xz "https://archive.mesa3d.org/mesa-${MESA_VERSION}.tar.xz"
 
 # +-----------------------------+
