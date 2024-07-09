@@ -43,6 +43,8 @@ FROM debian:bookworm-slim AS downloader
 # Reuse global arguments
 ARG VULKAN_VERSION
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 #ENV CURL_OPTIONS="--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
 ENV CURL_OPTIONS_BAR="--progress-bar"
 
