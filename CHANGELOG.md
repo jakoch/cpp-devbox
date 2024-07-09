@@ -11,20 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
-## [1.0.5] - 2024-07-xx
+## [1.0.5] - 2024-07-09
 
 **Added**
 - added doxygen (latest binary)
 - added python3-sphinx, python3-sphinx-rtd-theme
 - added lcov
 - trixie image: added gcc-14 (from distro)
-- 
+- both with-vulkansdk images: added mesa-vulkan-drivers (for software rendering using llvmpipe)
 
 **Changed**
 - bookworm image: updated gcc to 13.3.0
 - cleanup mold setup
 - tools are symlinked into /usr/bin instead of /usr/local/bin
 - updated scripts (show-tool-version/show-tool-locations) to output markdown
+- changed workflow file to upload version data as release artefact for every image
 
 ## [1.0.4] - 2024-07-04
 
