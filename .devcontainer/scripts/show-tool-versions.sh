@@ -34,6 +34,26 @@ print_row_clang() {
     done
 }
 
+# Function to check if a package is installed
+is_installed() {
+  package=$1
+  if dpkg -l | grep "$package" > /dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# Function to check if mesa-vulkan-drivers is installed
+is_installed_mesa() {
+  is_installed "mesa-vulkan-drivers"
+}
+
+# Function to check if Vulkan SDK is installed
+is_installed_vulkan_sdk() {
+    is_installed "libvulkan1"
+}
+
 # Assign versions to variables
 clang_version=$(clang --version | head -n1 | awk '{print $4}')
 ninja_version=$(ninja --version)
@@ -48,6 +68,7 @@ vulkan_version=$(echo $VULKAN_SDK | awk -F '/' '{print $4}')
 git_version=$(git --version | cut -c 13-)
 doxygen_version=$(doxygen -v | awk '{print $1}')
 github_cli_version=$(gh --version | awk '{print $3}')
+mesa_version=$(dpkg -l | grep "mesa-vulkan-drivers" | awk '{print $3}')
 
 printf "## Version Overview\n\n"
 
@@ -69,4 +90,9 @@ print_row "cppcheck" "$cppcheck_version"
 print_row "Doxygen" "$doxygen_version"
 print_row "git" "$git_version"
 print_row "gh" "$github_cli_version"
-print_row "Vulkan SDK" "$vulkan_version"
+if is_installed_mesa; then
+    print_row "Mesa" "$mesa_version"
+fi
+if is_installed_vulkan_sdk; then
+    print_row "Vulkan SDK" "$vulkan_version"
+fi
