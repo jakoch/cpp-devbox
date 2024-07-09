@@ -3,9 +3,9 @@
 
 A Docker development box for C/C++.
 
-**Debian Linux 12 Bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.283.0, CMake, VCPKG, mold, zsh**
+**Debian Linux 12 Bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.283.0, Mesa, CMake, VCPKG, mold, zsh**
 
-**Debian Linux 13 Trixie with LLVM 18 & GCC 14, VulkanSDK 1.3.283.0, CMake, VCPKG, mold, zsh**
+**Debian Linux 13 Trixie with LLVM 18 & GCC 14, VulkanSDK 1.3.283.0, Mesa, CMake, VCPKG, mold, zsh**
 
 
 ## What is this?
@@ -14,7 +14,7 @@ This repository maintains Dockerfiles for generating two container images based 
 
 One image includes GCC and LLVM (container size: ~2GB).
 
-The other image includes GCC, LLVM, and Vulkan SDK (container size: ~4GB).
+The other image includes GCC, LLVM, and Vulkan SDK with Mesa (container size: ~4GB).
 
 Both images are build using Debian 12 Bookworm and Debian 13 Trixie.
 
@@ -59,6 +59,7 @@ The following C/C++ compilers and their toolchains are available:
 The `with-vulkansdk` image additionally contains:
 
 - Vulkan SDK 1.3.283.0
+- Mesa (for software rendering with [LLVMpipe](https://docs.mesa3d.org/drivers/llvmpipe.html))
 
 [What is the latest version of VulkanSDK?](https://vulkan.lunarg.com/sdk/latest.json)
 
