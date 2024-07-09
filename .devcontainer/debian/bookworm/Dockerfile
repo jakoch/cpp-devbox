@@ -40,7 +40,7 @@ ARG VULKAN_VERSION=1.3.283.0
 
 FROM debian:bookworm-slim AS downloader
 
-# reusing global arg
+# Reuse global arguments
 ARG VULKAN_VERSION
 
 #ENV CURL_OPTIONS="--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
@@ -79,7 +79,7 @@ LABEL \
     org.opencontainers.image.url='https://ghcr.io/jakoch/cpp-devbox' \
     org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
     org.opencontainers.image.title='ghcr.io/jakoch/cpp-devbox'\
-    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}, CMake, VCPKG, zsh)" \
+    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION%%.*} & GCC ${GCC_VERSION%%.*}, CMake, VCPKG, zsh)" \
     org.opencontainers.image.licenses=MIT
 
 
@@ -510,8 +510,13 @@ ENV DEBIAN_FRONTEND=dialog
 
 FROM cpp-devbox-base AS cpp-devbox-with-vulkansdk
 
-# reusing global arg
+# Reuse global arguments
+ARG DEBIAN_VERSION
+ARG DEBIAN_VERSION_NAME
+ARG LLVM_VERSION
+ARG GCC_VERSION
 ARG VULKAN_VERSION
+ARG MESA_VERSION
 
 # +-----------------------------+
 # | METADATA                    |
@@ -526,7 +531,7 @@ LABEL \
     org.opencontainers.image.url='https://ghcr.io/jakoch/cpp-devbox' \
     org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
     org.opencontainers.image.title='ghcr.io/jakoch/cpp-devbox'\
-    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}, VulkanSDK ${VULKAN_VERSION}, CMake, VCPKG, zsh)" \
+    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION%%.*} & GCC ${GCC_VERSION%%.*}, VulkanSDK ${VULKAN_VERSION%%.*}, Mesa ${MESA_VERSION%%.*}, CMake, VCPKG, zsh)" \
     org.opencontainers.image.licenses=MIT
 
 #
@@ -554,9 +559,30 @@ RUN mkdir -p /opt/vulkan && \
 # (do not refer to env var within the same statement where it is defined)
 ENV VULKAN_SDK=/opt/vulkan/${VULKAN_VERSION}/x86_64
 ENV PATH="$VULKAN_SDK/bin:$PATH" \
-    LD_LIBRARY_PATH="$VULKAN_SDK/lib:${LD_LIBRARY_PATH:-}" \
+    LD_LIBRARY_PATH="$VULKAN_SDK/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
     VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
 
+# +-----------------------------+
+# | Mesa                        |
+# +-----------------------------+
+
+# Mesa's software Vulkan implementation is called lavapipe (libvulkan_lvp).
+#
+# To setup Vulkan to use the CPU for rendering, you need to set the env var
+# VK_ICD_FILENAMES to point to the software renderer.
+# That JSON file points to the location of the driver (libvulkan_lvp.so).
+#
+# To test CPU rendering using the Mesa Vulkan drivers, you can use "vkcube",
+# which is a simple spinning-cube app to demonstrate Vulkan functionality.
+#
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      mesa-vulkan-drivers
+
+#
+# https://docs.mesa3d.org/envvars.html
+# LIBGL_ALWAYS_SOFTWARE 1 = use software rendering
+ENV VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json \
+    LIBGL_ALWAYS_SOFTWARE=1
 
 # The AsciiArt for the VSCode minimap is generated using
 # shellcheck disable=SC2046

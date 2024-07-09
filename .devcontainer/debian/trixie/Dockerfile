@@ -33,6 +33,7 @@ ARG DEBIAN_VERSION_NAME=trixie
 ARG GCC_VERSION=14
 ARG LLVM_VERSION=18
 ARG VULKAN_VERSION=1.3.283.0
+ARG MESA_VERSION=24.1.3
 
 # +-----------------------------+
 # | Downloader                  |
@@ -43,8 +44,10 @@ ARG VULKAN_VERSION=1.3.283.0
 
 FROM debian:trixie-slim AS downloader
 
-# reusing global arg
+# Reuse global arguments
+#ARG GCC_VERSION
 ARG VULKAN_VERSION
+#ARG MESA_VERSION
 
 #ENV CURL_OPTIONS="--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
 ENV CURL_OPTIONS_BAR="--progress-bar"
@@ -52,7 +55,8 @@ ENV CURL_OPTIONS_BAR="--progress-bar"
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && \
 #   curl $CURL_OPTIONS_BAR -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.3.0/gcc-13.3.0.tar.xz" && \
-    curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz"
+    curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
+#    curl $CURL_OPTIONS_BAR -o mesa.xz "https://archive.mesa3d.org/mesa-${MESA_VERSION}.tar.xz"
 
 # +-----------------------------+
 # | BASE IMAGE                  |        See https://hub.docker.com/_/debian
@@ -82,7 +86,7 @@ LABEL \
     org.opencontainers.image.url='https://ghcr.io/jakoch/cpp-devbox' \
     org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
     org.opencontainers.image.title='ghcr.io/jakoch/cpp-devbox'\
-    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}, CMake, VCPKG, zsh)" \
+    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION%%.*} & GCC ${GCC_VERSION%%.*}, CMake, VCPKG, zsh)" \
     org.opencontainers.image.licenses=MIT
 
 
@@ -513,13 +517,128 @@ ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 ENV DEBIAN_FRONTEND=dialog
 
 # +----------------------------------+
+# | Stage: mesa-builder              |
+# +----------------------------------+
+
+# FROM cpp-devbox-base AS mesa-builder
+
+# # Mesa Build Options: https://gitlab.freedesktop.org/mesa/mesa/-/blob/main/meson_options.txt
+# #
+# COPY --from=downloader /tmp/mesa.xz /tmp/mesa.xz
+
+# ENV MESA_PACKAGE_FOLDER=/mesa-package
+
+# # +------------------+
+# # | SPIRV-TOOLS      |
+# # +------------------+
+# # Notes:
+# # - SPIRV_VERSION_TAG has to match your LLVM version.
+# # - spirv-tools dependency is needed for e.g. spirv-objdump, which is not in the vk sdk
+# # SPIRV_VERSION_TAG=v18.1.2
+
+# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# RUN SPIRV_VERSION_TAG=v18.1.2 && \
+#     LLVM_VERSION=$(llvm-config  --version) && \
+#     apt-get update && apt-get install -y --no-install-recommends \
+#         libcurl4-openssl-dev \
+#         libedit-dev \
+#         libzstd-dev \
+#     # spirv-tools is needed (for e.g. spirv-objdump, because not part of vulkan sdk)
+#         spirv-tools && \
+#     git clone --depth=1 https://github.com/KhronosGroup/SPIRV-LLVM-Translator.git --branch $SPIRV_VERSION_TAG && \
+#     mkdir SPIRV-LLVM-Translator/build && \
+#     cd SPIRV-LLVM-Translator/build && \
+#     cmake .. -D BASE_LLVM_VERSION=$LLVM_VERSION && \
+#     make llvm-spirv -j`nproc` && \
+#     cmake --install . --prefix=/usr/local
+
+# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# RUN mkdir /tmp/mesa && \
+#     tar xvf /tmp/mesa.xz -C /tmp/mesa --strip-components 1 && \
+#     rm /tmp/mesa.xz && \
+#     #
+#     # Install Mesa dependencies..
+#     #
+#     # TODO not sure if we need all this
+#     #
+#     apt-get update && apt-get install -y --no-install-recommends \
+#       meson bison byacc flex libzstd-dev pkg-config \
+#       python3-mako python3-ply \
+#       libdrm2 libdrm-dev \
+#       libclc-18-dev \
+#       libexpat1-dev \
+#       libunwind-dev \
+#       libwayland-dev wayland-protocols \
+#       libx11-dev libxext-dev libxfixes-dev \
+#       libxrandr2 libxrandr-dev libxcb-randr0-dev \
+#       libx11-xcb-dev libxcb-dri2-0-dev libxcb-dri3-dev libxcb-present-dev \
+#       libxcb-shm0-dev libxshmfence-dev \
+#       rust-all bindgen cbindgen \
+#       # fix mesa error: libclc shader missing. Consider installing the libclc package
+#       libclc-18 \
+#       # only needed, if vulkan isn't already installed
+#       glslang-tools
+# # Dependencies possibly need when altering Mesa configuration:
+# #      libudev-dev \
+# #      libelf-dev \
+# #      libwayland-egl-backend-dev \
+# #      libxcb-glx0-dev \
+# #      libxxf86vm-dev
+
+# ENV CXXFLAGS="-O2 -g -DDEFAULT_SOFTWARE_DEPTH_BITS=31"
+
+# #
+# # Configure Mesa
+# #
+# # Note: Vulkan drivers require dri3 for X11 support
+# #
+# WORKDIR /tmp/mesa
+# RUN meson build/ \
+#       -D buildtype=release \
+#       -D prefix=/usr \
+#       #-D prefix=/usr/local \
+#       #-D libdir=/usr/local/lib \
+#       -D dri3=enabled \
+#       -D egl=disabled \
+#       -D gallium-drivers=swrast,zink \
+#       -D gallium-nine=false \
+#       -D glx=xlib \
+#       -D gles1=disabled \
+#       -D gles2=disabled \
+#       -D glvnd=disabled \
+#       -D libunwind=enabled \
+#       -D llvm=enabled \
+#       -D microsoft-clc=disabled \
+#       -D osmesa=false \
+#       -D platforms=x11,wayland \
+#       -D valgrind=disabled \
+#       -D vulkan-beta=false \
+#       -D vulkan-drivers=auto && \
+#      #
+#      # Build and Install Mesa
+#      #
+#      ninja -C build/ && \
+#      DESTDIR=${MESA_PACKAGE_FOLDER} && \
+#      ninja -C build/ install && \
+#      rm -rf /tmp/mesa && \
+#      #
+#      # Package Mesa
+#      #
+#      tar cvf mesa-package.tar.gz ${MESA_PACKAGE_FOLDER}
+
+# +----------------------------------+
 # | Stage: cpp-devbox-with-vulkansdk |
 # +----------------------------------+
 
 FROM cpp-devbox-base AS cpp-devbox-with-vulkansdk
 
-# reusing global arg
+# Reuse global arguments
+ARG DEBIAN_VERSION
+ARG DEBIAN_VERSION_NAME
+ARG LLVM_VERSION
+ARG GCC_VERSION
 ARG VULKAN_VERSION
+ARG MESA_VERSION
 
 # +-----------------------------+
 # | METADATA                    |
@@ -534,7 +653,7 @@ LABEL \
     org.opencontainers.image.url='https://ghcr.io/jakoch/cpp-devbox' \
     org.opencontainers.image.source='https://github.com/jakoch/cpp-devbox'\
     org.opencontainers.image.title='ghcr.io/jakoch/cpp-devbox'\
-    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION} & GCC ${GCC_VERSION}, VulkanSDK ${VULKAN_VERSION}, CMake, VCPKG, zsh)" \
+    org.opencontainers.image.description="C++ DevBox (Debian ${DEBIAN_VERSION}-${DEBIAN_VERSION_NAME} with LLVM ${LLVM_VERSION%%.*} & GCC ${GCC_VERSION%%.*}, VulkanSDK ${VULKAN_VERSION%%.*}, Mesa ${MESA_VERSION%%.*}, CMake, VCPKG, zsh)" \
     org.opencontainers.image.licenses=MIT
 
 #
@@ -562,9 +681,36 @@ RUN mkdir -p /opt/vulkan && \
 # (do not refer to env var within the same statement where it is defined)
 ENV VULKAN_SDK=/opt/vulkan/${VULKAN_VERSION}/x86_64
 ENV PATH="$VULKAN_SDK/bin:$PATH" \
-    LD_LIBRARY_PATH="$VULKAN_SDK/lib:${LD_LIBRARY_PATH:-}" \
+    LD_LIBRARY_PATH="$VULKAN_SDK/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
     VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
 
+# +-----------------------------+
+# | Mesa                        |
+# +-----------------------------+
+
+# Mesa's software Vulkan implementation is called lavapipe (libvulkan_lvp).
+#
+# To setup Vulkan to use the CPU for rendering, you need to set the env var
+# VK_ICD_FILENAMES to point to the software renderer.
+# That JSON file points to the location of the driver (libvulkan_lvp.so).
+#
+# To test CPU rendering using the Mesa Vulkan drivers, you can use "vkcube",
+# which is a simple spinning-cube app to demonstrate Vulkan functionality.
+#
+
+# Copy the packaged mesa drivers and extract into root.
+#COPY --from=mesa-builder /tmp/mesa-package.tar.gz /tmp
+#RUN tar xvf /tmp/mesa-package.tar.gz -C / --strip-components 1 && \
+#    rm /tmp/mesa-package.tar.gz
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      mesa-vulkan-drivers
+
+#
+# https://docs.mesa3d.org/envvars.html
+# LIBGL_ALWAYS_SOFTWARE 1 = use software rendering
+ENV VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json \
+    LIBGL_ALWAYS_SOFTWARE=1
 
 # The AsciiArt for the VSCode minimap is generated using
 # shellcheck disable=SC2046
