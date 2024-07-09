@@ -95,7 +95,7 @@ print_row "cppcheck" "$cppcheck_version"
 print_row "Doxygen" "$doxygen_version"
 print_row "sphinx" "$sphinx_version"
 print_row "git" "$git_version"
-print_row "gh" "$github_cli_version"
+print_row "gh cli" "$github_cli_version"
 if is_installed_mesa; then
     print_row "Mesa" "$mesa_version"
 fi
