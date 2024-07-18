@@ -6,6 +6,8 @@
 .devcontainer/
 .git/
 .github/
-CHANGELOG.md
+.vscode/
 LICENSE
-README.md
+
+# Ignore all markdown files
+*.md

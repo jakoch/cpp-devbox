@@ -194,8 +194,8 @@ jobs:
           VERSIONS="versions-${{ matrix.config.debian_codename }}-base.md"
           echo "# cpp-devbox ${{ github.ref_name }} ($(date '+%Y-%m-%d'))" >> $README
           echo -e "\n" >> $README
-          echo "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> $README
-          echo "Image: ${{ steps.get_image_name_base.outputs.name }}" >> $README
+          echo "OS Version:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> $README
+          echo "Image Version: ${{ steps.get_image_name_base.outputs.name }}" >> $README
           echo -e "\n" >> $README
           docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base.outputs.name }} /bin/zsh -c "cat /etc/os-release; pwd; ls -l /workspace"
           docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base.outputs.name }} /bin/zsh -c "/workspace/show-tool-versions.sh" > $VERSIONS
@@ -208,8 +208,8 @@ jobs:
           VERSIONS="versions-${{ matrix.config.debian_codename }}-with-vulkan.md"
           echo "# cpp-devbox ${{ github.ref_name }} ($(date '+%Y-%m-%d'))" >> $README
           echo -e "\n" >> $README
-          echo "Name:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }} with Vulkan SDK" >> $README
-          echo "Image: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}" >> $README
+          echo "OS Version:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }} with Vulkan SDK" >> $README
+          echo "Image Version: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}" >> $README
           echo -e "\n" >> $README
           docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base_with_vulkan.outputs.name }} /bin/zsh -c "cat /etc/os-release; pwd; ls -l /workspace"
           docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base_with_vulkan.outputs.name }} /bin/zsh -c "/workspace/show-tool-versions.sh" > $VERSIONS
