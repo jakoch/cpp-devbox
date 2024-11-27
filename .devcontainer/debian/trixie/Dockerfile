@@ -112,7 +112,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 # avoid debconf delaying package configuration, since apt-utils is not installed
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog 2>&1 && \
     apt-get update && apt-get install -y --no-install-recommends \
-    gnupg2 ca-certificates software-properties-common \
+    gnupg2 ca-certificates \
+    # package seems gone: software-properties-common \
     build-essential cppcheck valgrind lcov wget git nano jq \
     # required by Visual Studio
     g++ gdb make ninja-build rsync zip sudo \
