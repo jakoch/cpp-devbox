@@ -113,7 +113,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog 2>&1 && \
     apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 ca-certificates \
-    # package seems gone: software-properties-common \
+    # package seems gone, was used in LLVM section below: software-properties-common \
     build-essential cppcheck valgrind lcov wget git nano jq \
     # required by Visual Studio
     g++ gdb make ninja-build rsync zip sudo \
@@ -281,12 +281,16 @@ RUN version_string="$(curl -s https://api.github.com/repos/doxygen/doxygen/relea
 # For an installation using the llvm.sh setup script:
 # RUN wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
 
+# for installation using add-apt-repository from software-properties-common
+#add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" && \
+#add-apt-repository "deb http://httpredir.debian.org/debian sid main" && \
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN if [ "$DEBIAN_VERSION_NAME" == "trixie" ]; then DEBIAN_VERSION_NAME="unstable"; fi && \
     if [ "$DEBIAN_VERSION_NAME" == "unstable" ]; then LINKNAME=""; else LINKNAME="-$DEBIAN_VERSION_NAME"; fi && \
     wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
-    add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" && \
-    add-apt-repository "deb http://httpredir.debian.org/debian sid main" && \
+    echo "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
+    echo "deb http://httpredir.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list && \
     apt-get update && apt-get install -y --no-install-recommends \
     clang-$LLVM_VERSION \
     clangd-$LLVM_VERSION \
