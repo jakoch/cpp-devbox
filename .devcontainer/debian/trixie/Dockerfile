@@ -359,7 +359,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
     git clone --depth=1 --branch "v$version" https://github.com/rui314/mold.git "/tmp/mold" && \
     cmake -S /tmp/mold -B /tmp/mold/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ && \
-    cmake --build /tmp/mold/build -j $(nproc) && \
+    cmake --build /tmp/mold/build -j "$(nproc)" && \
     cmake --install /tmp/mold/build --prefix=/opt/mold && \
     ln -s /opt/mold/bin/mold /usr/bin && \
     rm -rf /tmp/mold
