@@ -1,5 +1,9 @@
-# Online Linter: https://hadolint.github.io/hadolint/
-# Rules:         https://github.com/hadolint/hadolint?tab=readme-ov-file#rules
+# Hadolint configuration file
+
+# Configure ignore rules
+# https://github.com/hadolint/hadolint#rules for a list of available rules.
+# Online Linter
+# https://hadolint.github.io/hadolint/
 ignored:
   - DL3003 # Use WORKDIR to switch to a directory
   - DL3008 # Pin versions in apt get install
