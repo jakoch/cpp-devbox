@@ -7,7 +7,6 @@
 # This file is part of https://github.com/jakoch/cpp-devbox
 #
 
-# https://api.github.com/repos/jakoch/cpp-devbox/actions/workflows/cleanup-workflows.yml/runs
 name: Clean Workflow Runs
 
 on:
@@ -97,6 +96,7 @@ jobs:
               }
             }
 
+      # https://api.github.com/repos/jakoch/cpp-devbox/actions/workflows/cleanup-workflows.yml/runs
       - name: ✂ Remove runs of the cleanup workflow itself
         uses: actions/github-script@v7 # https://github.com/actions/github-script
         with:
