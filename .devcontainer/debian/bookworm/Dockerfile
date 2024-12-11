@@ -17,7 +17,7 @@
 
 # Debian Bookworm
 #
-# LLVM: https://packages.debian.org/bookworm/llvm  16.0
+# LLVM: https://packages.debian.org/bookworm/llvm  14.0
 # GCC:  https://packages.debian.org/bookworm/gcc   12.2.0
 
 # +-----------------------------+
@@ -43,15 +43,21 @@ FROM debian:bookworm-slim AS downloader
 # Reuse global arguments
 ARG VULKAN_VERSION
 
-ENV DEBIAN_FRONTEND=noninteractive
-
+ENV DEBIAN_FRONTEND=noninteractive \
+    CURL_OPTIONS="--progress-bar --location"
 #ENV CURL_OPTIONS="--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
-ENV CURL_OPTIONS_BAR="--progress-bar"
 
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && \
-    curl $CURL_OPTIONS_BAR -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.3.0/gcc-13.3.0.tar.xz" && \
-    curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz"
+RUN echo "Download Stage" && \
+    apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && \
+    curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.3.0/gcc-13.3.0.tar.xz" && \
+    curl $CURL_OPTIONS -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
+	# Cleanup
+	apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* && \
+    # List files in /tmp
+    ls -la /tmp
 
 # +-----------------------------+
 # | BASE IMAGE                  |        See https://hub.docker.com/_/debian
@@ -98,14 +104,10 @@ LABEL \
 #                                                 Y8b d88P
 #                                                  "Y88P"
 
-# +-----------------------------+
-# | PRE-REQUISITE/INIT PACKAGES |
-# +-----------------------------+
+ENV DEBIAN_FRONTEND=noninteractive \
+    CURL_OPTIONS="--progress-bar --location"
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-# avoid debconf delaying package configuration, since apt-utils is not installed
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog 2>&1 && \
+RUN echo "Packages" && \
     apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 ca-certificates software-properties-common \
     build-essential cppcheck valgrind lcov wget git nano jq \
@@ -124,7 +126,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialo
     # optional tools for Doxygen
     python3 python3-pip \
     python3-sphinx python3-sphinx-rtd-theme python3-defusedxml sphinx-common \
-    graphviz
+    graphviz && \
+	# Cleanup
+	apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #
 #   .d8888b.  d8b 888    888               888             .d8888b.  888      8888888
@@ -137,17 +143,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialo
 #   "Y8888P88 888  "Y888 888  888  "Y88888 88888P"         "Y8888P"  88888888 8888888
 #
 
-# +-----------------------------+
-# | Github CLI                  |
-# +-----------------------------+
 # Website: https://cli.github.com/
 # Installation Instructions: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#official-sources
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
+RUN echo "GITHUB CLI" && \
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
     chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
-    apt-get update && apt-get install -y --no-install-recommends gh
+    apt-get update && apt-get install -y --no-install-recommends gh && \
+    # Cleanup
+    apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #
 #   .d8888b.  888b     d888          888
@@ -160,15 +168,13 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
 #   "Y8888P"  888       888 "Y888888 888  888  "Y8888
 #
 
-# +-----------------------------+
-# | CMake - Latest Version      |
-# +-----------------------------+
 # Latest Release: https://github.com/Kitware/CMake/releases/latest
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
+RUN echo "CMake" && \
+    version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
     url="https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version-linux-x86_64.sh"; echo "Download URL: \"$url\"" && \
-    wget -q $url && \
+    curl $CURL_OPTIONS -O $url && \
     mkdir /opt/cmake && \
     sh cmake-$version-linux-x86_64.sh --prefix=/opt/cmake --skip-license && \
     ln -s /opt/cmake/bin/cmake /usr/bin/cmake && \
@@ -185,9 +191,6 @@ RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/lates
 #      Y8P      "Y8888P"  888        888    Y88b  "Y8888P88
 #
 
-# +-----------------------------+
-# | vcpkg                 ~225MB|
-# +-----------------------------+
 # vcpkg requires curl, unzip, tar, pkg-config (optional cmake).
 # We use the installed binaries from the system.
 # We do not download latest version of CMake and Ninja during vcpkg bootstrap.
@@ -199,7 +202,8 @@ ENV VCPKG_ROOT=/opt/vcpkg \
 ENV PATH="${PATH}:${VCPKG_ROOT}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN git clone --depth=1 \
+RUN echo "VCPKG" && \
+    git clone --depth=1 \
     -c core.eol=lf \
     -c core.autocrlf=false \
     -c fsck.zeroPaddedFilemode=ignore \
@@ -219,12 +223,9 @@ RUN git clone --depth=1 \
 #   "Y8888P"   "Y8888P"  d88P     888  "Y8888P"  888    888 8888888888
 #
 
-# +-----------------------------+
-# | ccache - Latest Version     |
-# +-----------------------------+
-
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN version="$(curl -s https://api.github.com/repos/ccache/ccache/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
+RUN echo "CCACHE" && \
+    version="$(curl -s https://api.github.com/repos/ccache/ccache/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
     url="https://github.com/ccache/ccache/releases/download/v$version/ccache-$version-linux-x86_64.tar.xz"; echo "Download URL: \"$url\"" && \
     wget -q $url && \
     mkdir -p /opt/ccache/bin &&\
@@ -249,10 +250,11 @@ RUN version="$(curl -s https://api.github.com/repos/ccache/ccache/releases/lates
 # We are using the prebuilt binaries for x64.
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN version_string="$(curl -s https://api.github.com/repos/doxygen/doxygen/releases/latest | jq -r '.tag_name')"; echo "Latest Version: \"$version_string\"" && \
+RUN echo "DOXYGEN" && \
+    version_string="$(curl -s https://api.github.com/repos/doxygen/doxygen/releases/latest | jq -r '.tag_name')"; echo "Latest Version: \"$version_string\"" && \
     version_number="$(echo $version_string | cut -c 9- | sed 's/_/./g')" && \
     url="https://github.com/doxygen/doxygen/releases/download/$version_string/doxygen-$version_number.linux.bin.tar.gz"; echo "Download URL: \"$url\"" && \
-    wget -q $url && \
+    curl $CURL_OPTIONS -O $url && \
     mkdir /opt/doxygen && \
     tar xf doxygen-$version_number.linux.bin.tar.gz --strip-components=1 -C /opt/doxygen && \
 	ln -s /opt/doxygen/bin/doxygen /usr/bin && \
@@ -276,7 +278,8 @@ RUN version_string="$(curl -s https://api.github.com/repos/doxygen/doxygen/relea
 # RUN wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
+RUN echo "LLVM" && \
+    curl -s https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
     add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain-$DEBIAN_VERSION_NAME-$LLVM_VERSION main" && \
     apt-get update && apt-get install -y --no-install-recommends \
     clang-$LLVM_VERSION \
@@ -300,9 +303,10 @@ RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.
     libunwind-$LLVM_VERSION-dev \
     libclang-rt-$LLVM_VERSION-dev \
     libpolly-$LLVM_VERSION-dev && \
-    apt-get autoremove -y && \
+	# Cleanup
+	apt-get autoremove -y && \
     apt-get clean autoclean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # add llvm to path
 ENV PATH="/usr/lib/llvm-${LLVM_VERSION}/bin:/usr/lib/llvm-${LLVM_VERSION}/include:${PATH}"
@@ -312,7 +316,8 @@ ENV LD_LIBRARY_PATH="/usr/lib:/usr/local/lib"
 ENV LD_LIBRARY_PATH="/usr/lib/llvm-${LLVM_VERSION}/lib:${LD_LIBRARY_PATH:-}"
 
 # unversionize the binaries
-RUN ln -s /usr/bin/clang-${LLVM_VERSION} /usr/bin/clang && \
+RUN echo "LLVM symlink binaries" && \
+    ln -s /usr/bin/clang-${LLVM_VERSION} /usr/bin/clang && \
     ln -s /usr/bin/clang++-${LLVM_VERSION} /usr/bin/clang++ && \
     ln -s /usr/bin/clang-format-${LLVM_VERSION} /usr/bin/clang-format
 
@@ -321,7 +326,8 @@ ENV CC=/usr/bin/clang \
     CXX=/usr/bin/clang++
 
 # update alternatives
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
+RUN echo "LLVM udate-alternatives" && \
+    update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
     update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
 
 #
@@ -335,15 +341,13 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 #  888       888  "Y88P"  888  "Y88888
 #
 
-# +-----------------------------+
-# | Mold Linker            ~10MB|
-# +-----------------------------+
 # We are using Clang++ for compilation, so this download + compile step must happen after installing LLVM+Clang.
 # We don't need to call mold's ./install-build-deps.sh, because all build dependencies are present.
 # Note to overwrite ld: sudo ln -sf /opt/mold/bin/mold $(realpath /usr/bin/ld)
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
+RUN echo "MOLD" && \
+    version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
     git clone --depth=1 --branch "v$version" https://github.com/rui314/mold.git "/tmp/mold" && \
     cmake -S /tmp/mold -B /tmp/mold/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ && \
     cmake --build /tmp/mold/build -j "$(nproc)" && \
@@ -367,7 +371,8 @@ RUN version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest 
 # +-----------------------------+
 
 COPY --from=downloader /tmp/gcc.xz /tmp/gcc.xz
-RUN tar xf /tmp/gcc.xz && rm /tmp/gcc.xz && \
+RUN echo "GCC - Extract" && \
+    tar xf /tmp/gcc.xz && rm /tmp/gcc.xz && \
     apt-get update && apt-get install -y --no-install-recommends \
     libmpfr-dev libgmp3-dev libmpc-dev
 
@@ -383,7 +388,8 @@ WORKDIR /gcc-13.3.0
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # https://gcc.gnu.org/install/configure.html
-RUN ./configure \
+RUN echo "GCC - Compile" && \
+    ./configure \
     --libdir=/usr/lib \
     --libexecdir=/usr/lib \
     --prefix=/usr \
@@ -434,8 +440,12 @@ RUN ./configure \
 WORKDIR /
 
 # remove gcc source folder and dependencies
-RUN rm -rf gcc-13.3.0 && \
-    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
+RUN echo "GCC - Cleanup" && \
+    rm -rf gcc-13.3.0 && \
+    # Cleanup
+    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # reset default compiler to clang
 ENV CC=/usr/bin/clang \
@@ -462,23 +472,33 @@ ENV TERM=xterm-256color \
     ZSH_THEME=agnoster
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt-get update && apt-get install -y --no-install-recommends zsh powerline fonts-powerline && \
-    curl -fsSL https://install.ohmyz.sh | sh && \
+RUN echo "ZSH" && \
+    apt-get update && apt-get install -y --no-install-recommends zsh powerline fonts-powerline && \
+    # Install Oh My Zsh
+    curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
+    # Add Zsh plugins
     git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
     git clone --depth=1 https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions && \
     git clone --depth=1 https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search && \
+    # Update .zshrc
     sed -i "s/plugins=(git)/plugins=(git zsh-completions zsh-autosuggestions zsh-history-substring-search)/" /root/.zshrc && \
-    sed -i "s/ZSH_THEME=\"agnoster\"/ZSH_THEME=\"robbyrussell\"/" /root/.zshrc
+    sed -i "s/ZSH_THEME=\"agnoster\"/ZSH_THEME=\"robbyrussell\"/" /root/.zshrc  && \
+	# Cleanup
+	apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Set the default shell to zsh after it is installed
 ENV SHELL=/bin/zsh
 
 # +-----------------------------+
 # | CLEANUP                     |
 # +-----------------------------+
 
-RUN apt-get autoremove -y && \
+RUN echo "CLeanup" && \
+    apt-get autoremove -y && \
     apt-get clean autoclean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # +-----------------------------+
 # | Set Locale + Timezone       |
@@ -487,7 +507,8 @@ RUN apt-get autoremove -y && \
 ENV TZ=Europe/Berlin
 
 # configure german locale
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+RUN echo "Locale & Timezone" && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone && \
     dpkg-reconfigure tzdata && \
     sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -577,8 +598,14 @@ ENV PATH="$VULKAN_SDK/bin:$PATH" \
 # To test CPU rendering using the Mesa Vulkan drivers, you can use "vkcube",
 # which is a simple spinning-cube app to demonstrate Vulkan functionality.
 #
-RUN apt-get update && apt-get install -y --no-install-recommends \
-      mesa-vulkan-drivers
+RUN echo "Mesa" && \
+    apt-get update && apt-get install -y --no-install-recommends \
+      libgl1-mesa-dri \
+      mesa-vulkan-drivers && \
+      # Cleanup
+      apt-get autoremove -y && \
+      apt-get clean autoclean && \
+      rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #
 # https://docs.mesa3d.org/envvars.html

@@ -17,23 +17,35 @@
 
 # Debian Trixie
 #
-# LLVM: https://packages.debian.org/trixie/llvm  16.0
-# GCC:  https://packages.debian.org/trixie/gcc   13.2.0
-#
-# Note: Because Debian Trixie ships GCC 13 by default, our GCC compilation is disabled.
-# We install GCC 14 from the distro provided packages.
+# LLVM:  https://packages.debian.org/trixie/llvm             19.0
+# GCC:   https://packages.debian.org/trixie/gcc              14.2.0
+# MESA:  https://packages.debian.org/trixie/libgl1-mesa-dri  24.2.8
+# Vulkan https://packages.debian.org/trixie/libvulkan-dev    1.3.296.0
+
+# Note: Because Debian Trixie ships GCC 14.2.0 by default, our GCC compilation is disabled.
+#       and we install GCC 14 from the distro provided packages.
+
+# +-----------------------------+
+# | Latest Version              |
+# +-----------------------------+
+# GCC:        https://ftp.gnu.org/gnu/gcc/
+# LLVM:
+# VULKAN SDK: https://vulkan.lunarg.com/sdk/latest.json
+# MESA:       https://archive.mesa3d.org/
 
 # +-----------------------------+
 # | GLOBAL ARGS                 |
 # +-----------------------------+
 # The following global args need to be redeclared without a value inside each FROM section.
 # For example, VULKAN_VERSION is used in the FROM sections of "downloader" and "cpp-devbox-with-vulkansdk".
+# The value is set in the build command, e.g. --build-arg VULKAN_VERSION=1.3.296.0
+# For the latest version of
 ARG DEBIAN_VERSION=13
 ARG DEBIAN_VERSION_NAME=trixie
 ARG GCC_VERSION=14
-ARG LLVM_VERSION=18
-ARG VULKAN_VERSION=1.3.283.0
-ARG MESA_VERSION=24.1.3
+ARG LLVM_VERSION=19
+ARG VULKAN_VERSION=1.3.296.0
+ARG MESA_VERSION=24.3.1
 
 # +-----------------------------+
 # | Downloader                  |
@@ -41,22 +53,31 @@ ARG MESA_VERSION=24.1.3
 # Download Stage is for caching:
 # - /tmp/gcc.xz
 # - /tmp/vulkansdk.xz
+# - /tmp/mesa.xz
 
 FROM debian:trixie-slim AS downloader
 
 # Reuse global arguments
 #ARG GCC_VERSION
 ARG VULKAN_VERSION
-#ARG MESA_VERSION
+ARG MESA_VERSION
 
+ENV DEBIAN_FRONTEND=noninteractive \
+    CURL_OPTIONS="--progress-bar --location"
 #ENV CURL_OPTIONS="--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
-ENV CURL_OPTIONS_BAR="--progress-bar"
 
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && \
-#   curl $CURL_OPTIONS_BAR -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.3.0/gcc-13.3.0.tar.xz" && \
-    curl $CURL_OPTIONS_BAR -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz"
-#    curl $CURL_OPTIONS_BAR -o mesa.xz "https://archive.mesa3d.org/mesa-${MESA_VERSION}.tar.xz"
+RUN echo "Download Stage" && \
+    apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && \
+#   curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.xz" && \
+    curl $CURL_OPTIONS -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
+    curl $CURL_OPTIONS -o mesa.xz "https://archive.mesa3d.org/mesa-${MESA_VERSION}.tar.xz" && \
+	# Cleanup
+	apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* && \
+    # List files in /tmp
+    ls -la /tmp
 
 # +-----------------------------+
 # | BASE IMAGE                  |        See https://hub.docker.com/_/debian
@@ -103,14 +124,10 @@ LABEL \
 #                                                 Y8b d88P
 #                                                  "Y88P"
 
-# +-----------------------------+
-# | PRE-REQUISITE/INIT PACKAGES |
-# +-----------------------------+
+ENV DEBIAN_FRONTEND=noninteractive \
+    CURL_OPTIONS="--progress-bar --location"
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-# avoid debconf delaying package configuration, since apt-utils is not installed
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog 2>&1 && \
+RUN echo "Packages" && \
     apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 ca-certificates \
     # package seems gone, was used in LLVM section below: software-properties-common \
@@ -130,7 +147,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialo
     # optional tools for Doxygen
     python3 python3-pip \
     python3-sphinx python3-sphinx-rtd-theme python3-defusedxml sphinx-common \
-    graphviz
+    graphviz && \
+    # Cleanup
+    apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #
 #   .d8888b.  d8b 888    888               888             .d8888b.  888      8888888
@@ -143,17 +164,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialo
 #   "Y8888P88 888  "Y888 888  888  "Y88888 88888P"         "Y8888P"  88888888 8888888
 #
 
-# +-----------------------------+
-# | Github CLI                  |
-# +-----------------------------+
 # Website: https://cli.github.com/
 # Installation Instructions: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#official-sources
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
+RUN echo "GITHUB CLI" && \
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
     chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
-    apt-get update && apt-get install -y --no-install-recommends gh
+    apt-get update && apt-get install -y --no-install-recommends gh && \
+    # Cleanup
+    apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #
 #   .d8888b.  888b     d888          888
@@ -166,15 +189,13 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
 #   "Y8888P"  888       888 "Y888888 888  888  "Y8888
 #
 
-# +-----------------------------+
-# | CMake - Latest Version      |
-# +-----------------------------+
 # Latest Release: https://github.com/Kitware/CMake/releases/latest
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
+RUN echo "CMake" && \
+    version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
     url="https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version-linux-x86_64.sh"; echo "Download URL: \"$url\"" && \
-    wget -q $url && \
+    curl $CURL_OPTIONS -O $url && \
     mkdir /opt/cmake && \
     sh cmake-$version-linux-x86_64.sh --prefix=/opt/cmake --skip-license && \
     ln -s /opt/cmake/bin/cmake /usr/bin/cmake && \
@@ -191,9 +212,6 @@ RUN version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/lates
 #      Y8P      "Y8888P"  888        888    Y88b  "Y8888P88
 #
 
-# +-----------------------------+
-# | vcpkg                 ~225MB|
-# +-----------------------------+
 # vcpkg requires curl, unzip, tar, pkg-config (optional cmake).
 # We use the installed binaries from the system.
 # We do not download latest version of CMake and Ninja during vcpkg bootstrap.
@@ -205,7 +223,8 @@ ENV VCPKG_ROOT=/opt/vcpkg \
 ENV PATH="${PATH}:${VCPKG_ROOT}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN git clone --depth=1 \
+RUN echo "VCPKG" && \
+    git clone --depth=1 \
     -c core.eol=lf \
     -c core.autocrlf=false \
     -c fsck.zeroPaddedFilemode=ignore \
@@ -225,14 +244,11 @@ RUN git clone --depth=1 \
 #   "Y8888P"   "Y8888P"  d88P     888  "Y8888P"  888    888 8888888888
 #
 
-# +-----------------------------+
-# | ccache - Latest Version     |
-# +-----------------------------+
-
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN version="$(curl -s https://api.github.com/repos/ccache/ccache/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
+RUN echo "CCACHE" && \
+    version="$(curl -s https://api.github.com/repos/ccache/ccache/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
     url="https://github.com/ccache/ccache/releases/download/v$version/ccache-$version-linux-x86_64.tar.xz"; echo "Download URL: \"$url\"" && \
-    wget -q $url && \
+    curl $CURL_OPTIONS -sLO $url && \
     mkdir -p /opt/ccache/bin &&\
     tar xf ccache-$version-linux-x86_64.tar.xz --strip-components=1 -C /opt/ccache/bin && \
 	ln -s /opt/ccache/bin/ccache /usr/bin && \
@@ -249,16 +265,14 @@ RUN version="$(curl -s https://api.github.com/repos/ccache/ccache/releases/lates
 #  8888888P"   "Y88888P"  d88P   Y88b     888      "Y8888P88 8888888888 888    Y888
 #
 
-# +-----------------------------+
-# | Doxygen - Latest Version    |
-# +-----------------------------+
 # We are using the prebuilt binaries for x64.
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN version_string="$(curl -s https://api.github.com/repos/doxygen/doxygen/releases/latest | jq -r '.tag_name')"; echo "Latest Version: \"$version_string\"" && \
+RUN echo "DOXYGEN" && \
+    version_string="$(curl -s https://api.github.com/repos/doxygen/doxygen/releases/latest | jq -r '.tag_name')"; echo "Latest Version: \"$version_string\"" && \
     version_number="$(echo $version_string | cut -c 9- | sed 's/_/./g')" && \
     url="https://github.com/doxygen/doxygen/releases/download/$version_string/doxygen-$version_number.linux.bin.tar.gz"; echo "Download URL: \"$url\"" && \
-    wget -q $url && \
+    curl $CURL_OPTIONS -sLO $url && \
     mkdir /opt/doxygen && \
     tar xf doxygen-$version_number.linux.bin.tar.gz --strip-components=1 -C /opt/doxygen && \
     ln -s /opt/doxygen/bin/doxygen /usr/bin && \
@@ -275,20 +289,18 @@ RUN version_string="$(curl -s https://api.github.com/repos/doxygen/doxygen/relea
 #  88888888 88888888     Y8P     888       888
 #
 
-# +-----------------------------+
-# | LLVM                        |
-# +-----------------------------+
 # For an installation using the llvm.sh setup script:
-# RUN wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
+# RUN curl -sLO https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
 
 # for installation using add-apt-repository from software-properties-common
 #add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" && \
 #add-apt-repository "deb http://httpredir.debian.org/debian sid main" && \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN if [ "$DEBIAN_VERSION_NAME" == "trixie" ]; then DEBIAN_VERSION_NAME="unstable"; fi && \
+RUN echo "LLVM" && \
+    if [ "$DEBIAN_VERSION_NAME" == "trixie" ]; then DEBIAN_VERSION_NAME="unstable"; fi && \
     if [ "$DEBIAN_VERSION_NAME" == "unstable" ]; then LINKNAME=""; else LINKNAME="-$DEBIAN_VERSION_NAME"; fi && \
-    wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
+    curl -s https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
     echo "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
     echo "deb http://httpredir.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list && \
     apt-get update && apt-get install -y --no-install-recommends \
@@ -313,9 +325,10 @@ RUN if [ "$DEBIAN_VERSION_NAME" == "trixie" ]; then DEBIAN_VERSION_NAME="unstabl
     libunwind-$LLVM_VERSION-dev \
     libclang-rt-$LLVM_VERSION-dev \
     libpolly-$LLVM_VERSION-dev && \
+    # Cleanup
     apt-get autoremove -y && \
     apt-get clean autoclean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # add llvm to path
 ENV PATH="/usr/lib/llvm-${LLVM_VERSION}/bin:/usr/lib/llvm-${LLVM_VERSION}/include:${PATH}"
@@ -348,15 +361,13 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 #  888       888  "Y88P"  888  "Y88888
 #
 
-# +-----------------------------+
-# | Mold Linker            ~10MB|
-# +-----------------------------+
 # We are using Clang++ for compilation, so this download + compile step must happen after installing LLVM+Clang.
 # We don't need to call mold's ./install-build-deps.sh, because all build dependencies are present.
 # Note to overwrite ld: sudo ln -sf /opt/mold/bin/mold $(realpath /usr/bin/ld)
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
+RUN echo "MOLD" && \
+    version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
     git clone --depth=1 --branch "v$version" https://github.com/rui314/mold.git "/tmp/mold" && \
     cmake -S /tmp/mold -B /tmp/mold/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ && \
     cmake --build /tmp/mold/build -j "$(nproc)" && \
@@ -375,14 +386,16 @@ RUN version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest 
 #   "Y8888P88  "Y8888P"   "Y8888P"
 #
 
-# +-----------------------------+
-# | GCC                         |
-# +-----------------------------+
-
-RUN apt-get update && apt-get install -y --no-install-recommends cpp-14 g++-14
+RUN echo "GCC - Extract" && \
+    apt-get update && apt-get install -y --no-install-recommends cpp-14 g++-14 && \
+    # Cleanup
+    apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # COPY --from=downloader /tmp/gcc.xz /tmp/gcc.xz
-# RUN tar xf /tmp/gcc.xz && rm /tmp/gcc.xz && \
+# RUN echo "GCC - Extract" && \
+#     tar xf /tmp/gcc.xz && rm /tmp/gcc.xz && \
 #     apt-get update && apt-get install -y --no-install-recommends \
 #     libmpfr-dev libgmp3-dev libmpc-dev
 
@@ -393,16 +406,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends cpp-14 g++-14
 # installing into /usr instead of /usr/local to have consistent paths in CMakePresets:
 # /usr/bin/g++-12
 # /usr/bin/g++-13
-# WORKDIR /gcc-13.3.0
+# WORKDIR /gcc-14.2.0
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # https://gcc.gnu.org/install/configure.html
-# RUN ./configure \
+# RUN echo "GCC - Compile" && \
+#     ./configure \
 #     --libdir=/usr/lib \
 #     --libexecdir=/usr/lib \
 #     --prefix=/usr \
-#     --program-suffix=-13 \
+#     --program-suffix=-14 \
 #     --build=x86_64-linux-gnu \
 #     --host=x86_64-linux-gnu \
 #     --target=x86_64-linux-gnu \
@@ -449,7 +463,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 #WORKDIR /
 
 # remove gcc source folder and dependencies
-#RUN rm -rf gcc-13.3.0 && \
+#RUN echo "GCC - Cleanup" && \
+#    rm -rf gcc-14.2.0 && \
 #    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
 
 # reset default compiler to clang
@@ -467,9 +482,6 @@ ENV CC=/usr/bin/clang \
 #  d8888888888  "Y8888P"  888    888
 #
 
-# +-----------------------------+
-# | ZSH                         |
-# +-----------------------------+
 # Setup zsh, ohmyzsh, powerline fonts.
 # Setup zsh plugins: autosuggestions, autocompletions, history search.
 
@@ -478,22 +490,24 @@ ENV TERM=xterm-256color \
 
 # Setup zsh for the root user
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt-get update && apt-get install -y --no-install-recommends zsh fontconfig && \
+RUN echo "ZSH" && \
+    apt-get update && apt-get install -y --no-install-recommends zsh fontconfig && \
     # Download and install fonts-powerline
-    curl $CURL_OPTIONS_BAR -o fonts-powerline.deb -L http://ftp.de.debian.org/debian/pool/main/p/powerline/fonts-powerline_2.8.3-6_all.deb && \
+    curl $CURL_OPTIONS -o fonts-powerline.deb -L http://ftp.de.debian.org/debian/pool/main/p/powerline/fonts-powerline_2.8.3-6_all.deb && \
     dpkg -i fonts-powerline.deb && \
     rm fonts-powerline.deb && \
     # Install Oh My Zsh
-    curl $CURL_OPTIONS_BAR -fsSL https://install.ohmyz.sh | sh && \
+    curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
     # Add Zsh plugins
     git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
     git clone --depth=1 https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions && \
     git clone --depth=1 https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search && \
     # Update .zshrc
+    # Update .zshrc
     sed -i "s/plugins=(git)/plugins=(git zsh-completions zsh-autosuggestions zsh-history-substring-search)/" /root/.zshrc && \
     sed -i "s/ZSH_THEME=\"agnoster\"/ZSH_THEME=\"robbyrussell\"/" /root/.zshrc && \
-    # Cleanup
-    apt-get autoremove -y && \
+	# Cleanup
+	apt-get autoremove -y && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -504,8 +518,10 @@ ENV SHELL=/bin/zsh
 # | CLEANUP                     |
 # +-----------------------------+
 
-RUN apt-get autoremove -y && \
+RUN echo "CLeanup" && \
+    apt-get autoremove -y && \
     apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # +-----------------------------+
@@ -515,7 +531,8 @@ RUN apt-get autoremove -y && \
 ENV TZ=Europe/Berlin
 
 # configure german locale
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+RUN echo "Locale & Timezone" && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone && \
     dpkg-reconfigure tzdata && \
     sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -550,19 +567,22 @@ ENV DEBIAN_FRONTEND=dialog
 # # | SPIRV-TOOLS      |
 # # +------------------+
 # # Notes:
-# # - SPIRV_VERSION_TAG has to match your LLVM version.
+# # - SPIRV_VERSION_TAG has to match your LLVM version, see https://github.com/KhronosGroup/SPIRV-LLVM-Translator/releases/latest
 # # - spirv-tools dependency is needed for e.g. spirv-objdump, which is not in the vk sdk
-# # SPIRV_VERSION_TAG=v18.1.2
 
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# RUN SPIRV_VERSION_TAG=v18.1.2 && \
-#     LLVM_VERSION=$(llvm-config  --version) && \
+# RUN SPIRV_VERSION_TAG=$(curl -s https://api.github.com/repos/KhronosGroup/SPIRV-LLVM-Translator/releases/latest | jq -r '.tag_name') && \
+#     LLVM_VERSION=$(llvm-config --version) && \
 #     apt-get update && apt-get install -y --no-install-recommends \
 #         libcurl4-openssl-dev \
 #         libedit-dev \
 #         libzstd-dev \
 #     # spirv-tools is needed (for e.g. spirv-objdump, because not part of vulkan sdk)
-#         spirv-tools && \
+#         spirv-tools  && \
+#         # Cleanup
+#         apt-get autoremove -y && \
+#         apt-get clean autoclean && \
+#         rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 #     git clone --depth=1 https://github.com/KhronosGroup/SPIRV-LLVM-Translator.git --branch $SPIRV_VERSION_TAG && \
 #     mkdir SPIRV-LLVM-Translator/build && \
 #     cd SPIRV-LLVM-Translator/build && \
@@ -601,7 +621,11 @@ ENV DEBIAN_FRONTEND=dialog
 # #      libelf-dev \
 # #      libwayland-egl-backend-dev \
 # #      libxcb-glx0-dev \
-# #      libxxf86vm-dev
+# #      libxxf86vm-dev  && \
+#        # Cleanup
+#        apt-get autoremove -y && \
+#        apt-get clean autoclean && \
+#        rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # ENV CXXFLAGS="-O2 -g -DDEFAULT_SOFTWARE_DEPTH_BITS=31"
 
@@ -685,13 +709,10 @@ LABEL \
 #      Y8P      "Y88888 888 888  888 "Y888888 888  888        "Y8888P"  8888888P"  888    Y88b
 #
 
-# +-----------------------------+
-# | Vulkan SDK                  |
-# +-----------------------------+
-
 COPY --from=downloader /tmp/vulkansdk.xz /tmp/vulkansdk.xz
 
-RUN mkdir -p /opt/vulkan && \
+RUN echo "Vulkan SDK" && \
+    mkdir -p /opt/vulkan && \
     tar xf /tmp/vulkansdk.xz -C /opt/vulkan && \
     rm /tmp/vulkansdk.xz
 
@@ -721,8 +742,14 @@ ENV PATH="$VULKAN_SDK/bin:$PATH" \
 #RUN tar xvf /tmp/mesa-package.tar.gz -C / --strip-components 1 && \
 #    rm /tmp/mesa-package.tar.gz
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-      mesa-vulkan-drivers
+RUN echo "Mesa" && \
+    apt-get update && apt-get install -y --no-install-recommends \
+      libgl1-mesa-dri \
+      mesa-vulkan-drivers && \
+      # Cleanup
+      apt-get autoremove -y && \
+      apt-get clean autoclean && \
+      rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #
 # https://docs.mesa3d.org/envvars.html
