@@ -1,3 +1,4 @@
+![jakoch-cpp-devbox](assets/cpp-devbox-repo-card.png)
 
 # C++ DevBox [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jakoch/cpp-devbox/release.yml?branch=main&style=flat&logo=github&label=Image%20published%20on%20GHCR)](https://github.com/jakoch/cpp-devbox)
 
