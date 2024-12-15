@@ -68,6 +68,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - added nano
 - added AsciiArt to Dockerfile to utilize the VSCode MiniMap better
 - added Trixie Dockerfile into ./devcontainer/debian/trixie
+- added streetsidesoftware.vscode-spellchecker as vscode extensions,
+  including configuration. main config is cspell.json in root folder.
+  the file points to /build-tools/cspell, which contain the cspell.config.json.
+- added whitelist for spell checking: /build-tools/cspell/repo-words.txt
 
 **Changed**
 
