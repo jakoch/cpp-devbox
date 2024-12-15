@@ -58,24 +58,27 @@ is_installed_vulkan_sdk() {
 show_tool_versions() {
     # Assign versions to variables
     clang_version=$(clang --version | head -n1 | awk '{print $4}')
-    ninja_version=$(ninja --version)
     cmake_version=$(cmake --version | head -n1 | awk '{print $3}')
+    ninja_version=$(ninja --version)
     ccache_version=$(ccache --version | head -n1 | awk '{print $3}')
     mold_version=$(mold --version | awk '{print $2}')
     vcpkg_version=$(vcpkg --version | head -n1 | awk '{print substr($6, 0, 19)}')
     lldb_version=$(lldb --version | awk '{print $3}')
     valgrind_version=$(valgrind --version | cut -c 10-)
+    gdb_version=$(gdb --version | head -n1 | awk '{print $5}')
+    clang_tidy_version=$(clang-tidy --version | head -n1 | awk '{print $4}')
+    clang_format_version=$(clang-format --version | head -n1 | awk '{print $4}')
     cppcheck_version=$(cppcheck --version | awk '{print $2}')
     gprof_version=$(gprof --version | head -n1 | awk '{print $7}')
     perf_version=$(perf --version | awk '{print $3}')
     strace_version=$(strace --version | awk '{print $4}')
     ltrace_version=$(ltrace --version | head -n1 | awk '{print $2}')
-    vulkan_version=$(echo $VULKAN_SDK | awk -F '/' '{print $4}')
     doxygen_version=$(doxygen -v | awk '{print $1}')
     sphinx_version=$(sphinx-build --version | awk '{print $2}')
     git_version=$(git --version | cut -c 13-)
     github_cli_version=$(gh --version | awk '{print $3}')
     mesa_version=$(dpkg -l | grep "mesa-vulkan-drivers" | awk '{print $3}')
+    vulkan_version=$(echo $VULKAN_SDK | awk -F '/' '{print $4}')
 
     printf "## Version Overview\n\n"
 
@@ -84,10 +87,10 @@ show_tool_versions() {
     printf "|:--------------|:--------------------|\n"
 
     # Print each row of the table in Markdown format
-    print_row_clang
     print_row_gcc
-    print_row "Ninja" "$ninja_version"
+    print_row_clang
     print_row "CMake" "$cmake_version"
+    print_row "Ninja" "$ninja_version"
     print_row "ccache" "$ccache_version"
     print_row "mold" "$mold_version"
     print_row "vcpkg" "$vcpkg_version"
@@ -96,6 +99,8 @@ show_tool_versions() {
     print_row "cppcheck" "$cppcheck_version"
     print_row "gprof" "$gprof_version"
     print_row "perf" "$perf_version"
+    print_row "strace" "$strace_version"
+    print_row "ltrace" "$ltrace_version"
     print_row "Doxygen" "$doxygen_version"
     print_row "sphinx" "$sphinx_version"
     print_row "git" "$git_version"

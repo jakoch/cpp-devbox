@@ -32,16 +32,25 @@ show_tool_locations() {
   get_command_paths clang++-16
   get_command_paths clang++-17
   get_command_paths clang++-18
-  get_command_paths git
+  get_command_paths clang++-19
   get_command_paths cmake
   get_command_paths ninja
   get_command_paths ccache
   get_command_paths mold
   get_command_paths vcpkg
   get_command_paths lldb
+  get_command_paths valgrind
+  get_command_paths gdb
+  get_command_paths clang-tidy
+  get_command_paths clang-format
   get_command_paths cppcheck
-  get_command_paths git
+  get_command_paths gprof
+  get_command_paths perf
+  get_command_paths strace
+  get_command_paths ltrace
   get_command_paths doxygen
+  get_command_paths sphinx-build
+  get_command_paths git
   get_command_paths gh
 
   echo "### \033[31mlibc\033[0m"
