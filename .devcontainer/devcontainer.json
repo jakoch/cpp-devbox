@@ -5,7 +5,7 @@
     // The repository contains two images:
     // - "./debian/bookworm/Dockerfile" (default)
     // - "./debian/trixie/Dockerfile"
-    "dockerfile": "./debian/bookworm/Dockerfile",
+    "dockerfile": "./debian/trixie/Dockerfile",
     // sets the run context to this .devcontainer folder
     "context": "."
   },
@@ -37,6 +37,8 @@
         "hbenl.vscode-test-explorer",
         // LLVM
         "vadimcn.vscode-lldb",
+        // Spell checking
+        "streetsidesoftware.vscode-spell-checker",
         // Some additional extensions
         "Gruntfuggly.todo-tree",
         "aaron-bond.better-comments",
@@ -52,13 +54,16 @@
           "-l",
           "-i"
         ],
+        // LLVM
         "clangd.path": "clangd",
         "clang-format.executable": "clang-format",
         "cmake.cmakePath": "cmake",
         "cmake.ctestPath": "ctest",
         "cmake.generator": "Ninja",
         "cmake.configureOnOpen": true,
-        "lldb.executable": "/usr/bin/lldb"
+        "lldb.executable": "/usr/bin/lldb",
+        // Spellchecker
+        "cSpell.enabled": true
       }
     }
   },

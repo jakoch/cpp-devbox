@@ -35,7 +35,7 @@
 # | Versions Notes              |
 # +-----------------------------+
 # GCC: Because Debian Trixie ships GCC 14.2.0 by default, our GCC compilation is disabled.
-#      We install GCC 14 from the distro provided packages.
+#      We install GCC 14 from the distribution provided packages.
 
 # +-----------------------------+
 # | GLOBAL ARGS                 |
@@ -342,7 +342,7 @@ ENV PATH="/usr/lib/llvm-${LLVM_VERSION}/bin:/usr/lib/llvm-${LLVM_VERSION}/includ
 ENV LD_LIBRARY_PATH="/usr/lib:/usr/local/lib"
 ENV LD_LIBRARY_PATH="/usr/lib/llvm-${LLVM_VERSION}/lib:${LD_LIBRARY_PATH:-}"
 
-# unversionize the binaries
+# remove version from binaries
 RUN ln -s /usr/bin/clang-${LLVM_VERSION} /usr/bin/clang && \
     ln -s /usr/bin/clang++-${LLVM_VERSION} /usr/bin/clang++ && \
     ln -s /usr/bin/clang-format-${LLVM_VERSION} /usr/bin/clang-format

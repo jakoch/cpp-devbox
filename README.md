@@ -20,7 +20,7 @@ Both images are build using Debian 12 Bookworm and Debian 13 Trixie.
 
 All images are published to the Github Container Registry (GHCR).
 
-The purpose of these images is to setup a C++ development environment within Visual Studio Code using a [devcontainer config](https://github.com/jakoch/cpp-devbox#fetching-the-prebuild-container-images-using-a-devcontainer-config).
+The purpose of these images is to setup a C++ development environment within Visual Studio Code using a [devcontainer config](https://github.com/jakoch/cpp-devbox#fetching-the-prebuilt-container-images-using-a-devcontainer-config).
 
 ## What is pre-installed?
 
@@ -35,7 +35,7 @@ On top of the base image the following tools are installed:
 - CMake (latest version)
 - ccache (latest version)
 - vcpkg (latest version)
-- mold (lastet version)
+- mold (latest version)
 - Doxygen (latest version)
 
 ### [Dockerfile for Debian 12 - Bookworm](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/bookworm/Dockerfile) (stable)
@@ -74,7 +74,7 @@ You need the following things to run this:
 
 There are two ways of setting the container up.
 
-Either by building the container image locally or by fetching the prebuild container image from the Github container registry.
+Either by building the container image locally or by fetching the prebuilt container image from the Github container registry.
 
 ### Building the Container Image locally using VSCode
 
@@ -90,7 +90,7 @@ Either by building the container image locally or by fetching the prebuild conta
 
 - **Step 3.**  Enjoy! :sunglasses:
 
-### Fetching the prebuild container images using Docker
+### Fetching the prebuilt container images using Docker
 
 This container image is published to the Github Container Registry (GHCR).
 
@@ -118,7 +118,7 @@ You might also use this container image as a base image in your own `Dockerfile`
 FROM ghcr.io/jakoch/cpp-devbox:bookworm-latest
 ```
 
-### Fetching the prebuild container images using a .devcontainer config
+### Fetching the prebuilt container images using a .devcontainer config
 
 **Devcontainer.json**
 
@@ -144,7 +144,7 @@ You might use this container image in the `.devcontainer/devcontainer.json` file
 
 #### Developer Notes
 
-### Fetching the bleeding-edge prebuild container images
+### Fetching the bleeding-edge prebuilt container images
 
 The bleeding-edge container versions are build using Debian 13 - Trixie.
 

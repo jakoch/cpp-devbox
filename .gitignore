@@ -1,5 +1,4 @@
 # Ignore Visual Studio temporary build folders
-**/*build*
 build/
 out/
 

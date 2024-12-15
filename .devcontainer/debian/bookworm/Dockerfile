@@ -320,7 +320,7 @@ ENV PATH="/usr/lib/llvm-${LLVM_VERSION}/bin:/usr/lib/llvm-${LLVM_VERSION}/includ
 ENV LD_LIBRARY_PATH="/usr/lib:/usr/local/lib"
 ENV LD_LIBRARY_PATH="/usr/lib/llvm-${LLVM_VERSION}/lib:${LD_LIBRARY_PATH:-}"
 
-# unversionize the binaries
+# remove version from binaries
 RUN echo "LLVM symlink binaries" && \
     ln -s /usr/bin/clang-${LLVM_VERSION} /usr/bin/clang && \
     ln -s /usr/bin/clang++-${LLVM_VERSION} /usr/bin/clang++ && \

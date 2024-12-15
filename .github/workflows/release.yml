@@ -9,7 +9,7 @@ name: Release
 on:
   # You can manually run this workflow.
   workflow_dispatch:
-  # This workflow runs on pushing a semantic versionized tag (e.g. v1.0.0).
+  # This workflow runs on pushing a semantic versioned tag (e.g. v1.0.0).
   # This workflow does not run when pushing to the main branch.
   push:
     #branches:

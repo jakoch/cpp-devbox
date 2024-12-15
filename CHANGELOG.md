@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - added doxygen (latest binary)
 - added python3-sphinx, python3-sphinx-rtd-theme
 - added lcov
-- trixie image: added gcc-14 (from distro)
+- trixie image: added gcc-14 (from distribution)
 - both with-vulkansdk images: added mesa-vulkan-drivers (for software rendering using llvmpipe)
 
 **Changed**
@@ -44,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - changed versioning scheme
   - removed "nightly-" from scheduled builds; its now date only
-- ccache: switched from distro provided ccache to latest version from github
+- ccache: switched from distribution provided ccache to latest version from github
 - switched to SPDX-FileCopyrightText on copyright lines
 
 ## [1.0.3] - 2024-05-23
