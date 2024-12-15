@@ -28,7 +28,8 @@
     "*.lock",
     "*.log",
     "cspell.json",
-    "cspell*.{json,yaml}"
+    "cspell*.{json,yaml}",
+    "LICENSE"
   ],
   "dictionaryDefinitions": [
     {
