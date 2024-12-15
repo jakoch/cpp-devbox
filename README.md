@@ -4,9 +4,9 @@
 
 A Docker-based development container for C/C++ development.
 
-**Debian Linux 12 Bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.283.0, Mesa, CMake, VCPKG, mold, zsh**
+**Debian Linux 12 Bookworm with LLVM 19 & GCC 12+13, VulkanSDK 1.3.296.0, Mesa, CMake, VCPKG, mold, zsh**
 
-**Debian Linux 13 Trixie with LLVM 18 & GCC 14, VulkanSDK 1.3.283.0, Mesa, CMake, VCPKG, mold, zsh**
+**Debian Linux 13 Trixie with LLVM 19 & GCC 14, VulkanSDK 1.3.296.0, Mesa, CMake, VCPKG, mold, zsh**
 
 ## What is this?
 
@@ -32,6 +32,8 @@ On top of the base image the following tools are installed:
 - git, nano, jq
 - curl, wget
 - cppcheck, valgrind, lcov
+- strace, ltrace
+- perf, gprof
 - CMake (latest version)
 - ccache (latest version)
 - vcpkg (latest version)
@@ -42,7 +44,7 @@ On top of the base image the following tools are installed:
 
 The following C/C++ compilers and their toolchains are available:
 
-- LLVM 17.0.2
+- LLVM 19.1.5
 - GCC 12.2.0
 - GCC 13.3.0
 
@@ -50,16 +52,17 @@ The following C/C++ compilers and their toolchains are available:
 
 The following C/C++ compilers and their toolchains are available:
 
-- LLVM 18.1.8
+- LLVM 19.1.5
 - GCC 13.3.0
-- GCC 14.1.0
+- GCC 14.2.0
 
 ### VulkanSDK
 
 The `with-vulkansdk` image additionally contains:
 
-- Vulkan SDK 1.3.283.0
-- Mesa (for software rendering with [LLVMpipe](https://docs.mesa3d.org/drivers/llvmpipe.html))
+- Vulkan SDK 1.3.296.0
+- Mesa 22.3.6 (bookworm), 24.2.8 (trixie)
+  - (for software rendering with [LLVMpipe](https://docs.mesa3d.org/drivers/llvmpipe.html))
 
 [What is the latest version of VulkanSDK?](https://vulkan.lunarg.com/sdk/latest.json)
 
