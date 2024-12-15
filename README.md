@@ -12,9 +12,9 @@ A Docker-based development container for C/C++ development.
 
 This repository maintains Dockerfiles for generating two container images based on two Debian Linux versions.
 
-One image includes GCC and LLVM (container size: ~4GB).
+One image includes GCC and LLVM.
 
-The other image includes GCC, LLVM, and Vulkan SDK with Mesa (container size: ~6GB).
+The other image includes GCC, LLVM, and Vulkan SDK with Mesa.
 
 Both images are build using Debian 12 Bookworm and Debian 13 Trixie.
 
