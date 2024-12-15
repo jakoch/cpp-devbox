@@ -66,6 +66,8 @@ show_tool_versions() {
     lldb_version=$(lldb --version | awk '{print $3}')
     valgrind_version=$(valgrind --version | cut -c 10-)
     cppcheck_version=$(cppcheck --version | awk '{print $2}')
+    gprof_version=$(gprof --version | head -n1 | awk '{print $7}')
+    perf_version=$(perf --version | awk '{print $3}')
     vulkan_version=$(echo $VULKAN_SDK | awk -F '/' '{print $4}')
     doxygen_version=$(doxygen -v | awk '{print $1}')
     sphinx_version=$(sphinx-build --version | awk '{print $2}')
@@ -90,6 +92,8 @@ show_tool_versions() {
     print_row "lldb" "$lldb_version"
     print_row "Valgrind" "$valgrind_version"
     print_row "cppcheck" "$cppcheck_version"
+    print_row "gprof" "$gprof_version"
+    print_row "perf" "$perf_version"
     print_row "Doxygen" "$doxygen_version"
     print_row "sphinx" "$sphinx_version"
     print_row "git" "$git_version"

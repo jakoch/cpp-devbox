@@ -114,7 +114,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 RUN echo "Packages" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
     gnupg2 ca-certificates software-properties-common \
-    build-essential cppcheck valgrind lcov wget git nano jq \
+    build-essential cppcheck valgrind linux-perf lcov wget git nano jq \
     # required by Visual Studio
     g++ gdb make ninja-build rsync zip sudo \
     # required by VCPKG

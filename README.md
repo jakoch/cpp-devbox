@@ -2,12 +2,11 @@
 
 # C++ DevBox [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jakoch/cpp-devbox/release.yml?branch=main&style=flat&logo=github&label=Image%20published%20on%20GHCR)](https://github.com/jakoch/cpp-devbox)
 
-A Docker development box for C/C++.
+A Docker-based development container for C/C++ development.
 
 **Debian Linux 12 Bookworm with LLVM 17 & GCC 13, VulkanSDK 1.3.283.0, Mesa, CMake, VCPKG, mold, zsh**
 
 **Debian Linux 13 Trixie with LLVM 18 & GCC 14, VulkanSDK 1.3.283.0, Mesa, CMake, VCPKG, mold, zsh**
-
 
 ## What is this?
 
