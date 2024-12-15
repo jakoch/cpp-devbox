@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Changed**
 - bookworm & trixie images: updated VulkanSDK to 1.3.296.0
 - bookworm image: updated LLVM to 19
+- CURL_OPTIONS cleanup, removed CURL_OPTIONS_BAR
+- instead "-y" use "--assume-yes" on apt-get
 
 ## [1.0.5] - 2024-07-09
 
