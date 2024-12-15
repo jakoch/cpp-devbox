@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.6] - 2024-12-xx
 
 **Added**
-- bookworm & trixie images: added linux-perf
+- bookworm & trixie images: added linux-perf, strace, ltrace
 - added gprof and linux-perf to show-tool-versions.sh
 - added echo statements for each run command section
 - added streetsidesoftware.vscode-spellchecker as vscode extensions,

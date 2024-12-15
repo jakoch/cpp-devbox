@@ -68,6 +68,8 @@ show_tool_versions() {
     cppcheck_version=$(cppcheck --version | awk '{print $2}')
     gprof_version=$(gprof --version | head -n1 | awk '{print $7}')
     perf_version=$(perf --version | awk '{print $3}')
+    strace_version=$(strace --version | awk '{print $4}')
+    ltrace_version=$(ltrace --version | head -n1 | awk '{print $2}')
     vulkan_version=$(echo $VULKAN_SDK | awk -F '/' '{print $4}')
     doxygen_version=$(doxygen -v | awk '{print $1}')
     sphinx_version=$(sphinx-build --version | awk '{print $2}')

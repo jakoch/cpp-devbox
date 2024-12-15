@@ -70,10 +70,12 @@ libxrandr
 libxshmfence
 libxxf
 libzstd
+linux
 lldb
 llvmpipe
 localedef
 localtime
+ltrace
 mlibc
 multiarch
 multilib
