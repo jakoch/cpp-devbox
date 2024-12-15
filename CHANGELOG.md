@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.6] - 2024-12-xx
+
+**Added**
+- added echo statements for each run command section
+
+**Changed**
+- bookworm & trixie images: updated VulkanSDK to 1.3.296.0
+- bookworm image: updated LLVM to 19
+
 ## [1.0.5] - 2024-07-09
 
 **Added**

@@ -54,51 +54,53 @@ is_installed_vulkan_sdk() {
     is_installed "libvulkan1"
 }
 
-# Assign versions to variables
-clang_version=$(clang --version | head -n1 | awk '{print $4}')
-ninja_version=$(ninja --version)
-cmake_version=$(cmake --version | head -n1 | awk '{print $3}')
-ccache_version=$(ccache --version | head -n1 | awk '{print $3}')
-mold_version=$(mold --version | awk '{print $2}')
-vcpkg_version=$(vcpkg --version | head -n1 | awk '{print substr($6, 0, 19)}')
-lldb_version=$(lldb --version | awk '{print $3}')
-valgrind_version=$(valgrind --version | cut -c 10-)
-cppcheck_version=$(cppcheck --version | awk '{print $2}')
-vulkan_version=$(echo $VULKAN_SDK | awk -F '/' '{print $4}')
-doxygen_version=$(doxygen -v | awk '{print $1}')
-sphinx_version=$(sphinx-build --version | awk '{print $2}')
-git_version=$(git --version | cut -c 13-)
-github_cli_version=$(gh --version | awk '{print $3}')
-mesa_version=$(dpkg -l | grep "mesa-vulkan-drivers" | awk '{print $3}')
+# Function to print the tool versions in a table
+show_tool_versions() {
+    # Assign versions to variables
+    clang_version=$(clang --version | head -n1 | awk '{print $4}')
+    ninja_version=$(ninja --version)
+    cmake_version=$(cmake --version | head -n1 | awk '{print $3}')
+    ccache_version=$(ccache --version | head -n1 | awk '{print $3}')
+    mold_version=$(mold --version | awk '{print $2}')
+    vcpkg_version=$(vcpkg --version | head -n1 | awk '{print substr($6, 0, 19)}')
+    lldb_version=$(lldb --version | awk '{print $3}')
+    valgrind_version=$(valgrind --version | cut -c 10-)
+    cppcheck_version=$(cppcheck --version | awk '{print $2}')
+    vulkan_version=$(echo $VULKAN_SDK | awk -F '/' '{print $4}')
+    doxygen_version=$(doxygen -v | awk '{print $1}')
+    sphinx_version=$(sphinx-build --version | awk '{print $2}')
+    git_version=$(git --version | cut -c 13-)
+    github_cli_version=$(gh --version | awk '{print $3}')
+    mesa_version=$(dpkg -l | grep "mesa-vulkan-drivers" | awk '{print $3}')
 
-#
-# Print Readme
-#
+    printf "## Version Overview\n\n"
 
-printf "## Version Overview\n\n"
+    # Print table header in Markdown format
+    printf "| Tool          | Version             |\n"
+    printf "|:--------------|:--------------------|\n"
 
-# Print table header in Markdown format
-printf "| Tool          | Version             |\n"
-printf "|:--------------|:--------------------|\n"
+    # Print each row of the table in Markdown format
+    print_row_clang
+    print_row_gcc
+    print_row "Ninja" "$ninja_version"
+    print_row "CMake" "$cmake_version"
+    print_row "ccache" "$ccache_version"
+    print_row "mold" "$mold_version"
+    print_row "vcpkg" "$vcpkg_version"
+    print_row "lldb" "$lldb_version"
+    print_row "Valgrind" "$valgrind_version"
+    print_row "cppcheck" "$cppcheck_version"
+    print_row "Doxygen" "$doxygen_version"
+    print_row "sphinx" "$sphinx_version"
+    print_row "git" "$git_version"
+    print_row "gh cli" "$github_cli_version"
+    if is_installed_mesa; then
+        print_row "Mesa" "$mesa_version"
+    fi
+    if is_installed_vulkan_sdk; then
+        print_row "Vulkan SDK" "$vulkan_version"
+    fi
+}
 
-# Print each row of the table in Markdown format
-print_row_clang
-print_row_gcc
-print_row "Ninja" "$ninja_version"
-print_row "CMake" "$cmake_version"
-print_row "ccache" "$ccache_version"
-print_row "mold" "$mold_version"
-print_row "vcpkg" "$vcpkg_version"
-print_row "lldb" "$lldb_version"
-print_row "Valgrind" "$valgrind_version"
-print_row "cppcheck" "$cppcheck_version"
-print_row "Doxygen" "$doxygen_version"
-print_row "sphinx" "$sphinx_version"
-print_row "git" "$git_version"
-print_row "gh cli" "$github_cli_version"
-if is_installed_mesa; then
-    print_row "Mesa" "$mesa_version"
-fi
-if is_installed_vulkan_sdk; then
-    print_row "Vulkan SDK" "$vulkan_version"
-fi
+# Call the function to show the tool versions
+show_tool_versions

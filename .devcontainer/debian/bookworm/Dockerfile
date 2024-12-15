@@ -17,8 +17,12 @@
 
 # Debian Bookworm
 #
-# LLVM: https://packages.debian.org/bookworm/llvm  14.0
-# GCC:  https://packages.debian.org/bookworm/gcc   12.2.0
+# Package Versions
+#
+# LLVM:  https://packages.debian.org/bookworm/llvm                 14.0
+# GCC:   https://packages.debian.org/bookworm/gcc                  12.2.0
+# Vulkan https://packages.debian.org/bookworm/libvulkan-dev        1.3.239.0
+# MESA:  https://packages.debian.org/bookworm/mesa-vulkan-drivers  22.3.6
 
 # +-----------------------------+
 # | GLOBAL ARGS                 |
@@ -28,8 +32,8 @@
 ARG DEBIAN_VERSION=12
 ARG DEBIAN_VERSION_NAME=bookworm
 ARG GCC_VERSION=13
-ARG LLVM_VERSION=17
-ARG VULKAN_VERSION=1.3.283.0
+ARG LLVM_VERSION=19
+ARG VULKAN_VERSION=1.3.296.0
 
 # +-----------------------------+
 # | Downloader                  |
@@ -44,12 +48,12 @@ FROM debian:bookworm-slim AS downloader
 ARG VULKAN_VERSION
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    CURL_OPTIONS="--progress-bar --location"
-#ENV CURL_OPTIONS="--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
+    CURL_OPTIONS="--silent --show-error --retry 5 --location"
 
 WORKDIR /tmp
 RUN echo "Download Stage" && \
-    apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
+    ca-certificates curl && \
     curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.3.0/gcc-13.3.0.tar.xz" && \
     curl $CURL_OPTIONS -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
 	# Cleanup
@@ -105,10 +109,10 @@ LABEL \
 #                                                  "Y88P"
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    CURL_OPTIONS="--progress-bar --location"
+    CURL_OPTIONS="--silent --show-error --retry 5 --location"
 
 RUN echo "Packages" && \
-    apt-get update && apt-get install -y --no-install-recommends \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
     gnupg2 ca-certificates software-properties-common \
     build-essential cppcheck valgrind lcov wget git nano jq \
     # required by Visual Studio
@@ -151,7 +155,8 @@ RUN echo "GITHUB CLI" && \
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
     chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
-    apt-get update && apt-get install -y --no-install-recommends gh && \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
+    gh && \
     # Cleanup
     apt-get autoremove -y && \
     apt-get clean autoclean && \
@@ -227,7 +232,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "CCACHE" && \
     version="$(curl -s https://api.github.com/repos/ccache/ccache/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
     url="https://github.com/ccache/ccache/releases/download/v$version/ccache-$version-linux-x86_64.tar.xz"; echo "Download URL: \"$url\"" && \
-    wget -q $url && \
+    curl $CURL_OPTIONS -sLO $url && \
     mkdir -p /opt/ccache/bin &&\
     tar xf ccache-$version-linux-x86_64.tar.xz --strip-components=1 -C /opt/ccache/bin && \
 	ln -s /opt/ccache/bin/ccache /usr/bin && \
@@ -275,13 +280,13 @@ RUN echo "DOXYGEN" && \
 # | LLVM                        |
 # +-----------------------------+
 # For an installation using the llvm.sh setup script:
-# RUN wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
+# RUN curl -sLO https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "LLVM" && \
     curl -s https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
     add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain-$DEBIAN_VERSION_NAME-$LLVM_VERSION main" && \
-    apt-get update && apt-get install -y --no-install-recommends \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
     clang-$LLVM_VERSION \
     clangd-$LLVM_VERSION \
     clang-tidy-$LLVM_VERSION \
@@ -373,7 +378,7 @@ RUN echo "MOLD" && \
 COPY --from=downloader /tmp/gcc.xz /tmp/gcc.xz
 RUN echo "GCC - Extract" && \
     tar xf /tmp/gcc.xz && rm /tmp/gcc.xz && \
-    apt-get update && apt-get install -y --no-install-recommends \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
     libmpfr-dev libgmp3-dev libmpc-dev
 
 # set default compiler to gcc
@@ -473,7 +478,8 @@ ENV TERM=xterm-256color \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "ZSH" && \
-    apt-get update && apt-get install -y --no-install-recommends zsh powerline fonts-powerline && \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
+    zsh powerline fonts-powerline && \
     # Install Oh My Zsh
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
     # Add Zsh plugins
@@ -599,7 +605,7 @@ ENV PATH="$VULKAN_SDK/bin:$PATH" \
 # which is a simple spinning-cube app to demonstrate Vulkan functionality.
 #
 RUN echo "Mesa" && \
-    apt-get update && apt-get install -y --no-install-recommends \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
       libgl1-mesa-dri \
       mesa-vulkan-drivers && \
       # Cleanup

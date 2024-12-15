@@ -17,21 +17,25 @@
 
 # Debian Trixie
 #
-# LLVM:  https://packages.debian.org/trixie/llvm             19.0
-# GCC:   https://packages.debian.org/trixie/gcc              14.2.0
-# MESA:  https://packages.debian.org/trixie/libgl1-mesa-dri  24.2.8
-# Vulkan https://packages.debian.org/trixie/libvulkan-dev    1.3.296.0
-
-# Note: Because Debian Trixie ships GCC 14.2.0 by default, our GCC compilation is disabled.
-#       and we install GCC 14 from the distro provided packages.
-
-# +-----------------------------+
-# | Latest Version              |
-# +-----------------------------+
-# GCC:        https://ftp.gnu.org/gnu/gcc/
+# Package Versions
+#
+# LLVM:   https://packages.debian.org/trixie/llvm                 19.0
+# GCC:    https://packages.debian.org/trixie/gcc                  14.2.0
+# Vulkan: https://packages.debian.org/trixie/libvulkan-dev        1.3.296.0
+# MESA:   https://packages.debian.org/trixie/mesa-vulkan-drivers  24.2.8
+#
+# Latest Versions
+#
 # LLVM:
-# VULKAN SDK: https://vulkan.lunarg.com/sdk/latest.json
-# MESA:       https://archive.mesa3d.org/
+# GCC:    https://ftp.gnu.org/gnu/gcc/
+# Vulkan: https://vulkan.lunarg.com/sdk/latest.json
+# MESA:   https://archive.mesa3d.org/
+#
+# +-----------------------------+
+# | Versions Notes              |
+# +-----------------------------+
+# GCC: Because Debian Trixie ships GCC 14.2.0 by default, our GCC compilation is disabled.
+#      We install GCC 14 from the distro provided packages.
 
 # +-----------------------------+
 # | GLOBAL ARGS                 |
@@ -39,7 +43,7 @@
 # The following global args need to be redeclared without a value inside each FROM section.
 # For example, VULKAN_VERSION is used in the FROM sections of "downloader" and "cpp-devbox-with-vulkansdk".
 # The value is set in the build command, e.g. --build-arg VULKAN_VERSION=1.3.296.0
-# For the latest version of
+
 ARG DEBIAN_VERSION=13
 ARG DEBIAN_VERSION_NAME=trixie
 ARG GCC_VERSION=14
@@ -63,12 +67,12 @@ ARG VULKAN_VERSION
 ARG MESA_VERSION
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    CURL_OPTIONS="--progress-bar --location"
-#ENV CURL_OPTIONS="--silent --show-error --retry 5 --connect-timeout 20 --max-time 10"
+    CURL_OPTIONS="--silent --show-error --retry 5 --location"
 
 WORKDIR /tmp
 RUN echo "Download Stage" && \
-    apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
+    ca-certificates curl && \
 #   curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.xz" && \
     curl $CURL_OPTIONS -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
     curl $CURL_OPTIONS -o mesa.xz "https://archive.mesa3d.org/mesa-${MESA_VERSION}.tar.xz" && \
@@ -125,10 +129,10 @@ LABEL \
 #                                                  "Y88P"
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    CURL_OPTIONS="--progress-bar --location"
+    CURL_OPTIONS="--silent --show-error --retry 5 --location"
 
 RUN echo "Packages" && \
-    apt-get update && apt-get install -y --no-install-recommends \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
     gnupg2 ca-certificates \
     # package seems gone, was used in LLVM section below: software-properties-common \
     build-essential cppcheck valgrind lcov wget git nano jq \
@@ -172,7 +176,8 @@ RUN echo "GITHUB CLI" && \
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
     chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
-    apt-get update && apt-get install -y --no-install-recommends gh && \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
+    gh && \
     # Cleanup
     apt-get autoremove -y && \
     apt-get clean autoclean && \
@@ -303,7 +308,7 @@ RUN echo "LLVM" && \
     curl -s https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
     echo "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
     echo "deb http://httpredir.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list && \
-    apt-get update && apt-get install -y --no-install-recommends \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
     clang-$LLVM_VERSION \
     clangd-$LLVM_VERSION \
     clang-tidy-$LLVM_VERSION \
@@ -387,7 +392,8 @@ RUN echo "MOLD" && \
 #
 
 RUN echo "GCC - Extract" && \
-    apt-get update && apt-get install -y --no-install-recommends cpp-14 g++-14 && \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
+    cpp-14 g++-14 && \
     # Cleanup
     apt-get autoremove -y && \
     apt-get clean autoclean && \
@@ -396,7 +402,7 @@ RUN echo "GCC - Extract" && \
 # COPY --from=downloader /tmp/gcc.xz /tmp/gcc.xz
 # RUN echo "GCC - Extract" && \
 #     tar xf /tmp/gcc.xz && rm /tmp/gcc.xz && \
-#     apt-get update && apt-get install -y --no-install-recommends \
+#     apt-get update && apt-get install --no-install-recommends --assume-yes \
 #     libmpfr-dev libgmp3-dev libmpc-dev
 
 # set default compiler to gcc
@@ -491,7 +497,8 @@ ENV TERM=xterm-256color \
 # Setup zsh for the root user
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "ZSH" && \
-    apt-get update && apt-get install -y --no-install-recommends zsh fontconfig && \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
+    zsh fontconfig && \
     # Download and install fonts-powerline
     curl $CURL_OPTIONS -o fonts-powerline.deb -L http://ftp.de.debian.org/debian/pool/main/p/powerline/fonts-powerline_2.8.3-6_all.deb && \
     dpkg -i fonts-powerline.deb && \
@@ -502,7 +509,6 @@ RUN echo "ZSH" && \
     git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
     git clone --depth=1 https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions && \
     git clone --depth=1 https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search && \
-    # Update .zshrc
     # Update .zshrc
     sed -i "s/plugins=(git)/plugins=(git zsh-completions zsh-autosuggestions zsh-history-substring-search)/" /root/.zshrc && \
     sed -i "s/ZSH_THEME=\"agnoster\"/ZSH_THEME=\"robbyrussell\"/" /root/.zshrc && \
@@ -521,7 +527,6 @@ ENV SHELL=/bin/zsh
 RUN echo "CLeanup" && \
     apt-get autoremove -y && \
     apt-get clean autoclean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # +-----------------------------+
@@ -546,10 +551,9 @@ RUN echo "Locale & Timezone" && \
 #    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 # ENV LANG=de_DE.UTF-8 LC_ALL=de_DE.UTF-8
 
-ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
-
-# Switch back to dialog for any ad-hoc use of apt-get
-ENV DEBIAN_FRONTEND=dialog
+ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
+    # Switch back to dialog for any ad-hoc use of apt-get
+    DEBIAN_FRONTEND=dialog
 
 # +----------------------------------+
 # | Stage: mesa-builder              |
@@ -573,7 +577,7 @@ ENV DEBIAN_FRONTEND=dialog
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # RUN SPIRV_VERSION_TAG=$(curl -s https://api.github.com/repos/KhronosGroup/SPIRV-LLVM-Translator/releases/latest | jq -r '.tag_name') && \
 #     LLVM_VERSION=$(llvm-config --version) && \
-#     apt-get update && apt-get install -y --no-install-recommends \
+#     apt-get update && apt-get install --no-install-recommends --assume-yes \
 #         libcurl4-openssl-dev \
 #         libedit-dev \
 #         libzstd-dev \
@@ -599,7 +603,7 @@ ENV DEBIAN_FRONTEND=dialog
 #     #
 #     # TODO not sure if we need all this
 #     #
-#     apt-get update && apt-get install -y --no-install-recommends \
+#     apt-get update && apt-get install --no-install-recommends --assume-yes \
 #       meson bison byacc flex libzstd-dev pkg-config \
 #       python3-mako python3-ply \
 #       libdrm2 libdrm-dev \
@@ -729,9 +733,9 @@ ENV PATH="$VULKAN_SDK/bin:$PATH" \
 
 # Mesa's software Vulkan implementation is called lavapipe (libvulkan_lvp).
 #
-# To setup Vulkan to use the CPU for rendering, you need to set the env var
-# VK_ICD_FILENAMES to point to the software renderer.
-# That JSON file points to the location of the driver (libvulkan_lvp.so).
+# To configure Vulkan to use the CPU for rendering, set the environment variable
+# VK_ICD_FILENAMES to the path of the software renderer's JSON file.
+# This JSON file specifies the location of the driver (libvulkan_lvp.so).
 #
 # To test CPU rendering using the Mesa Vulkan drivers, you can use "vkcube",
 # which is a simple spinning-cube app to demonstrate Vulkan functionality.
@@ -743,7 +747,7 @@ ENV PATH="$VULKAN_SDK/bin:$PATH" \
 #    rm /tmp/mesa-package.tar.gz
 
 RUN echo "Mesa" && \
-    apt-get update && apt-get install -y --no-install-recommends \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
       libgl1-mesa-dri \
       mesa-vulkan-drivers && \
       # Cleanup
