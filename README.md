@@ -29,12 +29,12 @@ The purpose of these images is to setup a C++ development environment within Vis
 [bookworm-with-vulkansdk-latest]: https://ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-latest
 [trixie-with-vulkansdk-latest]: https://ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-latest
 
-| ⭣ Version &nbsp;&nbsp; OS ⭢ | Debian 12 - Bookworm | Debian 13 - Trixie |
+| ⭣ Version Tag &nbsp;&nbsp; OS ⭢ | Debian 12 - Bookworm | Debian 13 - Trixie |
 |-----------------------------------|---------------------------|--------------------|
-| Latest | [![bookworm-latest](https://img.shields.io/badge/bookworm-latest-blue?logo=docker)](https://ghcr.io/jakoch/cpp-devbox:bookworm-latest) ![bookworm-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-latest&label=image+size&trim=)  | [![trixie-latest](https://img.shields.io/badge/trixie-latest-blue?logo=docker)](https://ghcr.io/jakoch/cpp-devbox:trixie-latest) ![trixie-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-latest&label=image+size&trim=)
-| Latest "with-vulkansdk" | [![bookworm-with-vulkansdk-latest](https://img.shields.io/badge/bookworm--with--vulkansdk-latest-blue?logo=docker)](https://ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-latest) ![bookworm-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-with-vulkansdk-latest&label=image+size&trim=) | [![trixie-with-vulkansdk-latest](https://img.shields.io/badge/trixie--with--vulkansdk-latest-blue?logo=docker)](https://ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-latest) ![trixie-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-with-vulkansdk-latest&label=image+size&trim=)
+| Latest | [bookworm-latest] ![bookworm-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-latest&label=image+size&trim=)  | [trixie-latest] ![trixie-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-latest&label=image+size&trim=)
+| Latest "with-vulkansdk" | [bookworm-with-vulkansdk-latest] ![bookworm-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-with-vulkansdk-latest&label=image+size&trim=) | [trixie-with-vulkansdk-latest] ![trixie-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-with-vulkansdk-latest&label=image+size&trim=)
 
-The docker badges are clickable, directing you to the corresponding GHCR package.
+You find the [versioning scheme for images below](#versioning-scheme-for-images).
 
 ## What is pre-installed?
 
@@ -178,6 +178,8 @@ These images are unstable because:
 ### Versioning Scheme for Images
 
 The container images use the following versioning scheme.
+
+The base URL for GHCR.io is: `ghcr.io/jakoch/cpp-devbox:{tag}`.
 
 #### Scheduled Builds
 
