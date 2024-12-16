@@ -20,6 +20,7 @@ DAPRON
 DCMAKE
 DDEFAULT
 Debian
+debian
 debconf
 DEBCONF
 defusedxml
