@@ -101,6 +101,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     CURL_OPTIONS="--silent --show-error --retry 5 --location"
 
 RUN echo "Packages" && \
+    # avoid debconf: delaying package configuration, since apt-utils is not installed
     apt-get update && apt-get install --no-install-recommends --assume-yes \
         curl tar xz-utils sed perl \
         gcc g++ \
@@ -129,11 +130,15 @@ RUN echo "LLVM 14" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
         llvm-14 llvm-14-dev llvm-14-tools clang-14
 
-RUN echo "Installing APRON" && \
+RUN echo "APRON" && \
     cd tmp && \
-    curl $CURL_OPTIONS -o apron.xz https://github.com/antoinemine/apron/archive/refs/tags/v0.9.15.tar.gz && \
+    # Download
+    url="https://github.com/antoinemine/apron/archive/refs/tags/v0.9.15.tar.gz"; echo "Download URL: \"$url\"" && \
+    curl $CURL_OPTIONS -o apron.xz -O $url && \
+    # Extract
     tar xzf apron.xz && \
     mv apron-* apron && \
+    # Build
     cd apron && \
     ./configure && \
     make -j4 && \
@@ -143,16 +148,17 @@ RUN echo "Installing APRON" && \
 
 COPY --from=downloader /tmp/ikos.xz /tmp/ikos.xz
 
-RUN echo "IKOS" && \
+RUN echo "Extract" && \
     cd /tmp && \
     tar zxf ikos.xz && \
     # remove version from folder name
-    mv ikos-* ikos && \
-    cd /tmp/ikos && \
+    mv ikos-* ikos
+
+RUN cd /tmp/ikos && \
     # Patch IKOS to allow LLVM14+
     #sed -i 's/(LLVM_VERSION VERSION_LESS "14") OR (NOT (LLVM_VERSION VERSION_LESS "15"))/(LLVM_VERSION VERSION_LESS "14")/g' analyzer/CMakeLists.txt frontend/llvm/CMakeLists.txt && \
     # Build IKOS
-    echo "Build" && \
+    echo "Build IKOS" && \
     mkdir build && cd build && \
     cmake \
     -DCMAKE_INSTALL_PREFIX="/opt/ikos" \
@@ -225,13 +231,12 @@ RUN echo "Packages" && \
     gnupg2 ca-certificates \
     # package seems gone, was used in LLVM section below: software-properties-common \
     build-essential \
-    cppcheck valgrind linux-perf lcov strace ltrace \
     wget git nano jq \
     # code analysis
     cppcheck \
     valgrind \
     # profiling
-    #gprof \
+    # gprof
     linux-perf \
     # code coverage
     gcovr lcov \

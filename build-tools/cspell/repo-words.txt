@@ -19,7 +19,9 @@ CXXFLAGS
 DAPRON
 DCMAKE
 DDEFAULT
-debian
+Debian
+debconf
+DEBCONF
 defusedxml
 DESTDIR
 devbox
@@ -91,6 +93,7 @@ mlibc
 multiarch
 multilib
 noninteractive
+NOWARNINGS
 objdump
 ohmyzsh
 omyzsh

@@ -15,17 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Added**
 - trixie: added ikos static analyzer
-- bookworm & trixie images: added linux-perf, strace, ltrace
-- added gprof and linux-perf to show-tool-versions.sh
-- added echo statements for each run command section
-- added streetsidesoftware.vscode-spellchecker as vscode extensions,
-  including configuration. main config is cspell.json in root folder.
-  the file points to /build-tools/cspell, which contain the cspell.config.json.
-- added whitelist for spell checking: /build-tools/cspell/repo-words.txt
+- added linux-perf, strace, ltrace
+- added spellchecker (streetsidesoftware.vscode-spellchecker as vscode extension)
+- added spellchecker configuration. the main config is '/cspell.json', which
+  points to '/build-tools/cspell/cspell.config.json'.
+- added whitelist for spell checking: '/build-tools/cspell/repo-words.txt'
 
 **Changed**
 - bookworm & trixie images: updated VulkanSDK to 1.3.296.0
 - bookworm image: updated LLVM to 19
+- updated show-tool-versions.sh and show-tool-locations.sh
 - CURL_OPTIONS cleanup, removed CURL_OPTIONS_BAR
 - instead "-y" use "--assume-yes" on apt-get
 - silence warning "debconf: delaying package configuration, since apt-utils is not installed"

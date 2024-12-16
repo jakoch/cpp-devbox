@@ -5,7 +5,7 @@
     // The repository contains two images:
     // - "./debian/bookworm/Dockerfile" (default)
     // - "./debian/trixie/Dockerfile"
-    "dockerfile": "./debian/trixie/Dockerfile",
+    "dockerfile": "./debian/bookworm/Dockerfile",
     // sets the run context to this .devcontainer folder
     "context": "."
   },
