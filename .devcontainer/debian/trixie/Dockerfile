@@ -65,14 +65,17 @@ FROM debian:trixie-slim AS downloader
 #ARG GCC_VERSION
 ARG VULKAN_VERSION
 ARG MESA_VERSION
+ARG IKOS_VERSION=3.4
 
 ENV DEBIAN_FRONTEND=noninteractive \
+    DEBCONF_NOWARNINGS="yes" \
     CURL_OPTIONS="--silent --show-error --retry 5 --location"
 
 WORKDIR /tmp
 RUN echo "Download Stage" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
     ca-certificates curl && \
+    curl $CURL_OPTIONS -o ikos.xz https://github.com/NASA-SW-VnV/ikos/archive/refs/tags/v${IKOS_VERSION}.tar.gz && \
 #   curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.xz" && \
     curl $CURL_OPTIONS -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
     curl $CURL_OPTIONS -o mesa.xz "https://archive.mesa3d.org/mesa-${MESA_VERSION}.tar.xz" && \
@@ -82,6 +85,94 @@ RUN echo "Download Stage" && \
     rm -rf /var/lib/apt/lists/* && \
     # List files in /tmp
     ls -la /tmp
+
+# +-----------------------------+
+# | IKOS Build Stage            |
+# +-----------------------------+
+
+FROM debian:trixie-slim AS ikos-builder
+
+ARG DEBIAN_VERSION=13
+ARG DEBIAN_VERSION_NAME=trixie
+ARG LLVM_VERSION=14
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    DEBCONF_NOWARNINGS="yes" \
+    CURL_OPTIONS="--silent --show-error --retry 5 --location"
+
+RUN echo "Packages" && \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
+        curl tar xz-utils sed perl \
+        gcc g++ \
+        cmake \
+        make \
+        libgmp-dev \
+        libboost-dev libboost-filesystem-dev libboost-thread-dev libboost-test-dev \
+        libsqlite3-dev \
+        libtbb-dev \
+        libz-dev \
+        libzstd-dev \
+        libedit-dev \
+        libmpfr-dev \
+        libppl-dev \
+        libgmp-dev \
+        python3 python3-pip python3-venv
+
+# https://github.com/NASA-SW-VnV/ikos?tab=readme-ov-file#dependencies
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN echo "LLVM 14" && \
+    if [ "$DEBIAN_VERSION_NAME" == "trixie" ]; then DEBIAN_VERSION_NAME="unstable"; fi && \
+    if [ "$DEBIAN_VERSION_NAME" == "unstable" ]; then LINKNAME=""; else LINKNAME="-$DEBIAN_VERSION_NAME"; fi && \
+    curl -s https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
+    echo "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
+    echo "deb http://httpredir.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list && \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
+        llvm-14 llvm-14-dev llvm-14-tools clang-14
+
+RUN echo "APRON" && \
+    cd tmp && \
+    echo "Download" && \
+    curl $CURL_OPTIONS -o apron.xz https://github.com/antoinemine/apron/archive/refs/tags/v0.9.15.tar.gz && \
+    echo "Extract" && \
+    tar xzf apron.xz && \
+    mv apron-* apron && \
+    cd apron && \
+    echo "Build" && \
+    ./configure && \
+    make -j4 && \
+    make install && \
+    echo "Cleanup" && \
+    rm -rf /tmp/*
+
+COPY --from=downloader /tmp/ikos.xz /tmp/ikos.xz
+
+RUN echo "IKOS" && \
+    echo "Extract" && \
+    cd /tmp && \
+    tar zxf ikos.xz && \
+    # remove version from folder name
+    mv ikos-* ikos && \
+    cd /tmp/ikos && \
+    # Patch IKOS to allow LLVM14+
+    #sed -i 's/(LLVM_VERSION VERSION_LESS "14") OR (NOT (LLVM_VERSION VERSION_LESS "15"))/(LLVM_VERSION VERSION_LESS "14")/g' analyzer/CMakeLists.txt frontend/llvm/CMakeLists.txt && \
+    echo "Build" && \
+    mkdir build && cd build && \
+    cmake \
+    -DCMAKE_INSTALL_PREFIX="/opt/ikos" \
+    -DCMAKE_BUILD_TYPE="Debug" \
+    -DLLVM_CONFIG_EXECUTABLE="/usr/lib/llvm-$LLVM_VERSION/bin/llvm-config" \
+    -DMPFR_ROOT=/usr \
+    -DPPL_ROOT=/usr \
+    -DAPRON_ROOT=/usr/local \
+    .. && \
+    make -j4 && \
+    make install && \
+    echo "Test" && \
+    /opt/ikos/bin/ikos --version && \
+    echo "Cleanup" && \
+    apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # +-----------------------------+
 # | BASE IMAGE                  |        See https://hub.docker.com/_/debian
@@ -129,6 +220,7 @@ LABEL \
 #                                                  "Y88P"
 
 ENV DEBIAN_FRONTEND=noninteractive \
+    DEBCONF_NOWARNINGS="yes" \
     CURL_OPTIONS="--silent --show-error --retry 5 --location"
 
 RUN echo "Packages" && \
@@ -136,8 +228,17 @@ RUN echo "Packages" && \
     gnupg2 ca-certificates \
     # package seems gone, was used in LLVM section below: software-properties-common \
     build-essential \
-    cppcheck valgrind linux-perf lcov strace ltrace \
     wget git nano jq \
+    # code analysis
+    cppcheck \
+    valgrind \
+    # profiling
+    gprof \
+    linux-perf \
+    # code coverage
+    gcovr lcov \
+    # tracing
+    strace ltrace \
     # required by Visual Studio
     g++ gdb make ninja-build rsync zip sudo \
     # required by VCPKG
@@ -150,7 +251,7 @@ RUN echo "Packages" && \
     locales \
     # shell
     zsh \
-    # optional tools for Doxygen
+    # optional tools for Doxygen: Sphinx + Graphviz
     python3 python3-pip \
     python3-sphinx python3-sphinx-rtd-theme python3-defusedxml sphinx-common \
     graphviz && \
@@ -262,14 +363,14 @@ RUN echo "CCACHE" && \
 	rm ccache-$version-linux-x86_64.tar.xz
 
 #
-#  8888888b.   .d88888b.  Y88b   d88P Y88b   d88P  .d8888b.  8888888888 888b    888
-#  888  "Y88b d88P" "Y88b  Y88b d88P   Y88b d88P  d88P  Y88b 888        8888b   888
-#  888    888 888     888   Y88o88P     Y88o88P   888    888 888        88888b  888
-#  888    888 888     888    Y888P       Y888P    888        8888888    888Y88b 888
-#  888    888 888     888    d888b        888     888  88888 888        888 Y88b888
-#  888    888 888     888   d88888b       888     888    888 888        888  Y88888
-#  888  .d88P Y88b. .d88P  d88P Y88b      888     Y88b  d88P 888        888   Y8888
-#  8888888P"   "Y88888P"  d88P   Y88b     888      "Y8888P88 8888888888 888    Y888
+#  888  .d8888b.  8888888b.  888    888 8888888888 888b    888
+#  888 d88P  Y88b 888   Y88b 888   d88P 888        8888b   888
+#  888 888    888 888    888 888  d8P   888        88888b  888
+#  888 888        888   d88P 888d88K    8888888    888Y88b 888
+#  888 888        8888888P"  8888888b   888        888 Y88b888
+#  888 888    888 888        888  Y88b  888        888  Y88888
+#  888 Y88b  d88P 888        888   Y88b 888        888   Y8888
+#  888  "Y8888P"  888        888    Y88b 8888888888 888    Y888
 #
 
 # We are using the prebuilt binaries for x64.
@@ -284,6 +385,21 @@ RUN echo "DOXYGEN" && \
     tar xf doxygen-$version_number.linux.bin.tar.gz --strip-components=1 -C /opt/doxygen && \
     ln -s /opt/doxygen/bin/doxygen /usr/bin && \
     rm doxygen-$version_number.linux.bin.tar.gz
+
+#
+#  8888888 888    d8P   .d88888b.   .d8888b.
+#    888   888   d8P   d88P" "Y88b d88P  Y88b
+#    888   888  d8P    888     888 Y88b.
+#    888   888d88K     888     888  "Y888b.
+#    888   8888888b    888     888     "Y88b.
+#    888   888  Y88b   888     888       "888
+#    888   888   Y88b  Y88b. .d88P Y88b  d88P
+#  8888888 888    Y88b  "Y88888P"   "Y8888P"
+#
+
+COPY --from=ikos-builder /opt/ikos /opt/ikos
+
+ENV PATH="/opt/ikos/bin:${PATH}"
 
 #
 #  888      888      888     888 888b     d888

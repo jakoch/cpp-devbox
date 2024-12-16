@@ -69,10 +69,13 @@ show_tool_versions() {
     clang_tidy_version=$(clang-tidy --version | head -n1 | awk '{print $4}')
     clang_format_version=$(clang-format --version | head -n1 | awk '{print $4}')
     cppcheck_version=$(cppcheck --version | awk '{print $2}')
+    ikos_version=$(ikos --version | head -n1 | awk '{print $2}')
     gprof_version=$(gprof --version | head -n1 | awk '{print $7}')
     perf_version=$(perf --version | awk '{print $3}')
     strace_version=$(strace --version | head -n1 | awk '{print $4}')
     ltrace_version=$(ltrace --version | head -n1 | awk '{print $2}')
+    lcov=$(lcov --version | head -n1 | awk '{print $4}')
+    gcovr=$(gcovr --version | head -n1 | awk '{print $2}')
     doxygen_version=$(doxygen -v | awk '{print $1}')
     sphinx_version=$(sphinx-build --version | awk '{print $2}')
     git_version=$(git --version | cut -c 13-)
@@ -97,6 +100,7 @@ show_tool_versions() {
     print_row "lldb" "$lldb_version"
     print_row "Valgrind" "$valgrind_version"
     print_row "cppcheck" "$cppcheck_version"
+    print_row "ikos" "$ikos_version"
     print_row "gprof" "$gprof_version"
     print_row "perf" "$perf_version"
     print_row "strace" "$strace_version"

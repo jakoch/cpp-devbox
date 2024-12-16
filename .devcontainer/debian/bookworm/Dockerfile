@@ -48,6 +48,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VULKAN_VERSION
 
 ENV DEBIAN_FRONTEND=noninteractive \
+    DEBCONF_NOWARNINGS="yes" \
     CURL_OPTIONS="--silent --show-error --retry 5 --location"
 
 WORKDIR /tmp
@@ -109,14 +110,24 @@ LABEL \
 #                                                  "Y88P"
 
 ENV DEBIAN_FRONTEND=noninteractive \
+    DEBCONF_NOWARNINGS="yes" \
     CURL_OPTIONS="--silent --show-error --retry 5 --location"
 
 RUN echo "Packages" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
     gnupg2 ca-certificates software-properties-common \
     build-essential \
-    cppcheck valgrind linux-perf lcov strace ltrace \
     wget git nano jq \
+    # code analysis
+    cppcheck \
+    valgrind \
+    # profiling
+    gprof \
+    linux-perf \
+    # code coverage
+    gcovr lcov \
+    # tracing
+    strace ltrace \
     # required by Visual Studio
     g++ gdb make ninja-build rsync zip sudo \
     # required by VCPKG
@@ -129,7 +140,7 @@ RUN echo "Packages" && \
     locales \
     # shell
     zsh \
-    # optional tools for Doxygen
+    # optional tools for Doxygen: Sphinx + Graphviz
     python3 python3-pip \
     python3-sphinx python3-sphinx-rtd-theme python3-defusedxml sphinx-common \
     graphviz && \

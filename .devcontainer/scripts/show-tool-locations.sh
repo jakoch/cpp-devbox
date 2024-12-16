@@ -44,10 +44,13 @@ show_tool_locations() {
   get_command_paths clang-tidy
   get_command_paths clang-format
   get_command_paths cppcheck
+  get_command_paths ikos
   get_command_paths gprof
   get_command_paths perf
   get_command_paths strace
   get_command_paths ltrace
+  get_command_paths lcov
+  get_command_paths gcovr
   get_command_paths doxygen
   get_command_paths sphinx-build
   get_command_paths git

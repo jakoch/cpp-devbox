@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.6] - 2024-12-xx
 
 **Added**
+- trixie: added ikos static analyzer
 - bookworm & trixie images: added linux-perf, strace, ltrace
 - added gprof and linux-perf to show-tool-versions.sh
 - added echo statements for each run command section
@@ -27,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - bookworm image: updated LLVM to 19
 - CURL_OPTIONS cleanup, removed CURL_OPTIONS_BAR
 - instead "-y" use "--assume-yes" on apt-get
+- silence warning "debconf: delaying package configuration, since apt-utils is not installed"
+  by using ENV DEBCONF_NOWARNINGS="yes"
 
 ## [1.0.5] - 2024-07-09
 
