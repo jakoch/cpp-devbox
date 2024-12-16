@@ -129,25 +129,21 @@ RUN echo "LLVM 14" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
         llvm-14 llvm-14-dev llvm-14-tools clang-14
 
-RUN echo "APRON" && \
+RUN echo "Installing APRON" && \
     cd tmp && \
-    echo "Download" && \
     curl $CURL_OPTIONS -o apron.xz https://github.com/antoinemine/apron/archive/refs/tags/v0.9.15.tar.gz && \
-    echo "Extract" && \
     tar xzf apron.xz && \
     mv apron-* apron && \
     cd apron && \
-    echo "Build" && \
     ./configure && \
     make -j4 && \
     make install && \
-    echo "Cleanup" && \
+    # Cleanup
     rm -rf /tmp/*
 
 COPY --from=downloader /tmp/ikos.xz /tmp/ikos.xz
 
 RUN echo "IKOS" && \
-    echo "Extract" && \
     cd /tmp && \
     tar zxf ikos.xz && \
     # remove version from folder name
@@ -155,6 +151,7 @@ RUN echo "IKOS" && \
     cd /tmp/ikos && \
     # Patch IKOS to allow LLVM14+
     #sed -i 's/(LLVM_VERSION VERSION_LESS "14") OR (NOT (LLVM_VERSION VERSION_LESS "15"))/(LLVM_VERSION VERSION_LESS "14")/g' analyzer/CMakeLists.txt frontend/llvm/CMakeLists.txt && \
+    # Build IKOS
     echo "Build" && \
     mkdir build && cd build && \
     cmake \
@@ -228,12 +225,13 @@ RUN echo "Packages" && \
     gnupg2 ca-certificates \
     # package seems gone, was used in LLVM section below: software-properties-common \
     build-essential \
+    cppcheck valgrind linux-perf lcov strace ltrace \
     wget git nano jq \
     # code analysis
     cppcheck \
     valgrind \
     # profiling
-    gprof \
+    #gprof \
     linux-perf \
     # code coverage
     gcovr lcov \
@@ -251,7 +249,7 @@ RUN echo "Packages" && \
     locales \
     # shell
     zsh \
-    # optional tools for Doxygen: Sphinx + Graphviz
+    # optional tools for Doxygen
     python3 python3-pip \
     python3-sphinx python3-sphinx-rtd-theme python3-defusedxml sphinx-common \
     graphviz && \

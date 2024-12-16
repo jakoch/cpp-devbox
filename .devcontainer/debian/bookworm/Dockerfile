@@ -122,7 +122,7 @@ RUN echo "Packages" && \
     cppcheck \
     valgrind \
     # profiling
-    gprof \
+    # gprof
     linux-perf \
     # code coverage
     gcovr lcov \
