@@ -31,8 +31,8 @@ The purpose of these images is to setup a C++ development environment within Vis
 
 | ⭣ Version Tag &nbsp;&nbsp; OS ⭢ | Debian 12 - Bookworm | Debian 13 - Trixie |
 |-----------------------------------|---------------------------|--------------------|
-| Latest | [bookworm-latest] ![bookworm-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-latest&label=image+size&trim=)  | [trixie-latest] ![trixie-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-latest&label=image+size&trim=)
-| Latest "with-vulkansdk" | [bookworm-with-vulkansdk-latest] ![bookworm-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-with-vulkansdk-latest&label=image+size&trim=) | [trixie-with-vulkansdk-latest] ![trixie-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-with-vulkansdk-latest&label=image+size&trim=)
+| Latest | ![bookworm-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-latest&label=image+size&trim=) <br> [bookworm-latest] | ![trixie-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-latest&label=image+size&trim=) <br>[trixie-latest]
+| Latest "with-vulkansdk" | ![bookworm-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-with-vulkansdk-latest&label=image+size&trim=) <br>[bookworm-with-vulkansdk-latest] |   ![trixie-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-with-vulkansdk-latest&label=image+size&trim=) <br> [trixie-with-vulkansdk-latest]
 
 You find the [versioning scheme for images below](#versioning-scheme-for-images).
 
