@@ -74,7 +74,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 WORKDIR /tmp
 RUN echo "Download Stage" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-    ca-certificates curl && \
+    ca-certificates curl jq && \
     curl $CURL_OPTIONS -o ikos.xz https://github.com/NASA-SW-VnV/ikos/archive/refs/tags/v${IKOS_VERSION}.tar.gz && \
 #   curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.xz" && \
     curl $CURL_OPTIONS -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
@@ -89,7 +89,6 @@ RUN echo "Download Stage" && \
 # +-----------------------------+
 # | IKOS Build Stage            |
 # +-----------------------------+
-# https://github.com/NASA-SW-VnV/ikos?tab=readme-ov-file#dependencies
 
 FROM debian:trixie-slim AS ikos-builder
 
@@ -104,7 +103,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 RUN echo "Packages" && \
     # avoid debconf: delaying package configuration, since apt-utils is not installed
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-        curl tar xz-utils sed perl \
+        curl jq tar xz-utils sed perl \
         gcc g++ \
         cmake \
         make \
@@ -120,6 +119,7 @@ RUN echo "Packages" && \
         libgmp-dev \
         python3 python3-pip python3-venv
 
+# https://github.com/NASA-SW-VnV/ikos?tab=readme-ov-file#dependencies
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "LLVM 14" && \
     if [ "$DEBIAN_VERSION_NAME" == "trixie" ]; then DEBIAN_VERSION_NAME="unstable"; fi && \
@@ -128,17 +128,12 @@ RUN echo "LLVM 14" && \
     echo "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
     echo "deb http://httpredir.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-        llvm-14 llvm-14-dev llvm-14-tools clang-14 && \
-    echo "Cleanup" && \
-    apt-get autoremove -y && \
-    apt-get clean autoclean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+        llvm-14 llvm-14-dev llvm-14-tools clang-14
 
 RUN echo "APRON" && \
     cd tmp && \
-    # Download - Latest Version
-    version="$(curl -s https://api.github.com/repos/antoinemine/apron/releases/latest | jq -r '.tag_name')"; echo "Latest Version: \"$version\"" && \
-    url="https://github.com/antoinemine/apron/archive/refs/tags/$version.tar.gz"; echo "Download URL: \"$url\"" && \
+    # Download
+    url="https://github.com/antoinemine/apron/archive/refs/tags/v0.9.15.tar.gz"; echo "Download URL: \"$url\"" && \
     curl $CURL_OPTIONS -o apron.xz -O $url && \
     # Extract
     tar xzf apron.xz && \
@@ -153,13 +148,16 @@ RUN echo "APRON" && \
 
 COPY --from=downloader /tmp/ikos.xz /tmp/ikos.xz
 
-RUN echo "IKOS" && \
-    echo "Extract" && \
+RUN echo "Extract" && \
     cd /tmp && \
     tar zxf ikos.xz && \
     # remove version from folder name
-    mv ikos-* ikos && \
-    cd /tmp/ikos && \
+    mv ikos-* ikos
+
+RUN cd /tmp/ikos && \
+    # Patch IKOS to allow LLVM14+
+    #sed -i 's/(LLVM_VERSION VERSION_LESS "14") OR (NOT (LLVM_VERSION VERSION_LESS "15"))/(LLVM_VERSION VERSION_LESS "14")/g' analyzer/CMakeLists.txt frontend/llvm/CMakeLists.txt && \
+    # Build IKOS
     echo "Build IKOS" && \
     mkdir build && cd build && \
     cmake \

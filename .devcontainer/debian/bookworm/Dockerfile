@@ -55,7 +55,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 WORKDIR /tmp
 RUN echo "Download Stage" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-    ca-certificates curl && \
+    ca-certificates curl jq && \
     curl $CURL_OPTIONS -o ikos.xz "https://github.com/NASA-SW-VnV/ikos/archive/refs/tags/v${IKOS_VERSION}.tar.gz" && \
     curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.3.0/gcc-13.3.0.tar.xz" && \
     curl $CURL_OPTIONS -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
@@ -91,7 +91,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 RUN echo "Packages" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-        curl tar xz-utils sed perl \
+        curl jq tar xz-utils sed perl \
         gcc g++ \
         cmake \
         make \
