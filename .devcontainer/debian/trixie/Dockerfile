@@ -19,10 +19,10 @@
 #
 # Package Versions
 #
-# LLVM:   https://packages.debian.org/trixie/llvm                 19.0
-# GCC:    https://packages.debian.org/trixie/gcc                  14.2.0
-# Vulkan: https://packages.debian.org/trixie/libvulkan-dev        1.3.296.0
-# MESA:   https://packages.debian.org/trixie/mesa-vulkan-drivers  24.2.8
+# LLVM:   https://packages.debian.org/trixie/llvm                   19.0
+# GCC:    https://packages.debian.org/trixie/gcc                    14.2.0
+# Vulkan: https://packages.debian.org/trixie/libvulkan-dev          1.3.296.0
+# MESA:   https://packages.debian.org/trixie/mesa-vulkan-drivers    24.2.8
 #
 # Latest Versions
 #

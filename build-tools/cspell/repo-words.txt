@@ -19,10 +19,10 @@ CXXFLAGS
 DAPRON
 DCMAKE
 DDEFAULT
-Debian
-debian
 debconf
 DEBCONF
+debian
+Debian
 defusedxml
 DESTDIR
 devbox
@@ -101,10 +101,13 @@ omyzsh
 osmesa
 pipefail
 powerline
+pygments
+PYTHONPATH
 randr
 realpath
 robbyrussell
 sarif
+setuptools
 shellcheck
 sourcelist
 sourceparts

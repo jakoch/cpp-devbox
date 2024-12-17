@@ -19,10 +19,10 @@
 #
 # Package Versions
 #
-# LLVM:  https://packages.debian.org/bookworm/llvm                 14.0
-# GCC:   https://packages.debian.org/bookworm/gcc                  12.2.0
-# Vulkan https://packages.debian.org/bookworm/libvulkan-dev        1.3.239.0
-# MESA:  https://packages.debian.org/bookworm/mesa-vulkan-drivers  22.3.6
+# LLVM:   https://packages.debian.org/bookworm/llvm                 14.0
+# GCC:    https://packages.debian.org/bookworm/gcc                  12.2.0
+# Vulkan: https://packages.debian.org/bookworm/libvulkan-dev        1.3.239.0
+# MESA:   https://packages.debian.org/bookworm/mesa-vulkan-drivers  22.3.6
 
 # +-----------------------------+
 # | GLOBAL ARGS                 |
@@ -72,9 +72,11 @@ RUN echo "Download Stage" && \
 #
 # Well... IKOS is a bit of a pain to build.
 # It requires LLVM 14, which is not available in the Debian 12 "bookworm" repositories.
-# https://apt.llvm.org/bookworm/pool/main/l/ (15-19, snapshot)
+# https://apt.llvm.org/buster/pool/main/l/   (7-19, snapshot)
+# https://apt.llvm.org/bullseye/pool/main/l/ (11-19, snapshot)
+# https://apt.llvm.org/bookworm/pool/main/l/ (15-19, snapshot) <- not available
 # https://apt.llvm.org/unstable/pool/main/l/ (all versions)
-# So we a trixie slim image is used to install LLVM 14.
+# So we take a trixie/unstable slim image and install LLVM 14.
 
 FROM debian:trixie-slim AS ikos-builder
 
@@ -102,7 +104,11 @@ RUN echo "Packages" && \
         libmpfr-dev \
         libppl-dev \
         libgmp-dev \
-        python3 python3-pip python3-venv python3-pygments python3-setuptools
+        python3 python3-pip python3-setuptools python3-wheel python3-build && \
+    echo "Cleanup" && \
+    apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # https://github.com/NASA-SW-VnV/ikos?tab=readme-ov-file#dependencies
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -113,8 +119,16 @@ RUN echo "LLVM 14" && \
     echo "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
     echo "deb http://httpredir.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-        llvm-14 llvm-14-dev llvm-14-tools clang-14
+        llvm-14 llvm-14-dev llvm-14-tools clang-14 && \
+    echo "Cleanup" && \
+    apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# +-----------------------------+
+# | APRON                       |
+# +-----------------------------+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "APRON" && \
     cd tmp && \
     # Download
@@ -151,13 +165,22 @@ RUN echo "IKOS" && \
     -DMPFR_ROOT=/usr \
     -DPPL_ROOT=/usr \
     -DAPRON_ROOT=/usr/local \
+    -DINSTALL_PYTHON_VIRTUALENV=off \
+    -DPYTHON_VENV_EXECUTABLE=/usr/bin/python3 \
     .. && \
     make -j4 && \
-    make install && \
+    make install
+
+RUN echo "Build Python Module" && \
+    cd /tmp/ikos/build && \
+    python3 -m build --no-isolation --outdir "/opt/ikos/dist/" --wheel "analyzer/python" && \
+    find /opt/ikos/dist -name "*.whl" -exec ls -la {} + && \
+    echo "Install Python Module" && \
+    python3 -m pip install "/opt/ikos/dist/ikos-3.4-py3-none-any.whl" --target "/opt/ikos/python-module" && \
+    export PYTHONPATH="/opt/ikos/python-module" && \
     echo "Test" && \
+    ls -lahr /opt/ikos/bin && \
     /opt/ikos/bin/ikos --version && \
-	# https://github.com/NASA-SW-VnV/ikos/blob/master/TROUBLESHOOTING.md#could-not-find-ikos-python-module-while-running-ikos
-	#ls -lahr /opt/ikos/lib/python*/site-packages/ikos && \
     echo "Cleanup" && \
     apt-get autoremove -y && \
     apt-get clean autoclean && \
@@ -221,7 +244,7 @@ RUN echo "Packages" && \
     cppcheck \
     valgrind \
     # profiling
-    # gprof
+    # gprof (is part of binutils and already installed)
     linux-perf \
     # code coverage
     gcovr lcov \
@@ -229,10 +252,8 @@ RUN echo "Packages" && \
     strace ltrace \
     # required by Visual Studio
     g++ gdb make ninja-build rsync zip sudo \
-    # required by VCPKG
-    openssh-server tar curl unzip pkg-config bash-completion \
-    # optional downloader for VCPKG
-    aria2 \
+    # required by VCPKG + optional downloader
+    openssh-server tar curl unzip pkg-config bash-completion aria2 \
     # required by LLVM
     lsb-release zlib1g-dev \
     # locale
@@ -390,7 +411,20 @@ RUN echo "DOXYGEN" && \
 
 COPY --from=ikos-builder /opt/ikos /opt/ikos
 
-ENV PATH="/opt/ikos/bin:${PATH}"
+ENV PATH="/opt/ikos/bin:${PATH}" \
+	PYTHONPATH="/opt/ikos/python-module"
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN apt-get update && apt-get install --no-install-recommends --assume-yes \
+    python3 python3-pip python3-venv python3-pygments python3-setuptools && \
+    # Cleanup
+    apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    # Install IKOS Python module
+	python3 -m pip install "/opt/ikos/dist/ikos-3.4-py3-none-any.whl" --target "/opt/ikos/python-module"
+	# Test
+	#ikos --version
 
 #
 #  888      888      888     888 888b     d888
