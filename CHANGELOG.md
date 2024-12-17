@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.6] - 2024-12-xx
 
 **Added**
-- trixie: added ikos static analyzer
+- added ikos static analyzer
 - added linux-perf, strace, ltrace
 - added spellchecker (streetsidesoftware.vscode-spellchecker as vscode extension)
 - added spellchecker configuration. the main config is '/cspell.json', which
