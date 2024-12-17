@@ -63,7 +63,7 @@ RUN echo "Download Stage" && \
 	apt-get autoremove -y && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/* && \
-    # List files in /tmp
+    # List downloaded files
     ls -la /tmp
 
 # +-----------------------------+
@@ -131,8 +131,9 @@ RUN echo "LLVM 14" && \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "APRON" && \
     cd tmp && \
-    # Download
-    url="https://github.com/antoinemine/apron/archive/refs/tags/v0.9.15.tar.gz"; echo "Download URL: \"$url\"" && \
+    # Download - Latest Version
+    version="$(curl -s https://api.github.com/repos/antoinemine/apron/releases/latest | jq -r '.tag_name')"; echo "Latest Version: \"$version\"" && \
+    url="https://github.com/antoinemine/apron/archive/refs/tags/$version.tar.gz"; echo "Download URL: \"$url\"" && \
     curl $CURL_OPTIONS -o apron.xz -O $url && \
     # Extract
     tar xzf apron.xz && \
@@ -169,13 +170,12 @@ RUN echo "IKOS" && \
     -DPYTHON_VENV_EXECUTABLE=/usr/bin/python3 \
     .. && \
     make -j4 && \
-    make install
-
-RUN echo "Build Python Module" && \
+    make install && \
+	echo "Build Python Module" && \
     cd /tmp/ikos/build && \
     python3 -m build --no-isolation --outdir "/opt/ikos/dist/" --wheel "analyzer/python" && \
     find /opt/ikos/dist -name "*.whl" -exec ls -la {} + && \
-    echo "Install Python Module" && \
+	echo "Install Python Module" && \
     python3 -m pip install "/opt/ikos/dist/ikos-3.4-py3-none-any.whl" --target "/opt/ikos/python-module" && \
     export PYTHONPATH="/opt/ikos/python-module" && \
     echo "Test" && \

@@ -132,8 +132,9 @@ RUN echo "LLVM 14" && \
 
 RUN echo "APRON" && \
     cd tmp && \
-    # Download
-    url="https://github.com/antoinemine/apron/archive/refs/tags/v0.9.15.tar.gz"; echo "Download URL: \"$url\"" && \
+    # Download - Latest Version
+    version="$(curl -s https://api.github.com/repos/antoinemine/apron/releases/latest | jq -r '.tag_name')"; echo "Latest Version: \"$version\"" && \
+    url="https://github.com/antoinemine/apron/archive/refs/tags/$version.tar.gz"; echo "Download URL: \"$url\"" && \
     curl $CURL_OPTIONS -o apron.xz -O $url && \
     # Extract
     tar xzf apron.xz && \
