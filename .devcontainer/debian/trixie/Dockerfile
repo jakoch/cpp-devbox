@@ -89,6 +89,7 @@ RUN echo "Download Stage" && \
 # +-----------------------------+
 # | IKOS Build Stage            |
 # +-----------------------------+
+# https://github.com/NASA-SW-VnV/ikos?tab=readme-ov-file#dependencies
 
 FROM debian:trixie-slim AS ikos-builder
 
@@ -119,7 +120,6 @@ RUN echo "Packages" && \
         libgmp-dev \
         python3 python3-pip python3-venv
 
-# https://github.com/NASA-SW-VnV/ikos?tab=readme-ov-file#dependencies
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "LLVM 14" && \
     if [ "$DEBIAN_VERSION_NAME" == "trixie" ]; then DEBIAN_VERSION_NAME="unstable"; fi && \
@@ -128,7 +128,11 @@ RUN echo "LLVM 14" && \
     echo "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
     echo "deb http://httpredir.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-        llvm-14 llvm-14-dev llvm-14-tools clang-14
+        llvm-14 llvm-14-dev llvm-14-tools clang-14 && \
+    echo "Cleanup" && \
+    apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN echo "APRON" && \
     cd tmp && \
@@ -149,16 +153,13 @@ RUN echo "APRON" && \
 
 COPY --from=downloader /tmp/ikos.xz /tmp/ikos.xz
 
-RUN echo "Extract" && \
+RUN echo "IKOS" && \
+    echo "Extract" && \
     cd /tmp && \
     tar zxf ikos.xz && \
     # remove version from folder name
-    mv ikos-* ikos
-
-RUN cd /tmp/ikos && \
-    # Patch IKOS to allow LLVM14+
-    #sed -i 's/(LLVM_VERSION VERSION_LESS "14") OR (NOT (LLVM_VERSION VERSION_LESS "15"))/(LLVM_VERSION VERSION_LESS "14")/g' analyzer/CMakeLists.txt frontend/llvm/CMakeLists.txt && \
-    # Build IKOS
+    mv ikos-* ikos && \
+    cd /tmp/ikos && \
     echo "Build IKOS" && \
     mkdir build && cd build && \
     cmake \

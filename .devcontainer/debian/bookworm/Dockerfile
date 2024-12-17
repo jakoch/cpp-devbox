@@ -69,7 +69,8 @@ RUN echo "Download Stage" && \
 # +-----------------------------+
 # | IKOS Build Stage            |
 # +-----------------------------+
-#
+## https://github.com/NASA-SW-VnV/ikos?tab=readme-ov-file#dependencies
+
 # Well... IKOS is a bit of a pain to build.
 # It requires LLVM 14, which is not available in the Debian 12 "bookworm" repositories.
 # https://apt.llvm.org/buster/pool/main/l/   (7-19, snapshot)
@@ -110,7 +111,6 @@ RUN echo "Packages" && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# https://github.com/NASA-SW-VnV/ikos?tab=readme-ov-file#dependencies
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "LLVM 14" && \
     if [ "$DEBIAN_VERSION_NAME" == "trixie" ]; then DEBIAN_VERSION_NAME="unstable"; fi && \
@@ -149,14 +149,12 @@ RUN echo "APRON" && \
 COPY --from=downloader /tmp/ikos.xz /tmp/ikos.xz
 
 RUN echo "IKOS" && \
+    echo "Extract" && \
     cd /tmp && \
     tar zxf ikos.xz && \
     # remove version from folder name
     mv ikos-* ikos && \
     cd /tmp/ikos && \
-    # Patch IKOS to allow LLVM14+
-    #sed -i 's/(LLVM_VERSION VERSION_LESS "14") OR (NOT (LLVM_VERSION VERSION_LESS "15"))/(LLVM_VERSION VERSION_LESS "14")/g' analyzer/CMakeLists.txt frontend/llvm/CMakeLists.txt && \
-    # Build IKOS
     echo "Build" && \
     mkdir build && cd build && \
     cmake \
@@ -179,7 +177,7 @@ RUN echo "IKOS" && \
     python3 -m pip install "/opt/ikos/dist/ikos-3.4-py3-none-any.whl" --target "/opt/ikos/python-module" && \
     export PYTHONPATH="/opt/ikos/python-module" && \
     echo "Test" && \
-    ls -lahr /opt/ikos/bin && \
+    #ls -lahr /opt/ikos/bin && \
     /opt/ikos/bin/ikos --version && \
     echo "Cleanup" && \
     apt-get autoremove -y && \
