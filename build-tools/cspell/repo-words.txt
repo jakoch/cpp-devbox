@@ -35,6 +35,8 @@ dpkg
 DPPL
 Filemode
 fontconfig
+gcov
+gcovr
 githubcli
 gles
 glslang
