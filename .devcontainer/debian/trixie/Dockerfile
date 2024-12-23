@@ -238,7 +238,7 @@ RUN echo "Packages" && \
     # profiling
     # gprof
     linux-perf \
-    # code coverage
+    # code coverage (gcov is part of GCC)
     gcovr lcov \
     # tracing
     strace ltrace \

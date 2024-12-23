@@ -75,6 +75,7 @@ show_tool_versions() {
     strace_version=$(strace --version | head -n1 | awk '{print $4}')
     ltrace_version=$(ltrace --version | head -n1 | awk '{print $2}')
     lcov=$(lcov --version | head -n1 | awk '{print $4}')
+    gcov=$(gcov --version | head -n1 | awk '{print $3}' | cut -d'-' -f1)
     gcovr=$(gcovr --version | head -n1 | awk '{print $2}')
     doxygen_version=$(doxygen -v | awk '{print $1}')
     sphinx_version=$(sphinx-build --version | awk '{print $2}')

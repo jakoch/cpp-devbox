@@ -244,7 +244,7 @@ RUN echo "Packages" && \
     # profiling
     # gprof (is part of binutils and already installed)
     linux-perf \
-    # code coverage
+    # code coverage (gcov is part of GCC)
     gcovr lcov \
     # tracing
     strace ltrace \

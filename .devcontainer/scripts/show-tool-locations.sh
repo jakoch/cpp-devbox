@@ -50,6 +50,7 @@ show_tool_locations() {
   get_command_paths strace
   get_command_paths ltrace
   get_command_paths lcov
+  get_command_paths gcov
   get_command_paths gcovr
   get_command_paths doxygen
   get_command_paths sphinx-build
