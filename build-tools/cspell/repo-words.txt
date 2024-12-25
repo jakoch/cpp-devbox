@@ -33,6 +33,7 @@ Dockerfiles
 DOCKERHUB
 dpkg
 DPPL
+fasm
 Filemode
 fontconfig
 gcov
@@ -92,6 +93,7 @@ llvmpipe
 localedef
 localtime
 ltrace
+nasm
 mlibc
 multiarch
 multilib
