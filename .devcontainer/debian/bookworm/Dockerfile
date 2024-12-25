@@ -248,6 +248,10 @@ RUN echo "Packages" && \
     gcovr lcov \
     # tracing
     strace ltrace \
+    # asm
+    nasm fasm \
+    # build tools
+    meson \
     # required by Visual Studio
     g++ gdb make ninja-build rsync zip sudo \
     # required by VCPKG + optional downloader

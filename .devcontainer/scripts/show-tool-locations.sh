@@ -34,6 +34,7 @@ show_tool_locations() {
   get_command_paths clang++-18
   get_command_paths clang++-19
   get_command_paths cmake
+  get_command_paths meson
   get_command_paths ninja
   get_command_paths ccache
   get_command_paths mold
@@ -52,6 +53,8 @@ show_tool_locations() {
   get_command_paths lcov
   get_command_paths gcov
   get_command_paths gcovr
+  get_command_paths nasm
+  get_command_paths fasm
   get_command_paths doxygen
   get_command_paths sphinx-build
   get_command_paths git

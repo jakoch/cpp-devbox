@@ -59,6 +59,7 @@ show_tool_versions() {
     # Assign versions to variables
     clang_version=$(clang --version | head -n1 | awk '{print $4}')
     cmake_version=$(cmake --version | head -n1 | awk '{print $3}')
+    meson_version=$(meson --version)
     ninja_version=$(ninja --version)
     ccache_version=$(ccache --version | head -n1 | awk '{print $3}')
     mold_version=$(mold --version | awk '{print $2}')
@@ -77,6 +78,8 @@ show_tool_versions() {
     lcov=$(lcov --version | head -n1 | awk '{print $4}')
     gcov=$(gcov --version | head -n1 | awk '{print $3}' | cut -d'-' -f1)
     gcovr=$(gcovr --version | head -n1 | awk '{print $2}')
+    nasm_version=$(nasm --version | head -n1 | awk '{print $3}')
+    fasm_version=$(fasm --version | head -n1 | awk '{print $4}')
     doxygen_version=$(doxygen -v | awk '{print $1}')
     sphinx_version=$(sphinx-build --version | awk '{print $2}')
     git_version=$(git --version | cut -c 13-)

@@ -49,6 +49,8 @@ On top of the base image the following tools are installed:
 - lcov, gcov, gcovr
 - strace, ltrace
 - perf, gprof
+- nasm, fasm
+- meson
 - CMake (latest version)
 - ccache (latest version)
 - vcpkg (latest version)
