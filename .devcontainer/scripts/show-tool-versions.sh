@@ -74,7 +74,7 @@ show_tool_versions() {
     gprof_version=$(gprof --version | head -n1 | awk '{print $7}')
     perf_version=$(perf --version | awk '{print $3}')
     strace_version=$(strace --version | head -n1 | awk '{print $4}')
-    ltrace_version=$(ltrace --version | head -n1 | awk '{print $2}')
+    ltrace_version=$(ltrace --version | head -n1 | awk '{print $3}')
     lcov=$(lcov --version | head -n1 | awk '{print $4}')
     gcov=$(gcov --version | head -n1 | awk '{print $3}' | cut -d'-' -f1)
     gcovr=$(gcovr --version | head -n1 | awk '{print $2}')
@@ -97,6 +97,7 @@ show_tool_versions() {
     print_row_gcc
     print_row_clang
     print_row "CMake" "$cmake_version"
+    print_row "Meson" "$meson_version"
     print_row "Ninja" "$ninja_version"
     print_row "ccache" "$ccache_version"
     print_row "mold" "$mold_version"
@@ -109,6 +110,11 @@ show_tool_versions() {
     print_row "perf" "$perf_version"
     print_row "strace" "$strace_version"
     print_row "ltrace" "$ltrace_version"
+    print_row "lcov" "$lcov"
+    print_row "gcov" "$gcov"
+    print_row "gcovr" "$gcovr"
+    print_row "nasm" "$nasm_version"
+    print_row "fasm" "$fasm_version"
     print_row "Doxygen" "$doxygen_version"
     print_row "sphinx" "$sphinx_version"
     print_row "git" "$git_version"
