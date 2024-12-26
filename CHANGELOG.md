@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
-## [1.0.6] - 2024-12-xx
+## [1.0.6] - 2024-12-26
 
 **Added**
 - added linux-perf, strace, ltrace, meson, nasm, fasm, ikos (static analyzer)
