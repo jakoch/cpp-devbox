@@ -135,7 +135,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Section for Reference Links -->
 
-[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.5...HEAD
+[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.6...HEAD
+[1.0.6]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.6
 [1.0.5]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.5
 [1.0.4]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.4
 [1.0.3]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.3
