@@ -623,11 +623,8 @@ ENV TERM=xterm-256color \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "ZSH" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-    zsh fontconfig && \
-    # Download and install fonts-powerline
-    curl $CURL_OPTIONS -o fonts-powerline.deb -L http://ftp.de.debian.org/debian/pool/main/p/powerline/fonts-powerline_2.8.3-6_all.deb && \
-    dpkg -i fonts-powerline.deb && \
-    rm fonts-powerline.deb && \
+    # Install fonts-powerline
+    fontconfig fonts-powerline && \
     # Install Oh My Zsh
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
     # Add Zsh plugins

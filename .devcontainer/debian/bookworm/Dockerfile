@@ -642,7 +642,8 @@ ENV TERM=xterm-256color \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "ZSH" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-    zsh powerline fonts-powerline && \
+    # Install fonts-powerline
+    fontconfig fonts-powerline && \
     # Install Oh My Zsh
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
     # Add Zsh plugins

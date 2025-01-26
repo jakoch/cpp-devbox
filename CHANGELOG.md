@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.7] - 2025-01-26
+
+**Changed**
+- fixed installation "fonts-powerline" by switching from direct download to apt-get
+
 ## [1.0.6] - 2024-12-26
 
 **Added**
@@ -135,7 +140,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Section for Reference Links -->
 
-[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.6...HEAD
+[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.7...HEAD
+[1.0.6]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.7
 [1.0.6]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.6
 [1.0.5]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.5
 [1.0.4]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.4
