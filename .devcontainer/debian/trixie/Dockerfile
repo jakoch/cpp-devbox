@@ -238,13 +238,13 @@ RUN echo "Packages" && \
     # profiling
     # gprof
     linux-perf \
-    # code coverage (gcov is part of GCC)
+    # code coverage  (gcov is part of GCC)
     gcovr lcov \
     # tracing
     strace ltrace \
-    # asm
+    # assembler
     nasm fasm \
-    # build tools
+    # build tools (cmake is build from source)
     meson \
     # required by Visual Studio
     g++ gdb make ninja-build rsync zip sudo \
@@ -623,8 +623,17 @@ ENV TERM=xterm-256color \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "ZSH" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-    # Install fonts-powerline
-    fontconfig fonts-powerline && \
+    zsh fontconfig && \
+    # Download and install fonts-powerline
+    # An installation via apt-get is not possible for trixie,
+	# because the package is only available in unstable(sid).
+    # https://packages.debian.org/sid/fonts-powerline
+	# https://api.ftp-master.debian.org/madison?package=fonts-powerline&table=debian
+    FONTS_POWERLINE_VERSION=$(curl -s 'https://api.ftp-master.debian.org/madison?package=fonts-powerline&table=debian&s=unstable&f=json' | jq -r '.[0]["fonts-powerline"].unstable | keys[0]'); echo "Latest Version: \"$FONTS_POWERLINE_VERSION\"" && \
+    FONTS_POWERLINE_URL="http://ftp.de.debian.org/debian/pool/main/p/powerline/fonts-powerline_${FONTS_POWERLINE_VERSION}_all.deb" && \
+    curl -o fonts-powerline.deb -L ${FONTS_POWERLINE_URL} && \
+    dpkg -i fonts-powerline.deb && \
+    rm fonts-powerline.deb && \
     # Install Oh My Zsh
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
     # Add Zsh plugins
@@ -634,6 +643,7 @@ RUN echo "ZSH" && \
     # Update .zshrc
     sed -i "s/plugins=(git)/plugins=(git zsh-completions zsh-autosuggestions zsh-history-substring-search)/" /root/.zshrc && \
     sed -i "s/ZSH_THEME=\"agnoster\"/ZSH_THEME=\"robbyrussell\"/" /root/.zshrc && \
+	sed -i "s/# DISABLE_AUTO_UPDATE=\"true\"/DISABLE_AUTO_UPDATE=\"true\"/" /root/.zshrc && \
 	# Cleanup
 	apt-get autoremove -y && \
     apt-get clean autoclean && \

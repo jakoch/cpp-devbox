@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Changed**
 - fixed installation "fonts-powerline" by switching from direct download to apt-get
+- DISABLE_AUTO_UPDATE of zsh
 
 ## [1.0.6] - 2024-12-26
 
