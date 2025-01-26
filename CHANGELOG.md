@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.7] - 2025-01-26
 
 **Changed**
-- fixed installation "fonts-powerline" by switching from direct download to apt-get
+- fixed installation "fonts-powerline" by switching to automatic version detection
 - DISABLE_AUTO_UPDATE of zsh
 
 ## [1.0.6] - 2024-12-26
@@ -142,7 +142,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- Section for Reference Links -->
 
 [vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.7...HEAD
-[1.0.6]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.7
+[1.0.7]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.7
 [1.0.6]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.6
 [1.0.5]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.5
 [1.0.4]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.4
