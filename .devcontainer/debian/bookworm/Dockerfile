@@ -46,7 +46,7 @@ FROM debian:bookworm-slim AS downloader
 
 # Reuse global arguments
 ARG VULKAN_VERSION
-ARG IKOS_VERSION=3.4
+ARG IKOS_VERSION=3.5
 
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NOWARNINGS="yes" \
@@ -174,7 +174,7 @@ RUN echo "IKOS" && \
     python3 -m build --no-isolation --outdir "/opt/ikos/dist/" --wheel "analyzer/python" && \
     find /opt/ikos/dist -name "*.whl" -exec ls -la {} + && \
 	echo "Install Python Module" && \
-    python3 -m pip install --no-cache-dir "/opt/ikos/dist/ikos-3.4-py3-none-any.whl" --target "/opt/ikos/python-module" && \
+    python3 -m pip install --no-cache-dir $(find /opt/ikos/dist -name "ikos-*.whl") --target "/opt/ikos/python-module" && \
     export PYTHONPATH="/opt/ikos/python-module" && \
     echo "Test" && \
     #ls -lahr /opt/ikos/bin && \
@@ -423,10 +423,10 @@ RUN apt-get update && apt-get install --no-install-recommends --assume-yes \
     apt-get autoremove -y && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    # Install IKOS Python module
-	python3 -m pip install --no-cache-dir "/opt/ikos/dist/ikos-3.4-py3-none-any.whl" --target "/opt/ikos/python-module"
-	# Test
-	#ikos --version
+    # Install IKOS Python module (* for dynamic version)
+	python3 -m pip install --no-cache-dir $(find /opt/ikos/dist -name "ikos-*.whl") --target "/opt/ikos/python-module" && \
+    # Test
+	ikos --version
 
 #
 #  888      888      888     888 888b     d888
