@@ -62,7 +62,8 @@ jobs:
             const pages = 5;
             // add the workflows runs to remove here
             const workflows = [
-              'release.yml'
+              'release.yml',
+              'check-spelling.yml'
             ]
             let runs_to_delete = [];
             for (const workflow of workflows) {
