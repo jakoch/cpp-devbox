@@ -339,7 +339,7 @@ ENV PATH="${PATH}:${VCPKG_ROOT}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "VCPKG" && \
-    git clone --depth=1 \
+    git clone --depth=1 --no-tags \
     -c core.eol=lf \
     -c core.autocrlf=false \
     -c fsck.zeroPaddedFilemode=ignore \
@@ -498,7 +498,7 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "MOLD" && \
     version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
-    git clone --depth=1 --branch "v$version" https://github.com/rui314/mold.git "/tmp/mold" && \
+    git clone --branch "v$version" --single-branch --depth 1 --no-tags https://github.com/rui314/mold.git "/tmp/mold" && \
     cmake -S /tmp/mold -B /tmp/mold/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ && \
     cmake --build /tmp/mold/build -j "$(nproc)" && \
     cmake --install /tmp/mold/build --prefix=/opt/mold && \
@@ -637,9 +637,9 @@ RUN echo "ZSH" && \
     # Install Oh My Zsh
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
     # Add Zsh plugins
-    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
-    git clone --depth=1 https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions && \
-    git clone --depth=1 https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search && \
+    git clone --depth=1 --no-tags https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
+    git clone --depth=1 --no-tags https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions && \
+    git clone --depth=1 --no-tags https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search && \
     # Update .zshrc
     sed -i "s/plugins=(git)/plugins=(git zsh-completions zsh-autosuggestions zsh-history-substring-search)/" /root/.zshrc && \
     sed -i "s/ZSH_THEME=\"agnoster\"/ZSH_THEME=\"robbyrussell\"/" /root/.zshrc && \
@@ -719,7 +719,7 @@ ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
 #         apt-get autoremove -y && \
 #         apt-get clean autoclean && \
 #         rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-#     git clone --depth=1 https://github.com/KhronosGroup/SPIRV-LLVM-Translator.git --branch $SPIRV_VERSION_TAG && \
+#     git clone --branch $SPIRV_VERSION_TAG --single-branch --depth=1 --no-tags https://github.com/KhronosGroup/SPIRV-LLVM-Translator.git && \
 #     mkdir SPIRV-LLVM-Translator/build && \
 #     cd SPIRV-LLVM-Translator/build && \
 #     cmake .. -D BASE_LLVM_VERSION=$LLVM_VERSION && \
