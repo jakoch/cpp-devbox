@@ -1,6 +1,14 @@
+#
+# SPDX-FileCopyrightText: 2021-2025 Jens A. Koch.
+# SPDX-License-Identifier: MIT
+#
+# This file is part of https://github.com/jakoch/cpp-devbox
+#
+
 name: "Check Spelling"
 
 on:
+  # This workflow runs on pushing to the default branch.
   push:
   # You can manually run this workflow.
   workflow_dispatch:
