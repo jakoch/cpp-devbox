@@ -230,18 +230,26 @@ jobs:
             README-${{ matrix.config.debian_codename }}-base.md
             README-${{ matrix.config.debian_codename }}-with-vulkansdk.md
 
-      #- name: 🛡️🔍 Scan Image for Vulnerabilities
-      #  uses: aquasecurity/trivy-action@master # https://github.com/aquasecurity/trivy-action
-      #  with:
-      #    image-ref: '${{ env.GHCR_IMAGE }}:latest'
-      #    format: 'sarif'
-      #    output: 'trivy-results.sarif'
-      #    severity: 'CRITICAL,HIGH'
-      #    ignore-unfixed: true
-      #    skip-dirs: gcc-13.2.0,usr/lib64
+      - name: 🛡️🔍 Scan Image for Vulnerabilities
+        uses: aquasecurity/trivy-action@master # https://github.com/aquasecurity/trivy-action
+        with:
+          image-ref: '${{ env.GHCR_IMAGE }}:latest'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          ignore-unfixed: true
+          skip-files: /etc/ssh/ssh_host_rsa_key
+          skip-dirs: gcc-13.2.0,usr/lib64
+      # Notes for the skips:
+      # - skip-files: /etc/ssh/ssh_host_rsa_key
+      #   The file is skipped, because its reported as "Asymmetric Private Key" alert.
+      #   This is a false positive, because the file is a private key, which is intended to be there.
+      # - skip-dirs: gcc-13.2.0,usr/lib64
+      #   The folders are skipped, because the folders contain many files, which
+      #   are not relevant for the image security. The scan is faster without them.
 
-      # upload fails: https://github.com/github/codeql-action/issues/2117
-      #- name: 🛡️🔼 Upload scan results to GitHub Security tab
-      #  uses: github/codeql-action/upload-sarif@v3 # https://github.com/github/codeql-action
-      #  with:
-      #    sarif_file: 'trivy-results.sarif'
+       upload fails: https://github.com/github/codeql-action/issues/2117
+      - name: 🛡️🔼 Upload scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3 # https://github.com/github/codeql-action
+        with:
+          sarif_file: 'trivy-results.sarif'
