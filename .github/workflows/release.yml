@@ -232,7 +232,7 @@ jobs:
             README-${{ matrix.config.debian_codename }}-base.md
             README-${{ matrix.config.debian_codename }}-with-vulkansdk.md
 
-      - name: 🛡️🔍 Scan Image for Vulnerabilities
+      - name: 🛡️🔍 Scan Image for Vulnerabilities using Trivy
         uses: aquasecurity/trivy-action@master # https://github.com/aquasecurity/trivy-action
         with:
           image-ref: '${{ env.GHCR_IMAGE }}:latest'
@@ -251,7 +251,16 @@ jobs:
       #   are not relevant for the image security. The scan is faster without them.
 
       # upload fails: https://github.com/github/codeql-action/issues/2117
-      - name: 🛡️🔼 Upload scan results to GitHub Security tab
+      - name: 🛡️🔼 Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3 # https://github.com/github/codeql-action
         with:
           sarif_file: 'trivy-results.sarif'
+
+      - name: 🛡️🔍 Scan Image for Vulnerabilities using Dockle
+        if: always()
+        uses: goodwithtech/dockle-action@v0.4.15 # https://github.com/goodwithtech/dockle-action
+        with:
+          image: '${{ env.GHCR_IMAGE }}:latest'
+          format: 'list'
+          exit-code: '0'
+          exit-level: 'warn'

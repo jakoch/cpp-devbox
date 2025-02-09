@@ -1,0 +1,25 @@
+#
+# Ignore rules for https://github.com/goodwithtech/dockle
+#
+# https://github.com/goodwithtech/dockle?tab=readme-ov-file#checkpoint-summary
+#
+
+CIS-DI-0001 # Create a user for the container
+# Disabled because:
+# Currently user is root.
+# This is a devcontainer image for usage inside VSCode or a CI pipeline.
+
+CIS-DI-0005 # Enable Content trust for Docker
+# Disabled because:
+# This is open-source. Not messing around with keys and trust for now.
+
+CIS-DI-0006 # Add HEALTHCHECK instruction to the container image
+# Disabled because:
+# The Docker engine itself does not automatically restart unhealthy containers
+# based on HEALTHCHECK pings to the local Docker host.
+# This is also not a server container with a running service,
+# which needs to be kept alive.
+
+CIS-DI-0008 # Confirm safety of setuid/setgid files
+# Disabled because:
+# This is a devcontainer image for usage inside VSCode or a CI pipeline.
