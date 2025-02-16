@@ -264,17 +264,17 @@ jobs:
           exit-code: '0'
           exit-level: 'warn'
 
-      - name: 🛡️🔍 Scan Image for Vulnerabilities using Docker Scout
-        uses: docker/scout-action@v1 # https://github.com/docker/scout-action
-        with:
-          command: cves,recommendations
-          only-severities: critical,high
-          image: ${{ steps.metadata-base.outputs.tags }}
-          format: 'json'
-          sarif-file: 'scout-results.sarif.json'
-          summary: true
+      # - name: 🛡️🔍 Scan Image for Vulnerabilities using Docker Scout
+      #   uses: docker/scout-action@v1 # https://github.com/docker/scout-action
+      #   with:
+      #     command: cves,recommendations
+      #     only-severities: critical,high
+      #     image: ${{ steps.metadata-base.outputs.tags }}
+      #     format: 'json'
+      #     sarif-file: 'scout-results.sarif.json'
+      #     summary: true
 
-      - name: 🛡️🔼 Upload Docker Scout scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3 # https://github.com/github/codeql-action
-        with:
-          sarif_file: 'scout-results.sarif.json'
+      # - name: 🛡️🔼 Upload Docker Scout scan results to GitHub Security tab
+      #   uses: github/codeql-action/upload-sarif@v3 # https://github.com/github/codeql-action
+      #   with:
+      #     sarif_file: 'scout-results.sarif.json'
