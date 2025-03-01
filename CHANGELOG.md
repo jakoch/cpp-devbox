@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+**Fixed**
+- Symlinked all CMake tools, including `ctest` and `cmake-gui`, to `/usr/bin` for better accessibility
+
 ## [1.0.8] - 2025-02-04
 
 **Changed**

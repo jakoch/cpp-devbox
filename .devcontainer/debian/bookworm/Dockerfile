@@ -317,7 +317,11 @@ RUN echo "CMake" && \
     curl $CURL_OPTIONS -O $url && \
     mkdir /opt/cmake && \
     sh cmake-$version-linux-x86_64.sh --prefix=/opt/cmake --skip-license && \
-    ln -s /opt/cmake/bin/cmake /usr/bin/cmake && \
+    ln -sF /opt/cmake/bin/cmake /usr/bin/cmake && \
+    ln -sF /opt/cmake/bin/ccmake /usr/bin/ccmake && \
+    ln -sF /opt/cmake/bin/cmake-gui /usr/bin/cmake-gui && \
+    ln -sF /opt/cmake/bin/cpack /usr/bin/cpack && \
+    ln -sF /opt/cmake/bin/ctest /usr/bin/ctest && \
     rm -rf cmake-$version-linux-x86_64.sh
 
 #
