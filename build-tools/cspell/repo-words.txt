@@ -73,6 +73,7 @@ libppl
 libquadmath
 libsanitizer
 libsqlite
+libstdc
 libstdcxx
 libtbb
 libudev
