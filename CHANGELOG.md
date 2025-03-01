@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
 **Added**
-- bookworm image: set LD_LIBRARY_PATH="/usr/lib64" to find gcc libs, including libstdc++
+- bookworm image: configured `LD_LIBRARY_PATH` to include `/usr/lib64` for locating GCC libraries, including `libstdc++`
+- Added `devbox-test` application to verify the build and installed compilers
 
 **Changed**
 - Excluded all unnecessary files and folders from the Docker build context (.dockerignore)
