@@ -621,7 +621,10 @@ RUN echo "GCC - Cleanup" && \
 
 # reset default compiler to clang
 ENV CC=/usr/bin/clang \
-    CXX=/usr/bin/clang++
+    CXX=/usr/bin/clang++ \
+    # add gcc libs to library paths
+    # TODO why is this installed into /usr/lib64?
+    LD_LIBRARY_PATH="/usr/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 #
 #  8888888888P  .d8888b.  888    888
