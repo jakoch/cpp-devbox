@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+**Changed**
+- Excluded all unnecessary files and folders from the Docker build context (.dockerignore)
+
 **Fixed**
 - Symlinked all CMake tools, including `ctest` and `cmake-gui`, to `/usr/bin` for better accessibility
 

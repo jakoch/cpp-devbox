@@ -3,12 +3,23 @@
 #
 # Docs: https://docs.docker.com/engine/reference/builder/#dockerignore-file
 #
+
+# Folders
 .devcontainer/
 .git/
 .github/
 .vscode/
 assets/
-LICENSE
+build-tools/
+devbox-test/
 
-# Ignore all markdown files
-*.md
+# Files
+.dockleignore
+.editorconfig
+.gitattributes
+.gitignore
+.hadolint.yml
+CHANGELOG.md
+cspell.json
+LICENSE
+README.md
