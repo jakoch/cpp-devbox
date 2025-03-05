@@ -14,7 +14,7 @@ print_row() {
 
 # Function to check and print GCC versions if installed
 print_row_gcc() {
-    for version in 12 13 14; do
+    for version in 12 13 14 15 16; do
         gcc_path="/usr/bin/g++-$version"
         if [ -x "$gcc_path" ]; then
             gcc_version=$("$gcc_path" --version | awk 'NR==1 {print $NF}')
@@ -25,7 +25,7 @@ print_row_gcc() {
 
 # Function to check and print GCC versions if installed
 print_row_clang() {
-    for version in 16 17 18 19; do
+    for version in 16 17 18 19 20 21; do
         clang_path="/usr/bin/clang++-$version"
         if [ -x "$clang_path" ]; then
             clang_version=$("$clang_path" --version | head -n1 | awk '{print $4}')
