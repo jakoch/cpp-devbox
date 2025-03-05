@@ -74,7 +74,7 @@ show_tool_versions() {
     gprof_version=$(gprof --version | head -n1 | awk '{print $7}')
     perf_version=$(perf --version | awk '{print $3}')
     strace_version=$(strace --version | head -n1 | awk '{print $4}')
-    ltrace_version=$(ltrace --version | head -n1 | awk '{print $3}')
+    ltrace_version=$(ltrace --version | head -n1 | awk '{print $2}')
     lcov=$(lcov --version | head -n1 | awk '{print $4}')
     gcov=$(gcov --version | head -n1 | awk '{print $3}' | cut -d'-' -f1)
     gcovr=$(gcovr --version | head -n1 | awk '{print $2}')
@@ -119,6 +119,7 @@ show_tool_versions() {
     print_row "sphinx" "$sphinx_version"
     print_row "git" "$git_version"
     print_row "gh cli" "$github_cli_version"
+    printf "|:--------------|:--------------------|\n"
     if is_installed_mesa; then
         print_row "Mesa" "$mesa_version"
     fi
