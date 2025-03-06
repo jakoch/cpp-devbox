@@ -15,30 +15,36 @@
 #
 #
 
-# Debian Bookworm
-#
-# Package Versions
-#
-# LLVM:   https://packages.debian.org/bookworm/llvm                 14.0
-# GCC:    https://packages.debian.org/bookworm/gcc                  12.2.0
-# Vulkan: https://packages.debian.org/bookworm/libvulkan-dev        1.3.239.0
-# MESA:   https://packages.debian.org/bookworm/mesa-vulkan-drivers  22.3.6
+# /===========================================================================\
+# | Debian Bookworm                                                           |
+# |===========================================================================|
+# | Package Versions                                            (os upstream) |
+# |                                                                           |
+# | LLVM:   https://packages.debian.org/bookworm/llvm                14.0     |
+# | GCC:    https://packages.debian.org/bookworm/gcc                 12.2.0   |
+# | Vulkan: https://packages.debian.org/bookworm/libvulkan-dev       1.3.239.0|
+# | MESA:   https://packages.debian.org/bookworm/mesa-vulkan-drivers 22.3.6   |
+# |                                                                           |
+# \===========================================================================/
 
 # +-----------------------------+
 # | GLOBAL ARGS                 |
 # +-----------------------------+
 # The following global args need to be redeclared without a value inside each FROM section.
 # For example, VULKAN_VERSION is used in the FROM sections of "downloader" and "cpp-devbox-with-vulkansdk".
+# The value is set in the build command, e.g. --build-arg VULKAN_VERSION=1.3.296.0
+
 ARG DEBIAN_VERSION=12
 ARG DEBIAN_VERSION_NAME=bookworm
 ARG GCC_VERSION=13
-ARG LLVM_VERSION=19
-ARG VULKAN_VERSION=1.3.296.0
+ARG LLVM_VERSION=20
+ARG VULKAN_VERSION=1.4.304.1
 
 # +-----------------------------+
 # | Downloader                  |
 # +-----------------------------+
 # Download Stage is for caching:
+# - /tmp/ikos.xz
 # - /tmp/gcc.xz
 # - /tmp/vulkansdk.xz
 
@@ -149,13 +155,13 @@ RUN echo "APRON" && \
 COPY --from=downloader /tmp/ikos.xz /tmp/ikos.xz
 
 RUN echo "IKOS" && \
-    echo "Extract" && \
+    echo "Extract IKOS" && \
     cd /tmp && \
     tar zxf ikos.xz && \
     # remove version from folder name
     mv ikos-* ikos && \
     cd /tmp/ikos && \
-    echo "Build" && \
+    echo "Build IKOS" && \
     mkdir build && cd build && \
     cmake \
     -DCMAKE_INSTALL_PREFIX="/opt/ikos" \
@@ -168,6 +174,7 @@ RUN echo "IKOS" && \
     -DPYTHON_VENV_EXECUTABLE=/usr/bin/python3 \
     .. && \
     make -j4 && \
+    echo "Install IKOS" && \
     make install && \
 	echo "Build Python Module" && \
     cd /tmp/ikos/build && \
@@ -757,10 +764,13 @@ RUN mkdir -p /opt/vulkan && \
 
 # Note: do not combine the 2 ENV statements.
 # (do not refer to env var within the same statement where it is defined)
+# Note: We are not using VK_ADD_LAYER_PATH, which would search for SDK layers
+# first and then any layers installed on the system. Instead, we use
+# VK_LAYER_PATH to specify the path to the SDK layer manifest .json files.
 ENV VULKAN_SDK=/opt/vulkan/${VULKAN_VERSION}/x86_64
 ENV PATH="$VULKAN_SDK/bin:$PATH" \
     LD_LIBRARY_PATH="$VULKAN_SDK/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
-    VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
+    VK_LAYER_PATH="$VULKAN_SDK/share/vulkan/explicit_layer.d"
 
 # +-----------------------------+
 # | Mesa                        |

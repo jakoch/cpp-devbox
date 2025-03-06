@@ -15,22 +15,28 @@
 #
 #
 
-# Debian Trixie
-#
-# Package Versions
-#
-# LLVM:   https://packages.debian.org/trixie/llvm                   19.0
-# GCC:    https://packages.debian.org/trixie/gcc                    14.2.0
-# Vulkan: https://packages.debian.org/trixie/libvulkan-dev          1.3.296.0
-# MESA:   https://packages.debian.org/trixie/mesa-vulkan-drivers    24.2.8
-#
-# Latest Versions
-#
-# LLVM:
-# GCC:    https://ftp.gnu.org/gnu/gcc/
-# Vulkan: https://vulkan.lunarg.com/sdk/latest.json
-# MESA:   https://archive.mesa3d.org/
-#
+# /===========================================================================\
+# | Debian Trixie                                                             |
+# |===========================================================================|
+# |                                                                           |
+# | Package Versions                                            (os upstream) |
+# |                                                                           |
+# | LLVM:   https://packages.debian.org/trixie/llvm                 19.0      |
+# | GCC:    https://packages.debian.org/trixie/gcc                  14.2.0    |
+# | Vulkan: https://packages.debian.org/trixie/libvulkan-dev        1.4.304.0 |
+# | MESA:   https://packages.debian.org/trixie/mesa-vulkan-drivers  24.3.4    |
+# |                                                                           |
+# |---------------------------------------------------------------------------|
+# |                                                                           |
+# | Latest Versions                                         (vendor upstream) |
+# |                                                                           |
+# | LLVM:   https://apt.llvm.org/                                                                  |
+# | GCC:    https://ftp.gnu.org/gnu/gcc/                                      |
+# | Vulkan: https://vulkan.lunarg.com/sdk/latest.json                         |
+# | MESA:   https://archive.mesa3d.org/                                       |
+# |                                                                           |
+# \===========================================================================/
+
 # +-----------------------------+
 # | Versions Notes              |
 # +-----------------------------+
@@ -47,14 +53,15 @@
 ARG DEBIAN_VERSION=13
 ARG DEBIAN_VERSION_NAME=trixie
 ARG GCC_VERSION=14
-ARG LLVM_VERSION=19
-ARG VULKAN_VERSION=1.3.296.0
+ARG LLVM_VERSION=20
+ARG VULKAN_VERSION=1.4.304.1
 ARG MESA_VERSION=24.3.1
 
 # +-----------------------------+
 # | Downloader                  |
 # +-----------------------------+
 # Download Stage is for caching:
+# - /tmp/ikos.xz
 # - /tmp/gcc.xz
 # - /tmp/vulkansdk.xz
 # - /tmp/mesa.xz
@@ -117,7 +124,7 @@ RUN echo "Packages" && \
         libmpfr-dev \
         libppl-dev \
         libgmp-dev \
-        python3 python3-pip python3-venv
+        python3 python3-pip python3-venv python3-setuptools python3-build
 
 # https://github.com/NASA-SW-VnV/ikos?tab=readme-ov-file#dependencies
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -148,13 +155,13 @@ RUN echo "APRON" && \
 
 COPY --from=downloader /tmp/ikos.xz /tmp/ikos.xz
 
-RUN echo "Extract" && \
+RUN echo "IKOS" && \
+    echo "Extract IKOS" && \
     cd /tmp && \
     tar zxf ikos.xz && \
     # remove version from folder name
-    mv ikos-* ikos
-
-RUN cd /tmp/ikos && \
+    mv ikos-* ikos && \
+    cd /tmp/ikos && \
     # Patch IKOS to allow LLVM14+
     #sed -i 's/(LLVM_VERSION VERSION_LESS "14") OR (NOT (LLVM_VERSION VERSION_LESS "15"))/(LLVM_VERSION VERSION_LESS "14")/g' analyzer/CMakeLists.txt frontend/llvm/CMakeLists.txt && \
     # Build IKOS
@@ -169,8 +176,18 @@ RUN cd /tmp/ikos && \
     -DAPRON_ROOT=/usr/local \
     .. && \
     make -j4 && \
+    echo "Install IKOS" && \
     make install && \
-    echo "Test" && \
+    echo "Test Run 1" && \
+    /opt/ikos/bin/ikos --version && \
+    echo "Build Python Module" && \
+    cd /tmp/ikos/build && \
+    python3 -m build --no-isolation --outdir "/opt/ikos/dist/" --wheel "analyzer/python" && \
+    find /opt/ikos/dist -name "*.whl" -exec ls -la {} + && \
+	echo "Install Python Module" && \
+    python3 -m pip install --no-cache-dir $(find /opt/ikos/dist -name "ikos-*.whl") --target "/opt/ikos/python-module" && \
+    export PYTHONPATH="/opt/ikos/python-module" && \
+    echo "Test Run 2" && \
     /opt/ikos/bin/ikos --version && \
     echo "Cleanup" && \
     apt-get autoremove -y && \
@@ -261,6 +278,8 @@ RUN echo "Packages" && \
     # optional tools for Doxygen
     python3 python3-pip \
     python3-sphinx python3-sphinx-rtd-theme python3-defusedxml sphinx-common \
+    # for the IKOS module
+    python3-venv \
     graphviz && \
     # Cleanup
     apt-get autoremove -y && \
@@ -410,7 +429,20 @@ RUN echo "DOXYGEN" && \
 
 COPY --from=ikos-builder /opt/ikos /opt/ikos
 
-ENV PATH="/opt/ikos/bin:${PATH}"
+ENV PATH="/opt/ikos/bin:${PATH}" \
+	PYTHONPATH="/opt/ikos/python-module"
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN apt-get update && apt-get install --no-install-recommends --assume-yes \
+    python3 python3-pip python3-venv python3-pygments python3-setuptools && \
+    # Cleanup
+    apt-get autoremove -y && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    # Install IKOS Python module (* for dynamic version)
+	python3 -m pip install --no-cache-dir $(find /opt/ikos/dist -name "ikos-*.whl") --target "/opt/ikos/python-module" && \
+    # Test
+	ikos --version
 
 #
 #  888      888      888     888 888b     d888
@@ -858,10 +890,13 @@ RUN echo "Vulkan SDK" && \
 
 # Note: do not combine the 2 ENV statements.
 # (do not refer to env var within the same statement where it is defined)
+# Note: We are not using VK_ADD_LAYER_PATH, which would search for SDK layers
+# first and then any layers installed on the system. Instead, we use
+# VK_LAYER_PATH to specify the path to the SDK layer manifest .json files.
 ENV VULKAN_SDK=/opt/vulkan/${VULKAN_VERSION}/x86_64
 ENV PATH="$VULKAN_SDK/bin:$PATH" \
     LD_LIBRARY_PATH="$VULKAN_SDK/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
-    VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
+    VK_LAYER_PATH="$VULKAN_SDK/share/vulkan/explicit_layer.d"
 
 # +-----------------------------+
 # | Mesa                        |

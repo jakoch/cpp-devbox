@@ -17,9 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Changed**
 - Excluded all unnecessary files and folders from the Docker build context (.dockerignore)
+- bookworm & trixie image: updated Vulkan SDK to v1.4.304.1
+- bookworm & trixie image: updated LLVM to v20
 
 **Fixed**
 - Symlinked all CMake tools, including `ctest` and `cmake-gui`, to `/usr/bin` for better accessibility
+- fixed env var `VK_LAYER_PATH` by using the `share` folder instead of `etc`
+- trixie image: fixed IKOS installation by adopting the bookworm method of
+  building a Python wheel and installing it during the deployment stage
 
 ## [1.0.8] - 2025-02-04
 

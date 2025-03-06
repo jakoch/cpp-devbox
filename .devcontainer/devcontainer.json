@@ -5,9 +5,11 @@
     // The repository contains two images:
     // - "./debian/bookworm/Dockerfile" (default)
     // - "./debian/trixie/Dockerfile"
-    "dockerfile": "./debian/bookworm/Dockerfile",
+    "dockerfile": "./debian/trixie/Dockerfile",
     // sets the run context to this .devcontainer folder
-    "context": "."
+    "context": "."//,
+    // target a specific build stage for testing
+    //"target": "ikos-builder"
   },
   "capAdd": [
     "SYS_PTRACE"
