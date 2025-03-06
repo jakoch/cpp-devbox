@@ -218,18 +218,8 @@ The container tag "latest" is applied to the latest build:
 
 ### Field Notes for building devbox-test locally
 
-- 1) remove build artefacts, these files would be copied and block a rebuild
-
-```
-devbox-test/build/
-devbox-test/CMakeFiles/
-devbox-test/cmake_install.cmake
-devbox-test/CMakeCache.txt
-devbox-test/CTestTestfile.cmake
-devbox-test/Makefile
-```
-
-- 2) `docker run --rm -v ".\devbox-test:/test-src" -w /test-src ghcr.io/jakoch/cpp-devbox:trixie-latest zsh -c "./build.sh"`
- - a relative folder .\devbox-test` is used
+- 1) remove CMake build artifacts, these files would be copied and block a rebuild
+- 2) `docker run --rm -v "$(PWD)/devbox-test:/test-src" -w /test-src ghcr.io/jakoch/cpp-devbox:trixie-latest zsh -c "./build.sh"`
+ - use relative folder `".\devbox-test:/test-src"` on windows
  - this folder is copied as test-src into the container
-  then build.sh is called using zsh
+ - then build.sh is called using zsh
