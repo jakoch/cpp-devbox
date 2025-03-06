@@ -184,8 +184,8 @@ RUN echo "IKOS" && \
     cd /tmp/ikos/build && \
     python3 -m build --no-isolation --outdir "/opt/ikos/dist/" --wheel "analyzer/python" && \
     find /opt/ikos/dist -name "*.whl" -exec ls -la {} + && \
-	echo "Install Python Module" && \
-    python3 -m pip install --no-cache-dir $(find /opt/ikos/dist -name "ikos-*.whl") --target "/opt/ikos/python-module" && \
+    echo "Install Python Module" && \
+    python3 -m pip install --no-cache-dir "$(find /opt/ikos/dist -name "ikos-*.whl")" --target "/opt/ikos/python-module" && \
     export PYTHONPATH="/opt/ikos/python-module" && \
     echo "Test Run 2" && \
     /opt/ikos/bin/ikos --version && \
@@ -440,7 +440,7 @@ RUN apt-get update && apt-get install --no-install-recommends --assume-yes \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     # Install IKOS Python module (* for dynamic version)
-	python3 -m pip install --no-cache-dir $(find /opt/ikos/dist -name "ikos-*.whl") --target "/opt/ikos/python-module" && \
+	python3 -m pip install --no-cache-dir "$(find /opt/ikos/dist -name "ikos-*.whl")" --target "/opt/ikos/python-module" && \
     # Test
 	ikos --version
 
