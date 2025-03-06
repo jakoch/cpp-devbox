@@ -215,3 +215,21 @@ The container tag "latest" is applied to the latest build:
 
 - `ghcr.io/jakoch/cpp-devbox:{debian_codename}-latest`
 - `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-latest`
+
+### Field Notes for building devbox-test locally
+
+- 1) remove build artefacts, these files would be copied and block a rebuild
+
+```
+devbox-test/build/
+devbox-test/CMakeFiles/
+devbox-test/cmake_install.cmake
+devbox-test/CMakeCache.txt
+devbox-test/CTestTestfile.cmake
+devbox-test/Makefile
+```
+
+- 2) `docker run --rm -v ".\devbox-test:/test-src" -w /test-src ghcr.io/jakoch/cpp-devbox:trixie-latest zsh -c "./build.sh"`
+ - a relative folder .\devbox-test` is used
+ - this folder is copied as test-src into the container
+  then build.sh is called using zsh

@@ -143,7 +143,7 @@ jobs:
           chmod +x ${{ github.workspace }}/.devcontainer/scripts/show-tool-versions.sh
 
       # Build Image -> Stage: cpp-devbox-base
-      - name: 📦 🚀 Build and Push
+      - name: 📦 🚀 Build Image -> Stage cpp-devbox-base
         id: build-base
         uses: docker/build-push-action@v6 # https://github.com/docker/build-push-action
         with:
@@ -157,7 +157,7 @@ jobs:
           load: true
 
       # Build Image -> Stages: cpp-devbox-base + cpp-devbox-with-vulkansdk = with-vulkansdk
-      - name: 📦 🚀 Build and Push
+      - name: 📦 🚀 Build Image -> Stage cpp-devbox-with-vulkansdk
         id: build-base-with-vulkansdk
         uses: docker/build-push-action@v6 # https://github.com/docker/build-push-action
         with:
@@ -169,11 +169,6 @@ jobs:
           labels: ${{ steps.metadata-base-with-vulkansdk.outputs.labels }}
           push: false
           load: true
-
-      - name: List Docker Images
-        run: |
-          docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"
-          docker images --digests
 
       # This provides: ${{ steps.get_image_name_base.outputs.name }}
       - name: Get image name for base
@@ -220,6 +215,15 @@ jobs:
       - name: Push all images and all tags
         run: |
           docker push --all-tags ${{ env.GHCR_IMAGE }}
+
+      - name: List Docker Images
+        run: |
+          docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"
+          docker images --digests
+
+      - name: Test Docker Image
+        run: |
+          docker run --rm -v ".\devbox-test:/src" -w /src ghcr.io/jakoch/cpp-devbox:trixie-latest zsh -c "./build.sh"
 
       - name: 📦 Provide the version info and info.json as a release asset
         uses: actions/upload-artifact@v4 # https://github.com/actions/upload-artifact
