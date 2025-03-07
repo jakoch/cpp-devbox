@@ -18,7 +18,8 @@ echo -e "\e[33m== Building devbox-test ==\e[0m"
 # create and switch to build dir (Build Tree)
 mkdir -p build-gcc build-clang
 
-# Build with GCC 14
+echo -e "\e[33m== Build with GCC 14 ==\e[0m"
+
 cd build-gcc
 # configure
 cmake -S .. -DCMAKE_CXX_COMPILER=/usr/bin/g++-14
@@ -36,7 +37,8 @@ else
 fi
 cd ..
 
-# Build with Clang 20
+echo -e "\e[33m== Build with Clang 20 ==\e[0m"
+
 cd build-clang
 cmake -S .. -DCMAKE_CXX_COMPILER=/usr/bin/clang++-20
 cmake --build .
