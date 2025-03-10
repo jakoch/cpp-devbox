@@ -11,9 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.9] - 2025-03-10
+
 **Added**
 - bookworm image: configured `LD_LIBRARY_PATH` to include `/usr/lib64` for locating GCC libraries, including `libstdc++`
-- Added `devbox-test` application to verify the build and installed compilers
+- added `devbox-test` application to verify the build and installed compilers and added a test to the CI workflow
 
 **Changed**
 - Excluded all unnecessary files and folders from the Docker build context (.dockerignore)
@@ -161,7 +163,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Section for Reference Links -->
 
-[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.8...HEAD
+[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.9...HEAD
+[1.0.9]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.9
 [1.0.8]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.8
 [1.0.7]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.7
 [1.0.6]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.6
