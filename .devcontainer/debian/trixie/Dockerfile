@@ -470,6 +470,9 @@ RUN echo "LLVM" && \
     echo "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
     echo "deb http://httpredir.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
+    # Not all LLVM key packages are installed:
+    # ocaml-dev, doc, examples, libclc, mlir, bolt, flang (fortran), wasm, libllvmlibc
+    # libclc (not installed because, implementation detail and not for external use as OpenCL headers)
     clang-$LLVM_VERSION \
     clangd-$LLVM_VERSION \
     clang-tidy-$LLVM_VERSION \

@@ -93,7 +93,7 @@ jobs:
       # cpp-devbox:{debian_codename}-{{major}}.{{minor}}     # only on git tag
       # cpp-devbox:{debian_codename}-{{date}}-sha-{{sha}}    # only on push, not when tagging
       # cpp-devbox:{debian_codename}-latest                  # always
-      - name: ✏ Setup Docker Metadata
+      - name: ✏ Setup Docker Metadata ➔ Stage cpp-devbox-base
         id: metadata-base
         uses: docker/metadata-action@v5 # https://github.com/docker/metadata-action
         with:
@@ -114,7 +114,7 @@ jobs:
       # cpp-devbox:{debian_codename}-with-vulkansdk-{{major}}.{{minor}}     # only on git tag
       # cpp-devbox:{debian_codename}-with-vulkansdk-{{date}}-sha-{{sha}}    # only on push, not when tagging
       # cpp-devbox:{debian_codename}-with-vulkansdk-latest                  # always
-      - name: ✏ Setup Docker Metadata
+      - name: ✏ Setup Docker Metadata ➔ Stage cpp-devbox-base-with-vulkansdk
         id: metadata-base-with-vulkansdk
         uses: docker/metadata-action@v5 # https://github.com/docker/metadata-action
         with:
@@ -143,7 +143,7 @@ jobs:
           chmod +x ${{ github.workspace }}/.devcontainer/scripts/show-tool-versions.sh
 
       # Build Image -> Stage: cpp-devbox-base
-      - name: 📦 🚀 Build Image -> Stage cpp-devbox-base
+      - name: 📦 🚀 Build Image ➔ Stage cpp-devbox-base
         id: build-base
         uses: docker/build-push-action@v6 # https://github.com/docker/build-push-action
         with:
@@ -157,7 +157,7 @@ jobs:
           load: true
 
       # Build Image -> Stages: cpp-devbox-base + cpp-devbox-with-vulkansdk = with-vulkansdk
-      - name: 📦 🚀 Build Image -> Stage cpp-devbox-with-vulkansdk
+      - name: 📦 🚀 Build Image ➔ Stage cpp-devbox-with-vulkansdk
         id: build-base-with-vulkansdk
         uses: docker/build-push-action@v6 # https://github.com/docker/build-push-action
         with:
