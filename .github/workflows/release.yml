@@ -155,6 +155,8 @@ jobs:
           labels: ${{ steps.metadata-base.outputs.labels }}
           push: false
           load: true
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:{debian_codename}-latest-cache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:{debian_codename}-latest-cache,mode=max
 
       # Build Image -> Stages: cpp-devbox-base + cpp-devbox-with-vulkansdk = with-vulkansdk
       - name: 📦 🚀 Build Image ➔ Stage cpp-devbox-with-vulkansdk
@@ -169,6 +171,8 @@ jobs:
           labels: ${{ steps.metadata-base-with-vulkansdk.outputs.labels }}
           push: false
           load: true
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:{debian_codename}-with-vulkansdk-latest-cache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:{debian_codename}-with-vulkansdk-latest-cache,mode=max
 
       # This provides: ${{ steps.get_image_name_base.outputs.name }}
       - name: Get image name for base
