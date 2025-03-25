@@ -138,4 +138,5 @@
 		"print": "cpp",
 		"stack": "cpp"
 	},
+	"cmake.ignoreCMakeListsMissing": true
 }
