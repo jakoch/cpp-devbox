@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - added missing MESA_VERSION on global version (equals distro version, is used for container description)
 
 **Removed**
-- bookworm & trixie image: removed IKOS static analyser due to the runtime requirement for LLVM14
+- bookworm & trixie image: removed IKOS static analyzer due to the runtime requirement for LLVM14
 
 ## [1.0.9] - 2025-03-10
 

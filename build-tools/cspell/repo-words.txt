@@ -28,6 +28,7 @@ defusedxml
 DESTDIR
 devbox
 dfsg
+distro
 DLLVM
 DMPFR
 Dockerfiles
