@@ -54,14 +54,13 @@ ARG DEBIAN_VERSION=13
 ARG DEBIAN_VERSION_NAME=trixie
 ARG GCC_VERSION=14
 ARG LLVM_VERSION=20
-ARG VULKAN_VERSION=1.4.304.1
-ARG MESA_VERSION=24.3.1
+ARG VULKAN_VERSION=1.4.309.0
+ARG MESA_VERSION=25.0.2
 
 # +-----------------------------+
 # | Downloader                  |
 # +-----------------------------+
 # Download Stage is for caching:
-# - /tmp/ikos.xz
 # - /tmp/gcc.xz
 # - /tmp/vulkansdk.xz
 # - /tmp/mesa.xz
@@ -72,7 +71,6 @@ FROM debian:trixie-slim AS downloader
 #ARG GCC_VERSION
 ARG VULKAN_VERSION
 ARG MESA_VERSION
-ARG IKOS_VERSION=3.5
 
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NOWARNINGS="yes" \
@@ -82,7 +80,6 @@ WORKDIR /tmp
 RUN echo "Download Stage" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
     ca-certificates curl jq && \
-    curl $CURL_OPTIONS -o ikos.xz https://github.com/NASA-SW-VnV/ikos/archive/refs/tags/v${IKOS_VERSION}.tar.gz && \
 #   curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.xz" && \
     curl $CURL_OPTIONS -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
     curl $CURL_OPTIONS -o mesa.xz "https://archive.mesa3d.org/mesa-${MESA_VERSION}.tar.xz" && \
@@ -92,107 +89,6 @@ RUN echo "Download Stage" && \
     rm -rf /var/lib/apt/lists/* && \
     # List files in /tmp
     ls -la /tmp
-
-# +-----------------------------+
-# | IKOS Build Stage            |
-# +-----------------------------+
-
-FROM debian:trixie-slim AS ikos-builder
-
-ARG DEBIAN_VERSION=13
-ARG DEBIAN_VERSION_NAME=trixie
-ARG LLVM_VERSION=14
-
-ENV DEBIAN_FRONTEND=noninteractive \
-    DEBCONF_NOWARNINGS="yes" \
-    CURL_OPTIONS="--silent --show-error --retry 5 --location"
-
-RUN echo "Packages" && \
-    # avoid debconf: delaying package configuration, since apt-utils is not installed
-    apt-get update && apt-get install --no-install-recommends --assume-yes \
-        curl jq tar xz-utils sed perl \
-        gcc g++ \
-        cmake \
-        make \
-        libgmp-dev \
-        libboost-dev libboost-filesystem-dev libboost-thread-dev libboost-test-dev \
-        libsqlite3-dev \
-        libtbb-dev \
-        libz-dev \
-        libzstd-dev \
-        libedit-dev \
-        libmpfr-dev \
-        libppl-dev \
-        libgmp-dev \
-        python3 python3-pip python3-venv python3-setuptools python3-build
-
-# https://github.com/NASA-SW-VnV/ikos?tab=readme-ov-file#dependencies
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN echo "LLVM 14" && \
-    if [ "$DEBIAN_VERSION_NAME" == "trixie" ]; then DEBIAN_VERSION_NAME="unstable"; fi && \
-    if [ "$DEBIAN_VERSION_NAME" == "unstable" ]; then LINKNAME=""; else LINKNAME="-$DEBIAN_VERSION_NAME"; fi && \
-    curl -s https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
-    echo "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
-    echo "deb http://httpredir.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list && \
-    apt-get update && apt-get install --no-install-recommends --assume-yes \
-        llvm-14 llvm-14-dev llvm-14-tools clang-14
-
-RUN echo "APRON" && \
-    cd tmp && \
-    # Download
-    url="https://github.com/antoinemine/apron/archive/refs/tags/v0.9.15.tar.gz"; echo "Download URL: \"$url\"" && \
-    curl $CURL_OPTIONS -o apron.xz -O $url && \
-    # Extract
-    tar xzf apron.xz && \
-    mv apron-* apron && \
-    # Build
-    cd apron && \
-    ./configure && \
-    make -j4 && \
-    make install && \
-    # Cleanup
-    rm -rf /tmp/*
-
-COPY --from=downloader /tmp/ikos.xz /tmp/ikos.xz
-
-RUN echo "IKOS" && \
-    echo "Extract IKOS" && \
-    cd /tmp && \
-    tar zxf ikos.xz && \
-    # remove version from folder name
-    mv ikos-* ikos && \
-    cd /tmp/ikos && \
-    # Patch IKOS to allow LLVM14+
-    #sed -i 's/(LLVM_VERSION VERSION_LESS "14") OR (NOT (LLVM_VERSION VERSION_LESS "15"))/(LLVM_VERSION VERSION_LESS "14")/g' analyzer/CMakeLists.txt frontend/llvm/CMakeLists.txt && \
-    # Build IKOS
-    echo "Build IKOS" && \
-    mkdir build && cd build && \
-    cmake \
-    -DCMAKE_INSTALL_PREFIX="/opt/ikos" \
-    -DCMAKE_BUILD_TYPE="Debug" \
-    -DLLVM_CONFIG_EXECUTABLE="/usr/lib/llvm-$LLVM_VERSION/bin/llvm-config" \
-    -DMPFR_ROOT=/usr \
-    -DPPL_ROOT=/usr \
-    -DAPRON_ROOT=/usr/local \
-    .. && \
-    make -j4 && \
-    echo "Install IKOS" && \
-    make install && \
-    echo "Test Run 1" && \
-    /opt/ikos/bin/ikos --version && \
-    echo "Build Python Module" && \
-    cd /tmp/ikos/build && \
-    python3 -m build --no-isolation --outdir "/opt/ikos/dist/" --wheel "analyzer/python" && \
-    find /opt/ikos/dist -name "*.whl" -exec ls -la {} + && \
-    echo "Install Python Module" && \
-    python3 -m pip install --no-cache-dir "$(find /opt/ikos/dist -name "ikos-*.whl")" --target "/opt/ikos/python-module" && \
-    export PYTHONPATH="/opt/ikos/python-module" && \
-    echo "Test Run 2" && \
-    /opt/ikos/bin/ikos --version && \
-    echo "Cleanup" && \
-    apt-get autoremove -y && \
-    apt-get clean autoclean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # +-----------------------------+
 # | BASE IMAGE                  |        See https://hub.docker.com/_/debian
@@ -278,7 +174,6 @@ RUN echo "Packages" && \
     # optional tools for Doxygen
     python3 python3-pip \
     python3-sphinx python3-sphinx-rtd-theme python3-defusedxml sphinx-common \
-    # for the IKOS module
     python3-venv \
     graphviz && \
     # Cleanup
@@ -415,34 +310,6 @@ RUN echo "DOXYGEN" && \
     tar xf doxygen-$version_number.linux.bin.tar.gz --strip-components=1 -C /opt/doxygen && \
     ln -s /opt/doxygen/bin/doxygen /usr/bin && \
     rm doxygen-$version_number.linux.bin.tar.gz
-
-#
-#  8888888 888    d8P   .d88888b.   .d8888b.
-#    888   888   d8P   d88P" "Y88b d88P  Y88b
-#    888   888  d8P    888     888 Y88b.
-#    888   888d88K     888     888  "Y888b.
-#    888   8888888b    888     888     "Y88b.
-#    888   888  Y88b   888     888       "888
-#    888   888   Y88b  Y88b. .d88P Y88b  d88P
-#  8888888 888    Y88b  "Y88888P"   "Y8888P"
-#
-
-COPY --from=ikos-builder /opt/ikos /opt/ikos
-
-ENV PATH="/opt/ikos/bin:${PATH}" \
-	PYTHONPATH="/opt/ikos/python-module"
-
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt-get update && apt-get install --no-install-recommends --assume-yes \
-    python3 python3-pip python3-venv python3-pygments python3-setuptools && \
-    # Cleanup
-    apt-get autoremove -y && \
-    apt-get clean autoclean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    # Install IKOS Python module (* for dynamic version)
-	python3 -m pip install --no-cache-dir "$(find /opt/ikos/dist -name "ikos-*.whl")" --target "/opt/ikos/python-module" && \
-    # Test
-	ikos --version
 
 #
 #  888      888      888     888 888b     d888

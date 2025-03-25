@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.10] - 2025-03-25
+
+**Changed**
+- bookworm & trixie image: updated Vulkan SDK to v1.4.309.0
+- trixie image: updated Mesa to v25.0.2
+
+**Fixed**
+- added missing MESA_VERSION on global version (equals distro version, is used for container description)
+
+**Removed**
+- bookworm & trixie image: removed IKOS static analyser due to the runtime requirement for LLVM14
+
 ## [1.0.9] - 2025-03-10
 
 **Added**

@@ -45,7 +45,7 @@ On top of the base image the following tools are installed:
 - zsh with plugins: autosuggestions, completions, history substring search
 - git, nano, jq
 - curl, wget
-- cppcheck, ikos, valgrind
+- cppcheck, valgrind
 - lcov, gcov, gcovr
 - strace, ltrace
 - perf, gprof

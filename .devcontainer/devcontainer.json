@@ -9,7 +9,7 @@
     // sets the run context to this .devcontainer folder
     "context": "."//,
     // target a specific build stage for testing
-    //"target": "ikos-builder"
+    //"target": "some-builder"
   },
   "capAdd": [
     "SYS_PTRACE"
