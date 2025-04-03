@@ -22,7 +22,7 @@ on:
     - cron: "0 1 * * 0"
 
 env:
-  DOCKERHUB_IMAGE: ${{ github.repository }}
+  DOCKERHUB_IMAGE: index.docker.io/${{ github.repository }}
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
 
 jobs:
@@ -99,6 +99,7 @@ jobs:
         with:
           images: |
             ${{ env.GHCR_IMAGE }}
+            ${{ env.DOCKERHUB_IMAGE }}
           flavor: |
             latest=auto
             prefix=${{ matrix.config.debian_codename }}-
@@ -120,6 +121,7 @@ jobs:
         with:
           images: |
             ${{ env.GHCR_IMAGE }}
+            ${{ env.DOCKERHUB_IMAGE }}
           flavor: |
             latest=auto
             prefix=${{ matrix.config.debian_codename }}-with-vulkansdk-
