@@ -221,6 +221,7 @@ jobs:
       - name: Push all images and all tags
         run: |
           docker push --all-tags ${{ env.GHCR_IMAGE }}
+          docker push --all-tags ${{ env.DOCKERHUB_IMAGE }}
 
       - name: List Docker Images
         run: |
