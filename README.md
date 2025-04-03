@@ -18,7 +18,7 @@ The other image includes GCC, LLVM, and Vulkan SDK with Mesa.
 
 Both images are build using Debian 12 Bookworm and Debian 13 Trixie.
 
-All images are published to the Github Container Registry (GHCR).
+All images are published to the Github Container Registry (GHCR) and the Docker Hub (hub.docker.com).
 
 The purpose of these images is to setup a C++ development environment within Visual Studio Code using a [devcontainer config](https://github.com/jakoch/cpp-devbox#fetching-the-prebuilt-container-images-using-a-devcontainer-config).
 
