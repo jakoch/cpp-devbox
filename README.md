@@ -18,7 +18,7 @@ The other image includes GCC, LLVM, and Vulkan SDK with Mesa.
 
 Both images are build using Debian 12 Bookworm and Debian 13 Trixie.
 
-All images are published to the Github Container Registry (GHCR).
+All images are published to the Github Container Registry (GHCR) and the Docker Hub (hub.docker.com).
 
 The purpose of these images is to setup a C++ development environment within Visual Studio Code using a [devcontainer config](https://github.com/jakoch/cpp-devbox#fetching-the-prebuilt-container-images-using-a-devcontainer-config).
 
@@ -95,7 +95,7 @@ You need the following things to run this:
 
 There are two ways of setting the container up.
 
-Either by building the container image locally or by fetching the prebuilt container image from the Github container registry.
+Either by building the container image locally or by fetching the prebuilt container image from a container registry.
 
 ### Building the Container Image locally using VSCode
 
@@ -113,9 +113,13 @@ Either by building the container image locally or by fetching the prebuilt conta
 
 ### Fetching the prebuilt container images using Docker
 
-This container image is published to the Github Container Registry (GHCR).
+This container image is published to the Github Container Registry (GHCR) and the Docker Hub (hub.docker.com).
 
-You may find the package here: https://github.com/jakoch/cpp-devbox/pkgs/container/cpp-devbox.
+You may find the Docker Hub repository here: https://hub.docker.com/r/jakoch/cpp-devbox
+
+You may find the GHCR package here: https://github.com/jakoch/cpp-devbox/pkgs/container/cpp-devbox
+
+In order to pull from GHCR add the prefix (`ghcr.io/`).
 
 **Command Line**
 
@@ -125,10 +129,14 @@ You can install the container image from the command line:
 docker pull ghcr.io/jakoch/cpp-devbox:bookworm-latest
 ```
 
+```bash
+docker pull jakoch/cpp-devbox:bookworm-latest
+```
+
 For the image containing Vulkan SDK append `with-vulkansdk-latest`:
 
 ```bash
-docker pull ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-latest
+docker pull jakoch/cpp-devbox:bookworm-with-vulkansdk-latest
 ```
 
 **Dockerfile**
@@ -136,7 +144,7 @@ docker pull ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-latest
 You might also use this container image as a base image in your own `Dockerfile`:
 
 ```bash
-FROM ghcr.io/jakoch/cpp-devbox:bookworm-latest
+FROM jakoch/cpp-devbox:bookworm-latest
 ```
 
 ### Fetching the prebuilt container images using a .devcontainer config

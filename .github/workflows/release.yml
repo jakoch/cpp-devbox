@@ -65,12 +65,12 @@ jobs:
           dockerfile: .devcontainer/debian/${{ matrix.config.debian_codename }}/Dockerfile
           no-fail: true
 
-      #- name: 🔒 Login to DockerHub Container Registry
-      #  if: github.event_name != 'pull_request'
-      #  uses: docker/login-action@v3 # https://github.com/docker/login-action
-      #  with:
-      #    username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #    password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: 🔒 Login to DockerHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3 # https://github.com/docker/login-action
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: 🔒 Login to Github Container Registry (GHCR)
         if: github.event_name != 'pull_request'
@@ -99,6 +99,7 @@ jobs:
         with:
           images: |
             ${{ env.GHCR_IMAGE }}
+            ${{ env.DOCKERHUB_IMAGE }}
           flavor: |
             latest=auto
             prefix=${{ matrix.config.debian_codename }}-
@@ -120,6 +121,7 @@ jobs:
         with:
           images: |
             ${{ env.GHCR_IMAGE }}
+            ${{ env.DOCKERHUB_IMAGE }}
           flavor: |
             latest=auto
             prefix=${{ matrix.config.debian_codename }}-with-vulkansdk-
@@ -219,6 +221,7 @@ jobs:
       - name: Push all images and all tags
         run: |
           docker push --all-tags ${{ env.GHCR_IMAGE }}
+          docker push --all-tags ${{ env.DOCKERHUB_IMAGE }}
 
       - name: List Docker Images
         run: |
