@@ -252,7 +252,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
           ignore-unfixed: true
           skip-files: /etc/ssh/ssh_host_rsa_key
-          skip-dirs: gcc-13.2.0,usr/lib64
+          skip-dirs: gcc-13.2.0,gcc-13.3.0,usr/lib64
       # Notes for the skips:
       # - skip-files: /etc/ssh/ssh_host_rsa_key
       #   The file is skipped, because its reported as "Asymmetric Private Key" alert.
