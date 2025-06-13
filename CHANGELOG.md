@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.11] - 2025-06-13
 
 **Added**
-- the images are now also published on Docker Hub (hub.docker.com): https://hub.docker.com/r/jakoch/cpp-devbox
+- images are now also published on Docker Hub (hub.docker.com): https://hub.docker.com/r/jakoch/cpp-devbox
 
 **Changed**
 - trixie image: updated Mesa to v25.0.5 and disabled download as distro version is used
