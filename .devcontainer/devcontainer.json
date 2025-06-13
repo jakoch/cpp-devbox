@@ -2,13 +2,14 @@
 {
   "name": "C++ DevBox",
   "build": {
-    // The repository contains two images:
-    // - "./debian/bookworm/Dockerfile" (default)
-    // - "./debian/trixie/Dockerfile"
+    // The repository contains two images: bookworm (default) and trixie:
+    // "dockerfile": "./debian/bookworm/Dockerfile",
     "dockerfile": "./debian/trixie/Dockerfile",
-    // sets the run context to this .devcontainer folder
+    // Sets the run context to this .devcontainer folder:
     "context": "."//,
-    // target a specific build stage for testing
+    // There are multiple build stages:
+    // "downloader", "cpp-devbox-base" and "cpp-devbox-with-vulkansdk".
+    // To target a specific build stage for testing:
     //"target": "some-builder"
   },
   "capAdd": [

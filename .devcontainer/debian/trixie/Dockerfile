@@ -23,8 +23,8 @@
 # |                                                                           |
 # | LLVM:   https://packages.debian.org/trixie/llvm                 19.0      |
 # | GCC:    https://packages.debian.org/trixie/gcc                  14.2.0    |
-# | Vulkan: https://packages.debian.org/trixie/libvulkan-dev        1.4.304.0 |
-# | MESA:   https://packages.debian.org/trixie/mesa-vulkan-drivers  24.3.4    |
+# | Vulkan: https://packages.debian.org/trixie/libvulkan-dev        1.4.309.0 |
+# | MESA:   https://packages.debian.org/trixie/mesa-vulkan-drivers  25.0.5    |
 # |                                                                           |
 # |---------------------------------------------------------------------------|
 # |                                                                           |
@@ -55,7 +55,7 @@ ARG DEBIAN_VERSION_NAME=trixie
 ARG GCC_VERSION=14
 ARG LLVM_VERSION=20
 ARG VULKAN_VERSION=1.4.309.0
-ARG MESA_VERSION=25.0.2
+ARG MESA_VERSION=25.0.5
 
 # +-----------------------------+
 # | Downloader                  |
@@ -70,7 +70,7 @@ FROM debian:trixie-slim AS downloader
 # Reuse global arguments
 #ARG GCC_VERSION
 ARG VULKAN_VERSION
-ARG MESA_VERSION
+#ARG MESA_VERSION
 
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NOWARNINGS="yes" \
@@ -82,7 +82,7 @@ RUN echo "Download Stage" && \
     ca-certificates curl jq && \
 #   curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.xz" && \
     curl $CURL_OPTIONS -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
-    curl $CURL_OPTIONS -o mesa.xz "https://archive.mesa3d.org/mesa-${MESA_VERSION}.tar.xz" && \
+    #curl $CURL_OPTIONS -o mesa.xz "https://archive.mesa3d.org/mesa-${MESA_VERSION}.tar.xz" && \
 	# Cleanup
 	apt-get autoremove -y && \
     apt-get clean autoclean && \

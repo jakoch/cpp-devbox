@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.11] - 2025-06-13
+
+**Added**
+- the images are now also published on Docker Hub (hub.docker.com): https://hub.docker.com/r/jakoch/cpp-devbox
+
+**Changed**
+- trixie image: updated Mesa to v25.0.5 and disabled download as distro version is used
+
 ## [1.0.10] - 2025-03-25
 
 **Changed**
@@ -175,7 +183,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Section for Reference Links -->
 
-[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.10...HEAD
+[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.11...HEAD
+[1.0.11]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.10
 [1.0.10]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.10
 [1.0.9]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.9
 [1.0.8]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.8
