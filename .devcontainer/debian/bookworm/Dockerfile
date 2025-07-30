@@ -18,6 +18,7 @@
 # /===========================================================================\
 # | Debian Bookworm                                                           |
 # |===========================================================================|
+# |                                                                           |
 # | Package Versions                                            (os upstream) |
 # |                                                                           |
 # | LLVM:   https://packages.debian.org/bookworm/llvm                14.0     |
@@ -36,9 +37,9 @@
 
 ARG DEBIAN_VERSION=12
 ARG DEBIAN_VERSION_NAME=bookworm
-ARG GCC_VERSION=13
+ARG GCC_VERSION=13.4.0
 ARG LLVM_VERSION=20
-ARG VULKAN_VERSION=1.4.309.0
+ARG VULKAN_VERSION=1.4.321.1
 ARG MESA_VERSION=22.3.6
 
 # +-----------------------------+
@@ -51,6 +52,7 @@ ARG MESA_VERSION=22.3.6
 FROM debian:bookworm-slim AS downloader
 
 # Reuse global arguments
+ARG GCC_VERSION
 ARG VULKAN_VERSION
 
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -61,7 +63,7 @@ WORKDIR /tmp
 RUN echo "Download Stage" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
     ca-certificates curl jq && \
-    curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-13.3.0/gcc-13.3.0.tar.xz" && \
+    curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.xz" && \
     curl $CURL_OPTIONS -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
 	# Cleanup
 	apt-get autoremove -y && \
@@ -413,7 +415,7 @@ ENV CC=/usr/bin/gcc \
 # installing into /usr instead of /usr/local to have consistent paths in CMakePresets:
 # /usr/bin/g++-12
 # /usr/bin/g++-13
-WORKDIR /gcc-13.3.0
+WORKDIR /gcc-${GCC_VERSION}
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -471,7 +473,7 @@ WORKDIR /
 
 # remove gcc source folder and dependencies
 RUN echo "GCC - Cleanup" && \
-    rm -rf gcc-13.3.0 && \
+    rm -rf gcc-${GCC_VERSION} && \
     # Cleanup
     apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev && \
     apt-get clean autoclean && \
@@ -539,28 +541,26 @@ RUN echo "CLeanup" && \
 # | Set Locale + Timezone       |
 # +-----------------------------+
 
-ENV TZ=Europe/Berlin
+# +-----------------------------+
+# | Set Locale + Timezone       |
+# +-----------------------------+
 
-# configure german locale
+ENV TZ=America/Los_Angeles
+
 RUN echo "Locale & Timezone" && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone && \
-    dpkg-reconfigure tzdata && \
+    dpkg-reconfigure -f noninteractive tzdata && \
     sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    sed -i -e 's/# de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen && \
-    echo 'LANG="de_DE.UTF-8"' > /etc/default/locale && \
-    dpkg-reconfigure locales && \
-    update-locale LANG=de_DE.UTF-8 && \
-    echo "export PATH=$PATH" > /etc/environment
+    echo 'LANG="en_US.UTF-8"' > /etc/default/locale && \
+    dpkg-reconfigure -f noninteractive locales && \
+    update-locale LANG=en_US.UTF-8 && \
+    echo "export PATH=$PATH" > /etc/environment && \
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
-#RUN localedef -i de_DE -c -f UTF-8 -A /usr/share/locale/locale.alias de_DE.UTF-8 \
-#    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
-# ENV LANG=de_DE.UTF-8 LC_ALL=de_DE.UTF-8
-
-ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
-
-# Switch back to dialog for any ad-hoc use of apt-get
-ENV DEBIAN_FRONTEND=dialog
+ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
+    # Switch back to dialog for any ad-hoc use of apt-get
+    DEBIAN_FRONTEND=dialog
 
 # +----------------------------------+
 # | Stage: cpp-devbox-with-vulkansdk |

@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.12] - 2025-07-30
+
+**Changed**
+- default locale and timezone changed from "Europe/Berlin de_DE.UTF-8" to "America/Los_Angeles en_US.UTF-8"
+- bookworm image: updated Vulkan SDK to v1.4.321.1
+- trixie image: updated Vulkan SDK to v1.4.321.1, Mesa to v25.0.7
+
 ## [1.0.11] - 2025-06-13
 
 **Added**

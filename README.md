@@ -64,7 +64,7 @@ The following C/C++ compilers and their toolchains are available:
 
 - LLVM 20.1.0
 - GCC 12.2.0
-- GCC 13.3.0
+- GCC 13.4.0
 
 ### [Dockerfile for Debian 13 - Trixie](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/trixie/Dockerfile) (unstable)
 
@@ -226,8 +226,14 @@ The container tag "latest" is applied to the latest build:
 
 ### Field Notes for building devbox-test locally
 
-- 1) remove CMake build artifacts, these files would be copied and block a rebuild
-- 2) `docker run --rm -v "$(PWD)/devbox-test:/test-src" -w /test-src ghcr.io/jakoch/cpp-devbox:trixie-latest zsh -c "./build.sh"`
- - use relative folder `".\devbox-test:/test-src"` on windows
- - this folder is copied as test-src into the container
- - then build.sh is called using zsh
+- Before building, please remove any CMake build artifacts from the `devbox-test` directory. Otherwise, these files may be copied into the container and block a
+  clean rebuild.
+- To build and run `devbox-test`, use the following command (for Linux/macOS):
+  ```
+  docker run --rm -v "$(PWD)/devbox-test:/test-src" -w /test-src ghcr.io/jakoch/cpp-devbox:trixie-latest zsh -c "./build.sh"
+  ```
+- On Windows, use a relative path for the volume mount:
+  ```
+  docker run --rm -v ".\devbox-test:/test-src" -w /test-src ghcr.io/jakoch/cpp-devbox:trixie-latest zsh -c "./build.sh"
+  ```
+- This command mounts the `devbox-test` folder into the container as `/test-src`, then runs `build.sh` inside the container using `zsh`.

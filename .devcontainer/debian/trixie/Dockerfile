@@ -24,13 +24,13 @@
 # | LLVM:   https://packages.debian.org/trixie/llvm                 19.0      |
 # | GCC:    https://packages.debian.org/trixie/gcc                  14.2.0    |
 # | Vulkan: https://packages.debian.org/trixie/libvulkan-dev        1.4.309.0 |
-# | MESA:   https://packages.debian.org/trixie/mesa-vulkan-drivers  25.0.5    |
+# | MESA:   https://packages.debian.org/trixie/mesa-vulkan-drivers  25.0.7    |
 # |                                                                           |
 # |---------------------------------------------------------------------------|
 # |                                                                           |
 # | Latest Versions                                         (vendor upstream) |
 # |                                                                           |
-# | LLVM:   https://apt.llvm.org/                                                                  |
+# | LLVM:   https://apt.llvm.org/                                             |                     |
 # | GCC:    https://ftp.gnu.org/gnu/gcc/                                      |
 # | Vulkan: https://vulkan.lunarg.com/sdk/latest.json                         |
 # | MESA:   https://archive.mesa3d.org/                                       |
@@ -52,10 +52,10 @@
 
 ARG DEBIAN_VERSION=13
 ARG DEBIAN_VERSION_NAME=trixie
-ARG GCC_VERSION=14
+ARG GCC_VERSION=14.2.0
 ARG LLVM_VERSION=20
-ARG VULKAN_VERSION=1.4.309.0
-ARG MESA_VERSION=25.0.5
+ARG VULKAN_VERSION=1.4.321.1
+ARG MESA_VERSION=25.0.7
 
 # +-----------------------------+
 # | Downloader                  |
@@ -571,23 +571,18 @@ RUN echo "CLeanup" && \
 # | Set Locale + Timezone       |
 # +-----------------------------+
 
-ENV TZ=Europe/Berlin
+ENV TZ=America/Los_Angeles
 
-# configure german locale
 RUN echo "Locale & Timezone" && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone && \
-    dpkg-reconfigure tzdata && \
+    dpkg-reconfigure -f noninteractive tzdata && \
     sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    sed -i -e 's/# de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen && \
-    echo 'LANG="de_DE.UTF-8"' > /etc/default/locale && \
-    dpkg-reconfigure locales && \
-    update-locale LANG=de_DE.UTF-8 && \
-    echo "export PATH=$PATH" > /etc/environment
-
-#RUN localedef -i de_DE -c -f UTF-8 -A /usr/share/locale/locale.alias de_DE.UTF-8 \
-#    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
-# ENV LANG=de_DE.UTF-8 LC_ALL=de_DE.UTF-8
+    echo 'LANG="en_US.UTF-8"' > /etc/default/locale && \
+    dpkg-reconfigure -f noninteractive locales && \
+    update-locale LANG=en_US.UTF-8 && \
+    echo "export PATH=$PATH" > /etc/environment && \
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
     # Switch back to dialog for any ad-hoc use of apt-get
