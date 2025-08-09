@@ -400,6 +400,7 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 # We are using Clang++ for compilation, so this download + compile step must happen after installing LLVM+Clang.
 # We don't need to call mold's ./install-build-deps.sh, because all build dependencies are present.
 # Note to overwrite ld: sudo ln -sf /opt/mold/bin/mold $(realpath /usr/bin/ld)
+# Note: mold is also added as "ld.mold". why is "-fuse-ld=ld.mold" and not "-fuse-ld=mold" used in CMake?
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "MOLD" && \
@@ -409,6 +410,7 @@ RUN echo "MOLD" && \
     cmake --build /tmp/mold/build -j "$(nproc)" && \
     cmake --install /tmp/mold/build --prefix=/opt/mold && \
     ln -s /opt/mold/bin/mold /usr/bin && \
+    ln -sf /usr/bin/mold /usr/bin/ld.mold && \
     rm -rf /tmp/mold
 
 #
