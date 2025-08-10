@@ -8,15 +8,17 @@ A Docker-based development container for C/C++ development.
 
 **Debian Linux 13 Trixie with LLVM 20 & GCC 14, VulkanSDK 1.4.304.1, Mesa, CMake, VCPKG, mold, zsh**
 
+**Debian Linux 14 Forky with LLVM 20 & GCC 14, VulkanSDK 1.4.304.1, Mesa, CMake, VCPKG, mold, zsh**
+
 ## What is this?
 
-This repository maintains Dockerfiles for generating two container images based on two Debian Linux versions.
+This repository provides Dockerfiles for building container images based on Debian Linux.
+We offer images for Debian 12 (Bookworm), Debian 13 (Trixie), and Debian 14 (Forky).
 
-One image includes GCC and LLVM.
-
-The other image includes GCC, LLVM, and Vulkan SDK with Mesa.
-
-Both images are build using Debian 12 Bookworm and Debian 13 Trixie.
+Each image is available in two variants:
+- **Base:** Includes GCC and LLVM.
+- **With VulkanSDK:** Includes GCC, LLVM, and additionally the Vulkan SDK with Mesa.
+For a complete list of C++ related tools, see [What is pre-installed?](#what-is-pre-installed).
 
 All images are published to the Github Container Registry (GHCR) and the Docker Hub (hub.docker.com).
 
@@ -26,13 +28,15 @@ The purpose of these images is to setup a C++ development environment within Vis
 
 [bookworm-latest]: https://ghcr.io/jakoch/cpp-devbox:bookworm-latest
 [trixie-latest]:   https://ghcr.io/jakoch/cpp-devbox:trixie-latest
+[forky-latest]:    https://ghcr.io/jakoch/cpp-devbox:forky-latest
 [bookworm-with-vulkansdk-latest]: https://ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-latest
 [trixie-with-vulkansdk-latest]: https://ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-latest
+[forky-with-vulkansdk-latest]: https://ghcr.io/jakoch/cpp-devbox:forky-with-vulkansdk-latest
 
-| ⭣ Version Tag &nbsp;&nbsp; OS ⭢ | Debian 12 - Bookworm | Debian 13 - Trixie |
-|-----------------------------------|---------------------------|--------------------|
-| Latest | ![bookworm-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-latest&label=image+size&trim=) <br> [bookworm-latest] | ![trixie-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-latest&label=image+size&trim=) <br>[trixie-latest]
-| Latest "with-vulkansdk" | ![bookworm-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-with-vulkansdk-latest&label=image+size&trim=) <br>[bookworm-with-vulkansdk-latest] |   ![trixie-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-with-vulkansdk-latest&label=image+size&trim=) <br> [trixie-with-vulkansdk-latest]
+| ⭣ Version Tag &nbsp;&nbsp; OS ⭢  | Debian 12 - Bookworm       | Debian 13 - Trixie  | Debian 14 - Forky   |
+|-----------------------------------|---------------------------|---------------------|---------------------|
+| Latest | ![bookworm-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-latest&label=image+size&trim=) <br> [bookworm-latest] | ![trixie-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-latest&label=image+size&trim=) <br>[trixie-latest] | ![forky-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=forky-latest&label=image+size&trim=) <br>[forky-latest]
+| Latest "with-vulkansdk" | ![bookworm-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-with-vulkansdk-latest&label=image+size&trim=) <br>[bookworm-with-vulkansdk-latest] | ![trixie-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-with-vulkansdk-latest&label=image+size&trim=) <br> [trixie-with-vulkansdk-latest] | ![forky-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=forky-with-vulkansdk-latest&label=image+size&trim=) <br> [forky-with-vulkansdk-latest]
 
 You find the [versioning scheme for images below](#versioning-scheme-for-images).
 
@@ -58,7 +62,7 @@ On top of the base image the following tools are installed:
 - Doxygen (latest version)
 - git, github cli
 
-### [Dockerfile for Debian 12 - Bookworm](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/bookworm/Dockerfile) (stable)
+### [Dockerfile for Debian 12 - Bookworm](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/12-bookworm/Dockerfile) (oldstable)
 
 The following C/C++ compilers and their toolchains are available:
 
@@ -66,7 +70,15 @@ The following C/C++ compilers and their toolchains are available:
 - GCC 12.2.0
 - GCC 13.4.0
 
-### [Dockerfile for Debian 13 - Trixie](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/trixie/Dockerfile) (unstable)
+### [Dockerfile for Debian 13 - Trixie](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/13-trixie/Dockerfile) (stable)
+
+The following C/C++ compilers and their toolchains are available:
+
+- LLVM 20.1.0
+- GCC 13.3.0
+- GCC 14.2.0
+
+### [Dockerfile for Debian 14 - Forky](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/14-forky/Dockerfile) (testing)
 
 The following C/C++ compilers and their toolchains are available:
 
@@ -76,10 +88,10 @@ The following C/C++ compilers and their toolchains are available:
 
 ### VulkanSDK
 
-The `with-vulkansdk` image additionally contains:
+The `with-vulkansdk` image variant additionally contains:
 
-- Vulkan SDK 1.3.296.0
-- Mesa 22.3.6 (bookworm), 24.2.8 (trixie)
+- Vulkan SDK 1.4.321.1
+- Mesa 22.3.6 (bookworm), 24.2.8 (trixie), 24.2.8 (forky)
   - (for software rendering with [LLVMpipe](https://docs.mesa3d.org/drivers/llvmpipe.html))
 
 [What is the latest version of VulkanSDK?](https://vulkan.lunarg.com/sdk/latest.json)
@@ -126,17 +138,17 @@ In order to pull from GHCR add the prefix (`ghcr.io/`).
 You can install the container image from the command line:
 
 ```bash
-docker pull ghcr.io/jakoch/cpp-devbox:bookworm-latest
+docker pull ghcr.io/jakoch/cpp-devbox:trixie-latest
 ```
 
 ```bash
-docker pull jakoch/cpp-devbox:bookworm-latest
+docker pull jakoch/cpp-devbox:trixie-latest
 ```
 
 For the image containing Vulkan SDK append `with-vulkansdk-latest`:
 
 ```bash
-docker pull jakoch/cpp-devbox:bookworm-with-vulkansdk-latest
+docker pull jakoch/cpp-devbox:trixie-with-vulkansdk-latest
 ```
 
 **Dockerfile**
@@ -144,7 +156,7 @@ docker pull jakoch/cpp-devbox:bookworm-with-vulkansdk-latest
 You might also use this container image as a base image in your own `Dockerfile`:
 
 ```bash
-FROM jakoch/cpp-devbox:bookworm-latest
+FROM jakoch/cpp-devbox:trixie-latest
 ```
 
 ### Fetching the prebuilt container images using a .devcontainer config
@@ -156,7 +168,7 @@ You might use this container image in the `.devcontainer/devcontainer.json` file
 ```json
 {
   "name": "My C++ Project DevBox",
-  "image": "ghcr.io/jakoch/cpp-devbox:bookworm-latest"
+  "image": "ghcr.io/jakoch/cpp-devbox:trixie-latest"
 }
 ```
 
@@ -167,7 +179,7 @@ You might use this container image in the `.devcontainer/devcontainer.json` file
 ```json
 {
   "name": "My C++ Project DevBox",
-  "image": "ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-latest"
+  "image": "ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-latest"
 }
 ```
 
