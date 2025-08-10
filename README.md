@@ -173,20 +173,6 @@ You might use this container image in the `.devcontainer/devcontainer.json` file
 
 #### Developer Notes
 
-### Fetching the bleeding-edge prebuilt container images
-
-The bleeding-edge container versions are build using Debian 13 - Trixie.
-
-The Trixie base image ships GCC 13.2 and LLVM 16 by default.
-For GCC its also the latest available upstream version.
-For LLVM we installed the latest available upstream version: LLVM 18.
-
-These images are unstable because:
-
-- a) the Debian base image Trixie itself unstable,
-- b) LLVM 18 has package requirements, which can not be resolved with Trixie packages alone, so several Debian SID packages are required.
-
-
 ### Versioning Scheme for Images
 
 The container images use the following versioning scheme.
@@ -199,13 +185,6 @@ The following container tags are created for scheduled builds:
 
 - `ghcr.io/jakoch/cpp-devbox:{debian_codename}-{date}}`
 - `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-{{date}}`
-
-#### For git push
-
-The following container tags are created only on push, not when tagging:
-
-- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-with-vulkansdk-{{date}}-sha-{{sha}}`
-- `ghcr.io/jakoch/cpp-devbox:{debian_codename}-{{date}}-sha-{{sha}}`
 
 #### For git tag
 

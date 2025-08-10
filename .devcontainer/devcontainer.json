@@ -2,9 +2,12 @@
 {
   "name": "C++ DevBox",
   "build": {
-    // The repository contains two images: bookworm (default) and trixie:
-    // "dockerfile": "./debian/bookworm/Dockerfile",
-    "dockerfile": "./debian/trixie/Dockerfile",
+    // The repository contains the following images:
+    // "dockerfile": "./debian/12-bookworm/Dockerfile",
+    // "dockerfile": "./debian/13-trixie/Dockerfile",        (default)
+    // "dockerfile": "./debian/14-forky/Dockerfile",
+    // "dockerfile": "./debian/sid-unstable/Dockerfile",
+    "dockerfile": "./debian/13-trixie/Dockerfile",
     // Sets the run context to this .devcontainer folder:
     "context": "."//,
     // There are multiple build stages:

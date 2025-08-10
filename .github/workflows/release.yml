@@ -46,8 +46,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { platform: "linux/amd64", debian_codename: "bookworm", debian_version: "12"}
-          - { platform: "linux/amd64", debian_codename: "trixie", debian_version: "13" }
+          - { platform: "linux/amd64", debian_version: "12", debian_codename: "bookworm"}
+          - { platform: "linux/amd64", debian_version: "13", debian_codename: "trixie" }
+          - { platform: "linux/amd64", debian_version: "14", debian_codename: "forky" }
+          - { platform: "linux/amd64", debian_version: "sid", debian_codename: "unstable" }
 
     steps:
       - name: ✂️ Free Disk Space
@@ -62,7 +64,7 @@ jobs:
       - name: 🔍 Run hadolint
         uses: hadolint/hadolint-action@v3.1.0 # https://github.com/hadolint/hadolint-action
         with:
-          dockerfile: .devcontainer/debian/${{ matrix.config.debian_codename }}/Dockerfile
+          dockerfile: .devcontainer/debian/${{ matrix.config.debian_version }}-${{ matrix.config.debian_codename }}/Dockerfile
           no-fail: true
 
       - name: 🔒 Login to DockerHub Container Registry
@@ -91,7 +93,6 @@ jobs:
       # cpp-devbox:{debian_codename}-{{date}}                # only on scheduled builds
       # cpp-devbox:{debian_codename}-{{version}}             # only on git tag
       # cpp-devbox:{debian_codename}-{{major}}.{{minor}}     # only on git tag
-      # cpp-devbox:{debian_codename}-{{date}}-sha-{{sha}}    # only on push, not when tagging
       # cpp-devbox:{debian_codename}-latest                  # always
       - name: ✏ Setup Docker Metadata ➔ Stage cpp-devbox-base
         id: metadata-base
@@ -107,13 +108,11 @@ jobs:
             type=schedule,pattern={{ date 'YYYYMMDD' }}
             type=semver,pattern={{ version }}
             type=semver,pattern={{ major }}.{{ minor }}
-            type=raw,value={{ date 'YYYYMMDD' }}-sha-{{ sha }},enabled=${{ github.event_name == 'push' }}
             type=raw,value=latest
 
       # cpp-devbox:{debian_codename}-with-vulkansdk-{{date}}                # only on scheduled builds
       # cpp-devbox:{debian_codename}-with-vulkansdk-{{version}}             # only on git tag
       # cpp-devbox:{debian_codename}-with-vulkansdk-{{major}}.{{minor}}     # only on git tag
-      # cpp-devbox:{debian_codename}-with-vulkansdk-{{date}}-sha-{{sha}}    # only on push, not when tagging
       # cpp-devbox:{debian_codename}-with-vulkansdk-latest                  # always
       - name: ✏ Setup Docker Metadata ➔ Stage cpp-devbox-base-with-vulkansdk
         id: metadata-base-with-vulkansdk
@@ -129,7 +128,6 @@ jobs:
             type=schedule,pattern={{ date 'YYYYMMDD' }}
             type=semver,pattern={{ version }}
             type=semver,pattern={{ major }}.{{ minor }}
-            type=raw,value={{ date 'YYYYMMDD' }}-sha-{{ sha }},enabled=${{ github.event_name == 'push' }}
             type=raw,value=latest
 
       - name: ✏ Create info.json
@@ -150,7 +148,7 @@ jobs:
         uses: docker/build-push-action@v6 # https://github.com/docker/build-push-action
         with:
           context: .
-          file: .devcontainer/debian/${{ matrix.config.debian_codename }}/Dockerfile
+          file: .devcontainer/debian/${{ matrix.config.debian_version }}-${{ matrix.config.debian_codename }}/Dockerfile
           target: cpp-devbox-base
           platforms: ${{ matrix.config.platform }}
           tags: ${{ steps.metadata-base.outputs.tags }}
@@ -166,7 +164,7 @@ jobs:
         uses: docker/build-push-action@v6 # https://github.com/docker/build-push-action
         with:
           context: .
-          file: .devcontainer/debian/${{ matrix.config.debian_codename }}/Dockerfile
+          file: .devcontainer/debian/${{ matrix.config.debian_version }}-${{ matrix.config.debian_codename }}/Dockerfile
           target: cpp-devbox-with-vulkansdk
           platforms: ${{ matrix.config.platform }}
           tags: ${{ steps.metadata-base-with-vulkansdk.outputs.tags }}
