@@ -13,11 +13,13 @@ A Docker-based development container for C/C++ development.
 ## What is this?
 
 This repository provides Dockerfiles for building container images based on Debian Linux.
+
 We offer images for Debian 12 (Bookworm), Debian 13 (Trixie), and Debian 14 (Forky).
 
 Each image is available in two variants:
 - **Base:** Includes GCC and LLVM.
 - **With VulkanSDK:** Includes GCC, LLVM, and additionally the Vulkan SDK with Mesa.
+- 
 For a complete list of C++ related tools, see [What is pre-installed?](#what-is-pre-installed).
 
 All images are published to the Github Container Registry (GHCR) and the Docker Hub (hub.docker.com).
