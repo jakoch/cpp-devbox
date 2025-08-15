@@ -104,6 +104,7 @@ noninteractive
 NOWARNINGS
 objdump
 ohmyzsh
+oldstable
 omyzsh
 osmesa
 pipefail

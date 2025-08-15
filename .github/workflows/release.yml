@@ -50,6 +50,8 @@ jobs:
           - { platform: "linux/amd64", debian_version: "13", debian_codename: "trixie" }
           - { platform: "linux/amd64", debian_version: "14", debian_codename: "forky" }
           - { platform: "linux/amd64", debian_version: "sid", debian_codename: "unstable" }
+    
+    continue-on-error: ${{ matrix.config.debian_codename == 'forky' }}
 
     steps:
       - name: ✂️ Free Disk Space
