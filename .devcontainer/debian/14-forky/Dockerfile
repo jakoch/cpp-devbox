@@ -182,6 +182,38 @@ RUN echo "Packages" && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #
+# Add a non-root user to the container
+#
+# Problem:
+# When mounting host files/folders into a container, they retain their original
+# ownership (UID/GID) from the host. If the container user has a different UID/GID,
+# they may not have proper access to those files.
+# Solution:
+# Create a container user with the same UID and GID as the host user.
+# The actual username doesn't matter — only the UID/GID must match.
+# For most dev containers (including VS Code Remote - Containers), UID 1000/GID 1000
+# is common.
+#
+# We simply use "vscode" as username, create a user and add sudo support.
+# This enables you to install software after connecting.
+#
+# Docs:
+# https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user
+#
+
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN echo "Create the user" && \
+    groupadd --gid $USER_GID $USERNAME && \
+    useradd --uid $USER_UID --gid $USER_GID -m $USERNAME && \
+    echo "Add sudo support" && \
+    echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME && \
+    chmod 0440 /etc/sudoers.d/$USERNAME
+
+#
 #   .d8888b.  d8b 888    888               888             .d8888b.  888      8888888
 #  d88P  Y88b Y8P 888    888               888            d88P  Y88b 888        888
 #  888    888     888    888               888            888    888 888        888

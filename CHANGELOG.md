@@ -11,7 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.13] - 2025-08-15
+
 - added symlink for /usr/bin/mold -> /usr/bin/ld.mold (for -fuse-ld)
+- added non-root 'vscode' user with matching UID/GID
+- prepared Dockerfiles for forky and sid-unstable
 
 ## [1.0.12] - 2025-07-30
 
@@ -192,7 +196,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Section for Reference Links -->
 
-[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.12...HEAD
+[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.13...HEAD
+[1.0.13]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.13
 [1.0.12]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.12
 [1.0.11]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.11
 [1.0.10]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.10
