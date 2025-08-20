@@ -593,15 +593,6 @@ RUN echo "ZSH" && \
 ENV SHELL=/bin/zsh
 
 # +-----------------------------+
-# | CLEANUP                     |
-# +-----------------------------+
-
-RUN echo "CLeanup" && \
-    apt-get autoremove -y && \
-    apt-get clean autoclean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# +-----------------------------+
 # | Set Locale + Timezone       |
 # +-----------------------------+
 
