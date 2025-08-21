@@ -26,7 +26,7 @@ All images are published to the Github Container Registry (GHCR) and the Docker 
 
 The purpose of these images is to setup a C++ development environment within Visual Studio Code using a [devcontainer config](https://github.com/jakoch/cpp-devbox#fetching-the-prebuilt-container-images-using-a-devcontainer-config).
 
-## Images and Sizes
+## Available Images
 
 [bookworm-latest]: https://ghcr.io/jakoch/cpp-devbox:bookworm-latest
 [trixie-latest]:   https://ghcr.io/jakoch/cpp-devbox:trixie-latest
@@ -37,8 +37,8 @@ The purpose of these images is to setup a C++ development environment within Vis
 
 | ⭣ Version Tag &nbsp;&nbsp; OS ⭢  | Debian 12 - Bookworm       | Debian 13 - Trixie  | Debian 14 - Forky   |
 |-----------------------------------|---------------------------|---------------------|---------------------|
-| Latest | ![bookworm-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-latest&label=image+size&trim=) <br> [bookworm-latest] | ![trixie-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-latest&label=image+size&trim=) <br>[trixie-latest] | ![forky-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=forky-latest&label=image+size&trim=) <br>[forky-latest]
-| Latest "with-vulkansdk" | ![bookworm-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-with-vulkansdk-latest&label=image+size&trim=) <br>[bookworm-with-vulkansdk-latest] | ![trixie-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-with-vulkansdk-latest&label=image+size&trim=) <br> [trixie-with-vulkansdk-latest] | ![forky-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=forky-with-vulkansdk-latest&label=image+size&trim=) <br> [forky-with-vulkansdk-latest]
+| Latest | [bookworm-latest] <br> ![Latest Version of Bookworm](https://img.shields.io/docker/v/jakoch/cpp-devbox/bookworm-latest?label=Latest%20Version) <br> ![bookworm-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-latest&label=image+size) | [trixie-latest] <br> ![Latest Version of Trixie](https://img.shields.io/docker/v/jakoch/cpp-devbox/trixie-latest?label=Latest%20Version) <br> ![trixie-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-latest&label=image+size) | [forky-latest] <br> ![Latest Version of Forky](https://img.shields.io/docker/v/jakoch/cpp-devbox/forky-latest?label=Latest%20Version) <br> ![forky-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=forky-latest&label=image+size)
+| Latest "with-vulkansdk" | [bookworm-with-vulkansdk-latest] <br> ![Latest Version of Bookworm with VulkanSDK](https://img.shields.io/docker/v/jakoch/cpp-devbox/bookworm-with-vulkansdk-latest?label=Latest%20Version) <br> ![bookworm-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-with-vulkansdk-latest&label=image+size) | [trixie-with-vulkansdk-latest] <br> ![Latest Version of Trixie with VulkanSDK](https://img.shields.io/docker/v/jakoch/cpp-devbox/trixie-with-vulkansdk-latest?label=Latest%20Version) <br> ![trixie-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-with-vulkansdk-latest&label=image+size) | [forky-with-vulkansdk-latest] <br> ![Latest Version of Forky with VulkanSDK](https://img.shields.io/docker/v/jakoch/cpp-devbox/forky-with-vulkansdk-latest?label=Latest%20Version) <br> ![forky-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=forky-with-vulkansdk-latest&label=image+size)
 
 You find the [versioning scheme for images below](#versioning-scheme-for-images).
 
