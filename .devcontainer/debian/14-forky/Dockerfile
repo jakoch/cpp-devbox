@@ -53,7 +53,7 @@
 ARG DEBIAN_VERSION=14
 ARG DEBIAN_VERSION_NAME=forky
 ARG GCC_VERSION=14.2.0
-ARG LLVM_VERSION=20
+ARG LLVM_VERSION=21
 ARG VULKAN_VERSION=1.4.321.1
 ARG MESA_VERSION=25.0.7
 
@@ -357,9 +357,8 @@ RUN echo "DOXYGEN" && \
 # For an installation using the llvm.sh setup script:
 # RUN curl -sLO https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh ${LLVM_VERSION} all && rm ./llvm.sh
 
-# for installation using add-apt-repository from software-properties-common
-#add-apt-repository -y "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" && \
-#add-apt-repository "deb http://httpredir.debian.org/debian sid main" && \
+# forky is testing, but we pull from unstable
+# https://apt.llvm.org/unstable/dists/
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "LLVM" && \
@@ -393,6 +392,8 @@ RUN echo "LLVM" && \
     libunwind-$LLVM_VERSION-dev \
     libclang-rt-$LLVM_VERSION-dev \
     libpolly-$LLVM_VERSION-dev && \
+    # Remove SID
+    rm -f /etc/apt/sources.list.d/sid.list && \
     # Cleanup
     apt-get autoremove -y && \
     apt-get clean autoclean && \
