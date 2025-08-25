@@ -7,7 +7,7 @@ source /etc/os-release
 case "$VERSION_CODENAME" in
   bookworm)
     CLANG_VERSION=20
-    GCC_VERSION=14
+    GCC_VERSION=13
     ;;
   trixie)
     CLANG_VERSION=21
