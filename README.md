@@ -6,9 +6,9 @@ A Docker-based development container for C/C++ development.
 
 **Debian Linux 12 Bookworm with LLVM 20 & GCC 12+13, VulkanSDK 1.4.304.1, Mesa, CMake, VCPKG, mold, zsh**
 
-**Debian Linux 13 Trixie with LLVM 20 & GCC 14, VulkanSDK 1.4.304.1, Mesa, CMake, VCPKG, mold, zsh**
+**Debian Linux 13 Trixie with LLVM 21 & GCC 14, VulkanSDK 1.4.304.1, Mesa, CMake, VCPKG, mold, zsh**
 
-**Debian Linux 14 Forky with LLVM 20 & GCC 14, VulkanSDK 1.4.304.1, Mesa, CMake, VCPKG, mold, zsh**
+**Debian Linux 14 Forky with LLVM 21 & GCC 14, VulkanSDK 1.4.304.1, Mesa, CMake, VCPKG, mold, zsh**
 
 ## What is this?
 
