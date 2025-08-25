@@ -50,7 +50,7 @@ jobs:
           - { platform: "linux/amd64", debian_version: "13", debian_codename: "trixie" }
           - { platform: "linux/amd64", debian_version: "14", debian_codename: "forky" }
           - { platform: "linux/amd64", debian_version: "sid", debian_codename: "unstable" }
-    
+
     continue-on-error: ${{ matrix.config.debian_codename == 'forky' }}
 
     steps:
@@ -230,7 +230,7 @@ jobs:
 
       - name: Test Docker Image
         run: |
-          docker run --rm -v "${PWD}/devbox-test:/src" -w /src ghcr.io/jakoch/cpp-devbox:trixie-latest zsh -c "./build.sh"
+          docker run --rm -v "${PWD}/devbox-test:/src" -w /src ghcr.io/jakoch/cpp-devbox:${{ matrix.config.debian_codename }}-latest zsh -c "./build.sh"
 
       - name: 📦 Provide the version info and info.json as a release asset
         uses: actions/upload-artifact@v4 # https://github.com/actions/upload-artifact
