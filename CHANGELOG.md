@@ -14,11 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.14] - 2025-08-25
 
 **Fixed**
-- debian/13-trixie image: packages were pulled from sid/unstable, fixes #24
-- debian/sid-unstable image: invalid DEBIAN_VERSION and DEBIAN_VERSION_NAME were fixed
+- 13-trixie image: packages were pulled from sid/unstable, fixes #24
+- sid-unstable image: invalid DEBIAN_VERSION and DEBIAN_VERSION_NAME were fixed
+- previously, the workflow test step always used the trixie-latest image; now, each image is tested individually
 
 **Changed**
-- debian/13-trixie, 14-forky, sid-unstable image: updated LLVM to v21
+- 13-trixie, 14-forky, sid-unstable images: updated LLVM to v21
+- the devbox-test build script now automatically detects and uses the appropriate compiler version for each image.
 
 ## [1.0.13] - 2025-08-15
 
