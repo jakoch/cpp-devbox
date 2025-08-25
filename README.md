@@ -76,16 +76,14 @@ The following C/C++ compilers and their toolchains are available:
 
 The following C/C++ compilers and their toolchains are available:
 
-- LLVM 20.1.0
-- GCC 13.3.0
+- LLVM 21.1.0
 - GCC 14.2.0
 
 ### [Dockerfile for Debian 14 - Forky](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/14-forky/Dockerfile) (testing)
 
 The following C/C++ compilers and their toolchains are available:
 
-- LLVM 20.1.0
-- GCC 13.3.0
+- LLVM 21.1.0
 - GCC 14.2.0
 
 ### VulkanSDK
