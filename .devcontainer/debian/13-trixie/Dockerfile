@@ -362,7 +362,7 @@ RUN echo "DOXYGEN" && \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "LLVM" && \
     curl -s https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
-    echo "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain-trixie-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
+    echo "deb http://apt.llvm.org/trixie/ llvm-toolchain-trixie-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
     # Not all LLVM key packages are installed:
     # ocaml-dev, doc, examples, libclc, mlir, bolt, flang (fortran), wasm, libllvmlibc
