@@ -4,27 +4,42 @@
 
 A Docker-based development container for C/C++ development.
 
-**Debian Linux 12 Bookworm with LLVM 20 & GCC 12+13, VulkanSDK 1.4.304.1, Mesa, CMake, VCPKG, mold, zsh**
+It is designed especially for use with Visual Studio Code or any IDE
+that supports the devcontainer standard. The images can also be used in CI workflows.
 
-**Debian Linux 13 Trixie with LLVM 21 & GCC 14, VulkanSDK 1.4.304.1, Mesa, CMake, VCPKG, mold, zsh**
+## Purpose
 
-**Debian Linux 14 Forky with LLVM 21 & GCC 14, VulkanSDK 1.4.304.1, Mesa, CMake, VCPKG, mold, zsh**
+cpp-devbox streamlines the setup of a complete C++ development stack in standardized and portable containers. It is optimized for modern C++ projects on Linux, providing compilers and tools for debugging, testing, documentation, CI.
 
-## What is this?
+The primary goal of these images is to enable a ready-to-use C++ development environment within Visual Studio Code using a [devcontainer configuration](https://github.com/jakoch/cpp-devbox#fetching-the-prebuilt-container-images-using-a-devcontainer-config).
+
+## Technical Base and Images
+
+### Distributions
 
 This repository provides Dockerfiles for building container images based on Debian Linux.
 
-We offer images for Debian 12 (Bookworm), Debian 13 (Trixie), and Debian 14 (Forky).
+We offer images for:
 
-Each image is available in two variants:
-- **Base:** Includes GCC and LLVM.
-- **With VulkanSDK:** Includes GCC, LLVM, and additionally the Vulkan SDK with Mesa.
+- Debian 12 (Bookworm, oldstable),
+- Debian 13 (Trixie, stable),
+- Debian 14 (Forky, testing) and
+- Debian SID (unstable).
+
+## Container Images
+
+There are two main variants per distribution: one with the standard toolchain
+and one with an additional Vulkan SDK and Mesa for graphics development.
+
+- **base:** Includes GCC and LLVM.
+- **with-vulkansdk:** Includes GCC, LLVM, and additionally the Vulkan SDK with Mesa.
+
+## Container Registries
+
+The images are automatically published to Github Container Registry (GHCR) and
+the Docker Hub (hub.docker.com) upon updates.
 
 For a complete list of C++ related tools, see [What is pre-installed?](#what-is-pre-installed).
-
-All images are published to the Github Container Registry (GHCR) and the Docker Hub (hub.docker.com).
-
-The purpose of these images is to setup a C++ development environment within Visual Studio Code using a [devcontainer config](https://github.com/jakoch/cpp-devbox#fetching-the-prebuilt-container-images-using-a-devcontainer-config).
 
 ## Available Images
 
@@ -44,9 +59,15 @@ You find the [versioning scheme for images below](#versioning-scheme-for-images)
 
 ## What is pre-installed?
 
-Here is a basic overview of the pre-installed tools. For details, please refer to the Dockerfiles.
+The image provides all essential C++ ecosystem tools for a complete development
+environment. Including shell & basic utilities, compilers, build systems,
+debugging tools, assemblers, package managers, documentation tools, and
+optional graphics SDKs.
 
-On top of the base image the following tools are installed:
+Here is a basic overview of the pre-installed tools.
+For details, please refer to the Dockerfiles.
+
+On top of the Debian base image the following tools are installed:
 
 - zsh with plugins: autosuggestions, completions, history substring search
 - git, nano, jq
@@ -63,6 +84,8 @@ On top of the base image the following tools are installed:
 - mold (latest version)
 - Doxygen (latest version)
 - git, github cli
+
+The **with-vulkansdk** distributions additionally contain the Vulkan SDK and Mesa.
 
 ### [Dockerfile for Debian 12 - Bookworm](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/12-bookworm/Dockerfile) (oldstable)
 
@@ -228,3 +251,20 @@ The container tag "latest" is applied to the latest build:
   docker run --rm -v ".\devbox-test:/test-src" -w /test-src ghcr.io/jakoch/cpp-devbox:trixie-latest zsh -c "./build.sh"
   ```
 - This command mounts the `devbox-test` folder into the container as `/test-src`, then runs `build.sh` inside the container using `zsh`.
+
+### License
+
+- Open Source: MIT License.
+- Copyright: Jens A. Koch and contributors.
+
+### Snappy AI-Generated Project Summary
+
+cpp-devbox provides developers with a robust, ready-to-use C++ stack, complete with build tools, debuggers, analysis utilities, and modern graphics development support. Ideal for both local development and CI/CD pipelines.
+
+### A Punchy One-Liner for Marketing
+
+cpp-devbox: A ready-to-go C++ development stack for coding, debugging, and CI/CD—out of the box.
+
+<!-- markdownlint-disable -->
+<!-- Search Engine Keywords: cpp-devbox, C++ development environment, Docker container for C++, VS Code devcontainer, C++ CI/CD pipeline, modern C++ tools, cross-platform C++ build, C++ debugging tools, C++ graphics development, C++ compilers, C++ testing tools, C++ documentation tools, Linux C++ development, portable C++ environment, C++ build automation, C++ code analysis, C++ workflow, C++ IDE setup, preconfigured C++ stack, C++ software development, DevOps C++, Debian, LLVM, Clang, GCC, vcpkg, mold, VulkanSDK, Mesa  -->
+<!-- markdownlint-enable -->
