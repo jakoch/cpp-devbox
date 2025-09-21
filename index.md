@@ -1,24 +1,24 @@
-# cpp-devbox main (2025-09-14)
+# cpp-devbox main (2025-09-21)
 
 ## Images
 
 ### Base Image (bookworm)
 OS Version:  Debian 12 bookworm
-Image Version: ghcr.io/jakoch/cpp-devbox:bookworm-20250914
+Image Version: ghcr.io/jakoch/cpp-devbox:bookworm-20250921
 
 
 ### With VulkanSDK (bookworm)
 OS Version:  Debian 12 bookworm with Vulkan SDK
-Image Version: ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-20250914
+Image Version: ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-20250921
 
 
 ### Base Image (trixie)
 OS Version:  Debian 13 trixie
-Image Version: ghcr.io/jakoch/cpp-devbox:trixie-20250914
+Image Version: ghcr.io/jakoch/cpp-devbox:trixie-20250921
 
 
 ### With VulkanSDK (trixie)
 OS Version:  Debian 13 trixie with Vulkan SDK
-Image Version: ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-20250914
+Image Version: ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-20250921
 
 
