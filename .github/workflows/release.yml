@@ -61,7 +61,7 @@ jobs:
           docker-images: false
 
       - name: 🤘 Checkout Code
-        uses: actions/checkout@v4 # https://github.com/actions/checkout
+        uses: actions/checkout@v5 # https://github.com/actions/checkout
 
       - name: 🔍 Run hadolint
         uses: hadolint/hadolint-action@v3.1.0 # https://github.com/hadolint/hadolint-action
@@ -307,7 +307,7 @@ jobs:
     steps:
 
       - name: 🤘 Checkout gh-pages branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: gh-pages
           fetch-depth: 1
