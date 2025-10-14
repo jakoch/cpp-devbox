@@ -48,6 +48,7 @@ gprof
 graphviz
 hadolint
 ikos
+Jens
 jakoch
 jlumbroso
 keyrings
@@ -109,6 +110,7 @@ omyzsh
 osmesa
 pipefail
 powerline
+preconfigured
 pygments
 PYTHONPATH
 randr
