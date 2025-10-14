@@ -22,9 +22,9 @@
 # | Package Versions                                            (os upstream) |
 # |                                                                           |
 # | LLVM:   https://packages.debian.org/forky/llvm                 19.0       |
-# | GCC:    https://packages.debian.org/forky/gcc                  14.2.0     |
-# | Vulkan: https://packages.debian.org/forky/libvulkan-dev        1.4.309.0  |
-# | MESA:   https://packages.debian.org/forky/mesa-vulkan-drivers  25.0.7     |
+# | GCC:    https://packages.debian.org/forky/gcc                  15.2.0     |
+# | Vulkan: https://packages.debian.org/forky/libvulkan-dev        1.4.321.0  |
+# | MESA:   https://packages.debian.org/forky/mesa-vulkan-drivers  25.2.4     |
 # |                                                                           |
 # |---------------------------------------------------------------------------|
 # |                                                                           |
@@ -40,8 +40,8 @@
 # +-----------------------------+
 # | Versions Notes              |
 # +-----------------------------+
-# GCC: Because Debian Forky ships GCC 14.2.0 by default, our GCC compilation is disabled.
-#      We install GCC 14 from the distribution provided packages.
+# GCC: Because Debian Forky ships GCC 15.2.0 by default, our GCC compilation is disabled.
+#      We install GCC 15 from the distribution provided packages.
 
 # +-----------------------------+
 # | GLOBAL ARGS                 |
@@ -52,10 +52,10 @@
 
 ARG DEBIAN_VERSION=14
 ARG DEBIAN_VERSION_NAME=forky
-ARG GCC_VERSION=14.2.0
+ARG GCC_VERSION=15.2.0
 ARG LLVM_VERSION=21
 ARG VULKAN_VERSION=1.4.321.1
-ARG MESA_VERSION=25.0.7
+ARG MESA_VERSION=25.2.4
 
 # +-----------------------------+
 # | Downloader                  |
@@ -80,7 +80,7 @@ WORKDIR /tmp
 RUN echo "Download Stage" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
     ca-certificates curl jq && \
-#   curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.xz" && \
+#   curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-15.2.0/gcc-15.2.0.tar.xz" && \
     curl $CURL_OPTIONS -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
     #curl $CURL_OPTIONS -o mesa.xz "https://archive.mesa3d.org/mesa-${MESA_VERSION}.tar.xz" && \
 	# Cleanup
@@ -730,6 +730,40 @@ ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
 #      # Package Mesa
 #      #
 #      tar cvf mesa-package.tar.gz ${MESA_PACKAGE_FOLDER}
+
+# +----------------------------------+
+# | CCache Setup                     |
+# +----------------------------------+
+
+ENV CCACHE_DIR=/ccache \
+    CCACHE_BASEDIR=/workspace \
+    # CCache toggle
+    #
+    # @see https://ccache.dev/manual/latest.html#_disabling_ccache
+    # The environment variable CCACHE_DISABLE will override the default.
+    # docker run -e CCACHE_DISABLE=0 ... → enable caching
+    # docker run ... (no override)       → caching disabled by default
+    #
+    CCACHE_DISABLE=1 \
+    CCACHE_MAXSIZE=10G \
+    CCACHE_COMPRESS=1
+
+RUN echo "Setup CCache" && \
+    # Show config
+    # ccache -p && \
+    echo "Create the ccache folder with full permissions" && \
+    mkdir -p $CCACHE_DIR && \
+    chown $USER_UID:$USER_GID $CCACHE_DIR && \
+    chmod 777 $CCACHE_DIR && \
+    echo "Create symlinks, so ccache acts as the compiler" && \
+    mkdir -p /usr/lib/ccache && \
+    chown $USER_UID:$USER_GID /usr/lib/ccache && \
+    ln -sf /usr/bin/ccache /usr/lib/ccache/gcc && \
+    ln -sf /usr/bin/ccache /usr/lib/ccache/g++ && \
+    ln -sf /usr/bin/ccache /usr/lib/ccache/clang && \
+    ln -sf /usr/bin/ccache /usr/lib/ccache/clang++
+
+ENV PATH="/usr/lib/ccache:$PATH"
 
 # +----------------------------------+
 # | Stage: cpp-devbox-with-vulkansdk |

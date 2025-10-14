@@ -727,6 +727,40 @@ ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
 #      tar cvf mesa-package.tar.gz ${MESA_PACKAGE_FOLDER}
 
 # +----------------------------------+
+# | CCache Setup                     |
+# +----------------------------------+
+
+ENV CCACHE_DIR=/ccache \
+    CCACHE_BASEDIR=/workspace \
+    # CCache toggle
+    #
+    # @see https://ccache.dev/manual/latest.html#_disabling_ccache
+    # The environment variable CCACHE_DISABLE will override the default.
+    # docker run -e CCACHE_DISABLE=0 ... → enable caching
+    # docker run ... (no override)       → caching disabled by default
+    #
+    CCACHE_DISABLE=1 \
+    CCACHE_MAXSIZE=10G \
+    CCACHE_COMPRESS=1
+
+RUN echo "Setup CCache" && \
+    # Show config
+    # ccache -p && \
+    echo "Create the ccache folder with full permissions" && \
+    mkdir -p $CCACHE_DIR && \
+    chown $USER_UID:$USER_GID $CCACHE_DIR && \
+    chmod 777 $CCACHE_DIR && \
+    echo "Create symlinks, so ccache acts as the compiler" && \
+    mkdir -p /usr/lib/ccache && \
+    chown $USER_UID:$USER_GID /usr/lib/ccache && \
+    ln -sf /usr/bin/ccache /usr/lib/ccache/gcc && \
+    ln -sf /usr/bin/ccache /usr/lib/ccache/g++ && \
+    ln -sf /usr/bin/ccache /usr/lib/ccache/clang && \
+    ln -sf /usr/bin/ccache /usr/lib/ccache/clang++
+
+ENV PATH="/usr/lib/ccache:$PATH"
+
+# +----------------------------------+
 # | Stage: cpp-devbox-with-vulkansdk |
 # +----------------------------------+
 

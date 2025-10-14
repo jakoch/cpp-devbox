@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.15] - 2025-10-14
+
+**Added**
+- added ccache configuration to all containers with CCACHE_DISABLE=1 (off by default), fixes #20
+
 ## [1.0.14] - 2025-08-25
 
 **Fixed**
@@ -207,7 +212,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Section for Reference Links -->
 
-[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.14...HEAD
+[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.15...HEAD
+[1.0.15]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.15
 [1.0.14]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.14
 [1.0.13]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.13
 [1.0.12]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.12
