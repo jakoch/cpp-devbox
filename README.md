@@ -107,7 +107,8 @@ The following C/C++ compilers and their toolchains are available:
 The following C/C++ compilers and their toolchains are available:
 
 - LLVM 21.1.0
-- GCC 14.2.0
+- GCC 14.3.0
+- GCC 15.2.0
 
 ### VulkanSDK
 
