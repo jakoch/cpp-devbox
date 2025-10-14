@@ -96,7 +96,7 @@ show_tool_versions() {
     gprof_version=$(gprof --version | head -n1 | awk '{print $7}')
     perf_version=$(perf --version | awk '{print $3}')
     strace_version=$(strace --version | head -n1 | awk '{print $4}')
-    ltrace_version=$(ltrace --version | head -n1 | awk '{print $3}' | sed 's/\.$//' )
+    ltrace_version=$(ltrace --version | head -n1 | awk '{print $2}' | sed 's/\.$//' )
     lcov=$(lcov --version | head -n1 | awk '{print $4}')
     gcov=$(gcov --version | head -n1 | awk '{print $3}' | cut -d'-' -f1)
     gcovr=$(gcovr --version | head -n1 | awk '{print $2}')
