@@ -42,6 +42,7 @@ jobs:
       packages: write
       security-events: write  # required for trivy-action
       id-token: write         # required for attest-build-provenance
+      attestations: write     # required for attest-build-provenance
 
     strategy:
       fail-fast: false
