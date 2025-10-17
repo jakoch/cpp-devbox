@@ -192,18 +192,6 @@ jobs:
           name=$(echo '${{ steps.build-base-with-vulkansdk.outputs.metadata }}' | jq -r '."image.name" | split(",") | .[0]')
           echo "name=$name" >> $GITHUB_OUTPUT
 
-      - name: 🔐 Attest build provenance (base)
-        if: github.event_name != 'pull_request'
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: ${{ steps.get_image_name_base.outputs.name }}
-
-      - name: 🔐 Attest build provenance (with-vulkansdk)
-        if: github.event_name != 'pull_request'
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}
-
       - name: Generate SBOM (base)
         id: generate-sbom-for-base-image
         uses: anchore/sbom-action@v0
@@ -217,6 +205,18 @@ jobs:
         with:
           image: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}
           output-file: ${{ matrix.config.debian_codename }}-with-vulkansdk-sbom.json
+
+      - name: 🔐 Attest build provenance (base)
+        if: github.event_name != 'pull_request'
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ steps.get_image_name_base.outputs.name }}
+
+      - name: 🔐 Attest build provenance (with-vulkansdk)
+        if: github.event_name != 'pull_request'
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}
 
       - name: ℹ️ Run cpp-devbox Container to grab version info
         id: run-container-base
