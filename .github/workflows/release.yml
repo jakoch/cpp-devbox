@@ -190,6 +190,20 @@ jobs:
           name=$(echo '${{ steps.build-base-with-vulkansdk.outputs.metadata }}' | jq -r '."image.name" | split(",") | .[0]')
           echo "name=$name" >> $GITHUB_OUTPUT
 
+      - name: Generate SBOM (base)
+        id: generate-sbom-for-base-image
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ steps.get_image_name_base.outputs.name }}
+          output-file: ${{ matrix.config.debian_codename }}-sbom.json
+
+      - name: Generate SBOM (with-vulkan)
+        id: generate-sbom-for-with-vulkan-image
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}
+          output-file: ${{ matrix.config.debian_codename }}-with-vulkansdk-sbom.json
+
       - name: ℹ️ Run cpp-devbox Container to grab version info
         id: run-container-base
         run: |
@@ -228,9 +242,13 @@ jobs:
           docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"
           docker images --digests
 
-      - name: Test Docker Image
+      - name: Test Docker Image (Base)
         run: |
           docker run --rm -v "${PWD}/devbox-test:/src" -w /src ghcr.io/jakoch/cpp-devbox:${{ matrix.config.debian_codename }}-latest zsh -c "./build.sh"
+
+      - name: Test Docker Image (With Vulkan)
+        run: |
+          docker run --rm -v "${PWD}/devbox-test:/src" -w /src ghcr.io/jakoch/cpp-devbox:${{ matrix.config.debian_codename }}-with-vulkansdk-latest zsh -c "./build.sh"
 
       - name: 📦 Provide the version info and info.json as a release asset
         uses: actions/upload-artifact@v4 # https://github.com/actions/upload-artifact
@@ -242,11 +260,14 @@ jobs:
             versions-${{ matrix.config.debian_codename }}-with-vulkan.md
             README-${{ matrix.config.debian_codename }}-base.md
             README-${{ matrix.config.debian_codename }}-with-vulkansdk.md
+            ${{ matrix.config.debian_codename }}-sbom.json
+            ${{ matrix.config.debian_codename }}-with-vulkansdk-sbom.json
 
       - name: 🛡️🔍 Scan Image for Vulnerabilities using Trivy
         uses: aquasecurity/trivy-action@master # https://github.com/aquasecurity/trivy-action
         with:
-          image-ref: '${{ env.GHCR_IMAGE }}:latest'
+          #image-ref: '${{ env.GHCR_IMAGE }}:latest'
+          image-ref: '${{ steps.get_image_name_base.outputs.name }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
@@ -270,7 +291,8 @@ jobs:
         if: always()
         uses: goodwithtech/dockle-action@v0.4.15 # https://github.com/goodwithtech/dockle-action
         with:
-          image: '${{ env.GHCR_IMAGE }}:latest'
+          #image: '${{ env.GHCR_IMAGE }}:latest'
+          image: '${{ steps.get_image_name_base.outputs.name }}'
           format: 'list'
           exit-code: '0'
           exit-level: 'warn'
@@ -326,7 +348,7 @@ jobs:
           echo "" >> index.md
           echo "## Images" >> index.md
           echo "" >> index.md
-          for codename in bookworm trixie; do
+          for codename in bookworm trixie forky unstable; do
             if [ -f README-${codename}-base.md ]; then
               echo "### Base Image (${codename})" >> index.md
               grep -A2 '^OS Version:' README-${codename}-base.md >> index.md
