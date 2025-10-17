@@ -192,6 +192,20 @@ jobs:
           name=$(echo '${{ steps.build-base-with-vulkansdk.outputs.metadata }}' | jq -r '."image.name" | split(",") | .[0]')
           echo "name=$name" >> $GITHUB_OUTPUT
 
+      # This provides: ${{ steps.get_digest_base.outputs.digest }}
+      - name: Get image digest (base)
+        id: get_digest_base
+        run: |
+          digest=$(echo '${{ steps.build-base.outputs.metadata }}' | jq -r '.digest')
+          echo "digest=$digest" >> $GITHUB_OUTPUT
+
+      # This provides: ${{ steps.get_digest_base_with_vulkan.outputs.digest }}
+      - name: Get image digest (with-vulkansdk)
+        id: get_digest_base_with_vulkan
+        run: |
+          digest=$(echo '${{ steps.build-base-with-vulkansdk.outputs.metadata }}' | jq -r '.digest')
+          echo "digest=$digest" >> $GITHUB_OUTPUT
+
       - name: Generate SBOM (base)
         id: generate-sbom-for-base-image
         uses: anchore/sbom-action@v0
@@ -211,12 +225,14 @@ jobs:
         uses: actions/attest-build-provenance@v1
         with:
           subject-name: ${{ steps.get_image_name_base.outputs.name }}
+          subject-digest: ${{ steps.get_digest_base.outputs.digest }}
 
       - name: 🔐 Attest build provenance (with-vulkansdk)
         if: github.event_name != 'pull_request'
         uses: actions/attest-build-provenance@v1
         with:
           subject-name: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}
+          subject-digest: ${{ steps.get_digest_base_with_vulkan.outputs.digest }}
 
       - name: ℹ️ Run cpp-devbox Container to grab version info
         id: run-container-base
