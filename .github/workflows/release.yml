@@ -40,7 +40,8 @@ jobs:
     permissions:
       contents: read
       packages: write
-      security-events: write # required for trivy-action
+      security-events: write  # required for trivy-action
+      id-token: write         # required for attest-build-provenance
 
     strategy:
       fail-fast: false
@@ -177,18 +178,30 @@ jobs:
           cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:${{ matrix.config.debian_codename }}-with-vulkansdk-latest-cache,mode=max
 
       # This provides: ${{ steps.get_image_name_base.outputs.name }}
-      - name: Get image name for base
+      - name: Get image name (base)
         id: get_image_name_base
         run: |
           name=$(echo '${{ steps.build-base.outputs.metadata }}' | jq -r '."image.name" | split(",") | .[0]')
           echo "name=$name" >> $GITHUB_OUTPUT
 
       # This provides: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}
-      - name: Get image name for base with vulkan
+      - name: Get image name (with-vulkansdk)
         id: get_image_name_base_with_vulkan
         run: |
           name=$(echo '${{ steps.build-base-with-vulkansdk.outputs.metadata }}' | jq -r '."image.name" | split(",") | .[0]')
           echo "name=$name" >> $GITHUB_OUTPUT
+
+      - name: 🔐 Attest build provenance (base)
+        if: github.event_name != 'pull_request'
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ steps.get_image_name_base.outputs.name }}
+
+      - name: 🔐 Attest build provenance (with-vulkansdk)
+        if: github.event_name != 'pull_request'
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}
 
       - name: Generate SBOM (base)
         id: generate-sbom-for-base-image
@@ -242,11 +255,11 @@ jobs:
           docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"
           docker images --digests
 
-      - name: Test Docker Image (Base)
+      - name: Test Docker Image (base)
         run: |
           docker run --rm -v "${PWD}/devbox-test:/src" -w /src ghcr.io/jakoch/cpp-devbox:${{ matrix.config.debian_codename }}-latest zsh -c "./build.sh"
 
-      - name: Test Docker Image (With Vulkan)
+      - name: Test Docker Image (with-vulkansdk)
         run: |
           docker run --rm -v "${PWD}/devbox-test:/src" -w /src ghcr.io/jakoch/cpp-devbox:${{ matrix.config.debian_codename }}-with-vulkansdk-latest zsh -c "./build.sh"
 
