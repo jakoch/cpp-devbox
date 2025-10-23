@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
 - combined zsh configuration commands using sed
+- disabled zsh update prompt and auto update feature (DISABLE_UPDATE_PROMPT & DISABLE_AUTO_UPDATE)
 
 ## [1.0.15] - 2025-10-14
 
