@@ -299,7 +299,7 @@ jobs:
       #   are not relevant for the image security. The scan is faster without them.
 
       - name: 🛡️🔼 Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3 # https://github.com/github/codeql-action
+        uses: github/codeql-action/upload-sarif@v4 # https://github.com/github/codeql-action
         with:
           sarif_file: 'trivy-results.sarif'
 
@@ -324,7 +324,7 @@ jobs:
       #     summary: true
 
       # - name: 🛡️🔼 Upload Docker Scout scan results to GitHub Security tab
-      #   uses: github/codeql-action/upload-sarif@v3 # https://github.com/github/codeql-action
+      #   uses: github/codeql-action/upload-sarif@v4 # https://github.com/github/codeql-action
       #   with:
       #     sarif_file: 'scout-results.sarif.json'
 
