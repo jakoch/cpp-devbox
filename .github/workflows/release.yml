@@ -63,7 +63,7 @@ jobs:
           docker-images: false
 
       - name: 🤘 Checkout Code
-        uses: actions/checkout@v5 # https://github.com/actions/checkout
+        uses: actions/checkout@v6 # https://github.com/actions/checkout
 
       - name: 🔍 Run hadolint
         uses: hadolint/hadolint-action@v3.3.0 # https://github.com/hadolint/hadolint-action
@@ -208,14 +208,14 @@ jobs:
 
       - name: 🔐 Attest build provenance (base)
         if: github.event_name != 'pull_request'
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v3
         with:
           subject-name: ${{ steps.get_image_name_base.outputs.name }}
           subject-digest: ${{ steps.build-base.outputs.digest }}
 
       - name: 🔐 Attest build provenance (with-vulkansdk)
         if: github.event_name != 'pull_request'
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v3
         with:
           subject-name: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}
           subject-digest: ${{ steps.build-base-with-vulkansdk.outputs.digest }}
@@ -267,7 +267,7 @@ jobs:
           docker run --rm -v "${PWD}/devbox-test:/src" -w /src ghcr.io/jakoch/cpp-devbox:${{ matrix.config.debian_codename }}-with-vulkansdk-latest zsh -c "./build.sh"
 
       - name: 📦 Provide the version info and info.json as a release asset
-        uses: actions/upload-artifact@v4 # https://github.com/actions/upload-artifact
+        uses: actions/upload-artifact@v5 # https://github.com/actions/upload-artifact
         with:
           name: version-info-${{ matrix.config.debian_codename }}
           path: |
@@ -299,7 +299,7 @@ jobs:
       #   are not relevant for the image security. The scan is faster without them.
 
       - name: 🛡️🔼 Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3 # https://github.com/github/codeql-action
+        uses: github/codeql-action/upload-sarif@v4 # https://github.com/github/codeql-action
         with:
           sarif_file: 'trivy-results.sarif'
 
@@ -324,7 +324,7 @@ jobs:
       #     summary: true
 
       # - name: 🛡️🔼 Upload Docker Scout scan results to GitHub Security tab
-      #   uses: github/codeql-action/upload-sarif@v3 # https://github.com/github/codeql-action
+      #   uses: github/codeql-action/upload-sarif@v4 # https://github.com/github/codeql-action
       #   with:
       #     sarif_file: 'scout-results.sarif.json'
 
@@ -345,13 +345,13 @@ jobs:
     steps:
 
       - name: 🤘 Checkout gh-pages branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: gh-pages
           fetch-depth: 1
 
       - name: 🔽 Download all docs artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           pattern: version-info-*
           merge-multiple: true
