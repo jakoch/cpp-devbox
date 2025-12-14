@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - combined zsh configuration commands using sed
 - disabled zsh update prompt and auto update feature (DISABLE_UPDATE_PROMPT & DISABLE_AUTO_UPDATE)
+- fix for "locale alias file `/usr/share/locale/locale.alias' not found" by removing parameter
 
 ## [1.0.15] - 2025-10-14
 

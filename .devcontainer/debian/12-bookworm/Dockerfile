@@ -583,7 +583,7 @@ RUN echo "Locale & Timezone" && \
     dpkg-reconfigure -f noninteractive locales && \
     update-locale LANG=en_US.UTF-8 && \
     echo "export PATH=$PATH" > /etc/environment && \
-    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+    localedef -i en_US -c -f UTF-8 en_US.UTF-8
 
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
     # Switch back to dialog for any ad-hoc use of apt-get
