@@ -267,7 +267,7 @@ jobs:
           docker run --rm -v "${PWD}/devbox-test:/src" -w /src ghcr.io/jakoch/cpp-devbox:${{ matrix.config.debian_codename }}-with-vulkansdk-latest zsh -c "./build.sh"
 
       - name: 📦 Provide the version info and info.json as a release asset
-        uses: actions/upload-artifact@v5 # https://github.com/actions/upload-artifact
+        uses: actions/upload-artifact@v6 # https://github.com/actions/upload-artifact
         with:
           name: version-info-${{ matrix.config.debian_codename }}
           path: |
