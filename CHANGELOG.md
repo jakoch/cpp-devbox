@@ -20,10 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - updated versions
-  12-bookworm: Vulkan 1.4.335.0
-  13-trixie: Vulkan 1.4.335.0, Mesa 25.3.3
-  14-forky: GCC 15.2.0, Vulkan 1.4.335.0, Mesa 25.3.3
-  sid-unstable: GCC 15.2.0, Vulkan 1.4.335.0, Mesa 25.3.3
+  - 12-bookworm: Vulkan 1.4.335.0
+  - 13-trixie: Vulkan 1.4.335.0, Mesa 25.3.3
+  - 14-forky: GCC 15.2.0, Vulkan 1.4.335.0, Mesa 25.3.3
+  - sid-unstable: GCC 15.2.0, Vulkan 1.4.335.0, Mesa 25.3.3
 - switched to normal package install for `fonts_powerline`
 
 ## [1.0.15] - 2025-10-14
