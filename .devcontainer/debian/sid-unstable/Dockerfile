@@ -21,10 +21,10 @@
 # |                                                                           |
 # | Package Versions                                            (os upstream) |
 # |                                                                           |
-# | LLVM:   https://packages.debian.org/sid/llvm                 19.0         |
-# | GCC:    https://packages.debian.org/sid/gcc                  14.2.0       |
+# | LLVM:   https://packages.debian.org/sid/llvm                 21.1         |
+# | GCC:    https://packages.debian.org/sid/gcc                  15.2.0       |
 # | Vulkan: https://packages.debian.org/sid/libvulkan-dev        1.4.309.0    |
-# | MESA:   https://packages.debian.org/sid/mesa-vulkan-drivers  25.0.7       |
+# | MESA:   https://packages.debian.org/sid/mesa-vulkan-drivers  25.3.3       |
 # |                                                                           |
 # |---------------------------------------------------------------------------|
 # |                                                                           |
@@ -40,8 +40,8 @@
 # +-----------------------------+
 # | Versions Notes              |
 # +-----------------------------+
-# GCC: Because Debian SID ships GCC 14.2.0 by default, our GCC compilation is disabled.
-#      We install GCC 14 from the distribution provided packages.
+# GCC: Because Debian SID ships GCC 15.2.0 by default, our GCC compilation is disabled.
+#      We install GCC 15 from the distribution provided packages.
 
 # +-----------------------------+
 # | GLOBAL ARGS                 |
@@ -52,10 +52,10 @@
 
 ARG DEBIAN_VERSION=sid
 ARG DEBIAN_VERSION_NAME=unstable
-ARG GCC_VERSION=14.2.0
+ARG GCC_VERSION=15.2.0
 ARG LLVM_VERSION=21
-ARG VULKAN_VERSION=1.4.321.1
-ARG MESA_VERSION=25.0.7
+ARG VULKAN_VERSION=1.4.335.0
+ARG MESA_VERSION=25.3.3
 
 # +-----------------------------+
 # | Downloader                  |
@@ -559,17 +559,7 @@ ENV TERM=xterm-256color \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "ZSH" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-    zsh fontconfig && \
-    # Download and install fonts-powerline
-    # An installation via apt-get is not possible for forky,
-	# because the package is only available in unstable(sid).
-    # https://packages.debian.org/sid/fonts-powerline
-	# https://api.ftp-master.debian.org/madison?package=fonts-powerline&table=debian
-    FONTS_POWERLINE_VERSION=$(curl -s 'https://api.ftp-master.debian.org/madison?package=fonts-powerline&table=debian&s=unstable&f=json' | jq -r '.[0]["fonts-powerline"].unstable | keys[0]'); echo "Latest Version: \"$FONTS_POWERLINE_VERSION\"" && \
-    FONTS_POWERLINE_URL="http://ftp.de.debian.org/debian/pool/main/p/powerline/fonts-powerline_${FONTS_POWERLINE_VERSION}_all.deb" && \
-    curl -o fonts-powerline.deb -L ${FONTS_POWERLINE_URL} && \
-    dpkg -i fonts-powerline.deb && \
-    rm fonts-powerline.deb && \
+    zsh fontconfig fonts-powerline && \
     # Install Oh My Zsh
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
     # Add Zsh plugins

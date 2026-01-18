@@ -39,7 +39,7 @@ ARG DEBIAN_VERSION=12
 ARG DEBIAN_VERSION_NAME=bookworm
 ARG GCC_VERSION=13.4.0
 ARG LLVM_VERSION=20
-ARG VULKAN_VERSION=1.4.321.1
+ARG VULKAN_VERSION=1.4.335.0
 ARG MESA_VERSION=22.3.6
 
 # +-----------------------------+
@@ -545,8 +545,7 @@ ENV TERM=xterm-256color \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "ZSH" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-    # Install fonts-powerline
-    fontconfig fonts-powerline && \
+    zsh fontconfig fonts-powerline && \
     # Install Oh My Zsh
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
     # Add Zsh plugins
