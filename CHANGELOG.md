@@ -15,6 +15,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - disabled zsh update prompt and auto update feature (DISABLE_UPDATE_PROMPT & DISABLE_AUTO_UPDATE)
 - fix for "locale alias file `/usr/share/locale/locale.alias' not found" by removing parameter
 
+## [1.0.16] - 2026-01-18
+
+### Changed
+
+- updated versions
+  12-bookworm: Vulkan 1.4.335.0
+  13-trixie: Vulkan 1.4.335.0, Mesa 25.3.3
+  14-forky: GCC 15.2.0, Vulkan 1.4.335.0, Mesa 25.3.3
+  sid-unstable: GCC 15.2.0, Vulkan 1.4.335.0, Mesa 25.3.3
+- switched to normal package install for `fonts_powerline`
+
 ## [1.0.15] - 2025-10-14
 
 **Added**
@@ -216,7 +227,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Section for Reference Links -->
 
-[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.15...HEAD
+[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.16...HEAD
+[1.0.16]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.16
 [1.0.15]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.15
 [1.0.14]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.14
 [1.0.13]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.13
