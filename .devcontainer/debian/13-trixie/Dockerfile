@@ -361,6 +361,9 @@ RUN echo "DOXYGEN" && \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "LLVM" && \
+    # Temporary workaround for https://github.com/llvm/llvm-project/issues/153385
+    sed -i 's/\(sha1\.second_preimage_resistance =\).*/\1 2027-01-01/' /usr/share/apt/default-sequoia.config && \
+    # --
     curl -s https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
     echo "deb http://apt.llvm.org/trixie/ llvm-toolchain-trixie-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
