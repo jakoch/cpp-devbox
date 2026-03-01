@@ -208,14 +208,14 @@ jobs:
 
       - name: 🔐 Attest build provenance (base)
         if: github.event_name != 'pull_request'
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-name: ${{ steps.get_image_name_base.outputs.name }}
           subject-digest: ${{ steps.build-base.outputs.digest }}
 
       - name: 🔐 Attest build provenance (with-vulkansdk)
         if: github.event_name != 'pull_request'
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-name: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}
           subject-digest: ${{ steps.build-base-with-vulkansdk.outputs.digest }}
