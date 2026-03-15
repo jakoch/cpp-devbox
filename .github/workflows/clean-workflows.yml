@@ -158,49 +158,41 @@ jobs:
           script: |
             const pages = 5;
             let runs_to_delete = [];
-            // Get all workflows
-            const { data: workflowsData } = await github.rest.actions.listRepoWorkflows({
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            });
-            // Find workflow by name
-            const workflowName = "Dependabot Updates";
-            const workflow = workflowsData.workflows.find(w => w.name === workflowName);
-            if (!workflow) {
-              console.log(`❌ No workflow named ${workflowName} found.`);
-              return;
-            }
-            const workflowId = workflow.id;
-            console.log(`✅ Found workflow ID: ${workflowId}`);
-            // Fetch workflow runs
-            for (let page = 0; page < pages; page += 1) {
-              const response = await github.rest.actions.listWorkflowRuns({
+            console.log(`🔍 Scanning for workflow runs triggered by User 'dependabot[bot]'...`);
+            // 1. List ALL workflow runs in the repo, filtered by actor
+            for (let page = 1; page <= pages; page++) {
+              const response = await github.rest.actions.listWorkflowRunsForRepo({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                workflow_id: workflowId, // Use dynamically fetched ID
                 page: page,
                 per_page: 50,
+                actor: 'dependabot[bot]'
               });
-              if (response.data.workflow_runs.length === 0) break;
-              if (response.data.workflow_runs.length > 0) {
-                for (const run of response.data.workflow_runs) {
-                  if (run.triggering_actor?.login === 'dependabot[bot]') {
-                    runs_to_delete.push([run.id, run.name]);
-                  }
-                }
+              if (!response.data.workflow_runs || response.data.workflow_runs.length === 0) {
+                break;
               }
+              for (const run of response.data.workflow_runs) {
+                runs_to_delete.push([run.id, run.name, run.workflow_id]);
+              }
+              // If we got fewer than 50, we are on the last page
               if (response.data.workflow_runs.length < 50) break;
             }
-            // Delete workflow runs
-            for (const run of runs_to_delete) {
-              console.log(`[Deleting] Run id ${run[0]} of '${run[1]}'.`);
+            if (runs_to_delete.length === 0) {
+              console.log(`✅ No Dependabot workflow runs found.`);
+              return;
+            }
+            console.log(`🗑️ Found ${runs_to_delete.length} runs to delete.`);
+            // 2. Delete workflow runs
+            for (const [runId, runName, workflowId] of runs_to_delete) {
+              console.log(`[Deleting] Run #${runId} (${runName})`);
               try {
                 await github.rest.actions.deleteWorkflowRun({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  run_id: run[0]
+                  run_id: runId
                 });
               } catch (error) {
-                // ignore errors
+                console.warn(`⚠️ Failed to delete run ${runId}: ${error.message}`);
               }
             }
+            console.log(`✅ Cleanup complete.`);
