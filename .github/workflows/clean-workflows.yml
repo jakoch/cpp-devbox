@@ -156,34 +156,32 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const pages = 5;
+            const MAX_PAGES = 20;
+            const PER_PAGE = 100;
             let runs_to_delete = [];
-            console.log(`🔍 Scanning for workflow runs triggered by User 'dependabot[bot]'...`);
-            // 1. List ALL workflow runs in the repo, filtered by actor
-            for (let page = 1; page <= pages; page++) {
+            console.log("🔍 Scanning workflow runs...");
+            for (let page = 1; page <= MAX_PAGES; page++) {
               const response = await github.rest.actions.listWorkflowRunsForRepo({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                page: page,
-                per_page: 50,
-                actor: 'dependabot[bot]'
+                per_page: PER_PAGE,
+                page: page
               });
-              if (!response.data.workflow_runs || response.data.workflow_runs.length === 0) {
-                break;
+              const runs = response.data.workflow_runs;
+              if (!runs || runs.length === 0) break;
+              for (const run of runs) {
+                if (run.actor?.login === "dependabot[bot]") {
+                  runs_to_delete.push([run.id, run.name]);
+                }
               }
-              for (const run of response.data.workflow_runs) {
-                runs_to_delete.push([run.id, run.name, run.workflow_id]);
-              }
-              // If we got fewer than 50, we are on the last page
-              if (response.data.workflow_runs.length < 50) break;
+              if (runs.length < PER_PAGE) break;
             }
             if (runs_to_delete.length === 0) {
-              console.log(`✅ No Dependabot workflow runs found.`);
+              console.log("✅ No Dependabot runs found.");
               return;
             }
             console.log(`🗑️ Found ${runs_to_delete.length} runs to delete.`);
-            // 2. Delete workflow runs
-            for (const [runId, runName, workflowId] of runs_to_delete) {
+            for (const [runId, runName] of runs_to_delete) {
               console.log(`[Deleting] Run #${runId} (${runName})`);
               try {
                 await github.rest.actions.deleteWorkflowRun({
@@ -195,4 +193,4 @@ jobs:
                 console.warn(`⚠️ Failed to delete run ${runId}: ${error.message}`);
               }
             }
-            console.log(`✅ Cleanup complete.`);
+            console.log("✅ Cleanup complete.");
