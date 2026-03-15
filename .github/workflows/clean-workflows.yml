@@ -197,7 +197,7 @@ jobs:
             }
             console.log("✅ Cleanup complete.");
 
-      - name: ✂ Remove pages-build-deployment (gh-pages) workflow runs
+      - name: ✂ Remove pages-build-deployment workflow runs except the most recent one
         uses: actions/github-script@v8 # https://github.com/actions/github-script
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -218,22 +218,28 @@ jobs:
             }
             const workflowId = workflow.id;
             console.log(`✅ Found workflow ID: ${workflowId}`);
+            let isFirstRun = true;
             // Fetch workflow runs
-            for (let page = 0; page < pages; page += 1) {
+            for (let page = 1; page <= pages; page++) {
               const response = await github.rest.actions.listWorkflowRuns({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                workflow_id: workflowId, // Use dynamically fetched ID
+                workflow_id: workflowId,
                 page: page,
                 per_page: 50,
               });
-              if (response.data.workflow_runs.length === 0) break;
-              if (response.data.workflow_runs.length > 0) {
-                for (const run of response.data.workflow_runs) {
-                    runs_to_delete.push([run.id, run.name]);
+              const runs = response.data.workflow_runs;
+              if (runs.length === 0) break;
+              for (const run of runs) {
+                // Skip the newest run
+                if (isFirstRun) {
+                  console.log(`⏭ Keeping latest run ${run.id}`);
+                  isFirstRun = false;
+                  continue;
                 }
+                runs_to_delete.push([run.id, run.name]);
               }
-              if (response.data.workflow_runs.length < 50) break;
+              if (runs.length < 50) break;
             }
             // Delete workflow runs
             for (const run of runs_to_delete) {
