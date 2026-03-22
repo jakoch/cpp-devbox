@@ -290,12 +290,12 @@ RUN echo "VCPKG" && \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "CCACHE" && \
     version="$(curl -s https://api.github.com/repos/ccache/ccache/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
-    url="https://github.com/ccache/ccache/releases/download/v$version/ccache-$version-linux-x86_64.tar.xz"; echo "Download URL: \"$url\"" && \
+    url="https://github.com/ccache/ccache/releases/download/v$version/ccache-$version-linux-x86_64-glibc.tar.xz"; echo "Download URL: \"$url\"" && \
     curl $CURL_OPTIONS -sLO $url && \
     mkdir -p /opt/ccache/bin &&\
-    tar xf ccache-$version-linux-x86_64.tar.xz --strip-components=1 -C /opt/ccache/bin && \
+    tar xf ccache-$version-linux-x86_64-glibc.tar.xz --strip-components=1 -C /opt/ccache/bin && \
 	ln -s /opt/ccache/bin/ccache /usr/bin && \
-	rm ccache-$version-linux-x86_64.tar.xz
+	rm ccache-$version-linux-x86_64-glibc.tar.xz
 
 #
 #  8888888b.   .d88888b.  Y88b   d88P Y88b   d88P  .d8888b.  8888888888 888b    888
