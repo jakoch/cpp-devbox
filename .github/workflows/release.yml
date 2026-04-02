@@ -100,7 +100,7 @@ jobs:
       # cpp-devbox:{debian_codename}-latest                  # always
       - name: ✏ Setup Docker Metadata ➔ Stage cpp-devbox-base
         id: metadata-base
-        uses: docker/metadata-action@v5 # https://github.com/docker/metadata-action
+        uses: docker/metadata-action@v6 # https://github.com/docker/metadata-action
         with:
           images: |
             ${{ env.GHCR_IMAGE }}
@@ -120,7 +120,7 @@ jobs:
       # cpp-devbox:{debian_codename}-with-vulkansdk-latest                  # always
       - name: ✏ Setup Docker Metadata ➔ Stage cpp-devbox-base-with-vulkansdk
         id: metadata-base-with-vulkansdk
-        uses: docker/metadata-action@v5 # https://github.com/docker/metadata-action
+        uses: docker/metadata-action@v6 # https://github.com/docker/metadata-action
         with:
           images: |
             ${{ env.GHCR_IMAGE }}
