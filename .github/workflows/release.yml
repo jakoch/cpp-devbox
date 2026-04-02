@@ -92,7 +92,7 @@ jobs:
           platforms: ${{ matrix.config.platform }}
 
       - name: 🔽 Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3 # https://github.com/docker/setup-buildx-action
+        uses: docker/setup-buildx-action@v4 # https://github.com/docker/setup-buildx-action
 
       # cpp-devbox:{debian_codename}-{{date}}                # only on scheduled builds
       # cpp-devbox:{debian_codename}-{{version}}             # only on git tag
