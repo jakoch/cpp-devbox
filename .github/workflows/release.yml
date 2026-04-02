@@ -87,7 +87,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🔽 Setup QEMU
-        uses: docker/setup-qemu-action@v3 # https://github.com/docker/setup-qemu-action
+        uses: docker/setup-qemu-action@v4 # https://github.com/docker/setup-qemu-action
         with:
           platforms: ${{ matrix.config.platform }}
 
