@@ -13,19 +13,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.17] - 2026-04-04
 
-- updated versions:
-    - 12-bookworm: Vulkan 1.4.341.1
-    - 13-trixie: Vulkan 1.4.341.1, LLVM 22
-    - 14-forky:  Vulkan 1.4.341.1, LLVM 22, Mesa 26.0.3
-    - sid-unstable: Vulkan 1.4.341.1, LLVM 22, Mesa 26.0.4
+**Added**
+
 - added tools: hyperfine, fd-find, fzf, ripgrep ([#40](https://github.com/jakoch/cpp-devbox/issues/40))
+
+**Changed**
+
+- updated versions:
+  - 12-bookworm: Vulkan 1.4.341.1
+  - 13-trixie: Vulkan 1.4.341.1, LLVM 22
+  - 14-forky:  Vulkan 1.4.341.1, LLVM 22, Mesa 26.0.3
+  - sid-unstable: Vulkan 1.4.341.1, LLVM 22, Mesa 26.0.4
 - combined zsh configuration commands using sed
 - disabled zsh update prompt and auto update feature (DISABLE_UPDATE_PROMPT & DISABLE_AUTO_UPDATE)
 - fix for "locale alias file `/usr/share/locale/locale.alias' not found" by removing parameter
 
 ## [1.0.16] - 2026-01-18
 
-### Changed
+**Changed**
 
 - updated versions
   - 12-bookworm: Vulkan 1.4.335.0
