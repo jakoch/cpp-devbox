@@ -208,6 +208,28 @@ You might use this container image in the `.devcontainer/devcontainer.json` file
 }
 ```
 
+### Notes for usage in CI/CD pipelines and .devcontainer configs
+
+When using an `image_version` with a rolling tag (e.g., "trixie-latest"),
+the build will always use the most recent version of that image.
+As a result, included software may change over time, which can introduce
+unexpected build failures (for example, due to compiler version updates).
+
+To ensure stability and reproducibility, it is recommended to pin
+`image_version` to a fixed release (e.g., "trixie-20260329") if
+bleeding-edge updates are not required.
+
+You might want to annotate your `image_version` section with the following
+comment to clarify the implications of using rolling tags vs. fixed versions:
+
+```
+# Note on "image_version":
+# The image versions are based on tags of the https://github.com/jakoch/cpp-devbox repo.
+# Use rolling tags (e.g., "trixie-latest") for bleeding-edge updates,
+# but expect potential instability due to changes in the included software.
+# Pin to a fixed version (e.g., "trixie-20260329") for reproducible and stable builds.
+```
+
 #### Developer Notes
 
 ### Versioning Scheme for Images
