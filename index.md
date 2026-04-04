@@ -1,44 +1,44 @@
-# cpp-devbox main (2026-04-04)
+# cpp-devbox v1.0.17 (2026-04-04)
 
 ## Images
 
 ### Base Image (bookworm)
 OS Version:  Debian 12 bookworm
-Image Version: ghcr.io/jakoch/cpp-devbox:bookworm-latest
+Image Version: ghcr.io/jakoch/cpp-devbox:bookworm-1.0.17
 
 
 ### With VulkanSDK (bookworm)
 OS Version:  Debian 12 bookworm with Vulkan SDK
-Image Version: ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-latest
+Image Version: ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-1.0.17
 
 
 ### Base Image (trixie)
 OS Version:  Debian 13 trixie
-Image Version: ghcr.io/jakoch/cpp-devbox:trixie-latest
+Image Version: ghcr.io/jakoch/cpp-devbox:trixie-1.0.17
 
 
 ### With VulkanSDK (trixie)
 OS Version:  Debian 13 trixie with Vulkan SDK
-Image Version: ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-latest
+Image Version: ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-1.0.17
 
 
 ### Base Image (forky)
 OS Version:  Debian 14 forky
-Image Version: ghcr.io/jakoch/cpp-devbox:forky-latest
+Image Version: ghcr.io/jakoch/cpp-devbox:forky-1.0.17
 
 
 ### With VulkanSDK (forky)
 OS Version:  Debian 14 forky with Vulkan SDK
-Image Version: ghcr.io/jakoch/cpp-devbox:forky-with-vulkansdk-latest
+Image Version: ghcr.io/jakoch/cpp-devbox:forky-with-vulkansdk-1.0.17
 
 
 ### Base Image (unstable)
 OS Version:  Debian sid unstable
-Image Version: ghcr.io/jakoch/cpp-devbox:unstable-latest
+Image Version: ghcr.io/jakoch/cpp-devbox:unstable-1.0.17
 
 
 ### With VulkanSDK (unstable)
 OS Version:  Debian sid unstable with Vulkan SDK
-Image Version: ghcr.io/jakoch/cpp-devbox:unstable-with-vulkansdk-latest
+Image Version: ghcr.io/jakoch/cpp-devbox:unstable-with-vulkansdk-1.0.17
 
 
