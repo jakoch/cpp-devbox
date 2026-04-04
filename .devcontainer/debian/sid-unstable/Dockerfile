@@ -21,10 +21,10 @@
 # |                                                                           |
 # | Package Versions                                            (os upstream) |
 # |                                                                           |
-# | LLVM:   https://packages.debian.org/sid/llvm                 21.1         |
+# | LLVM:   https://packages.debian.org/sid/llvm                 21.1.6       |
 # | GCC:    https://packages.debian.org/sid/gcc                  15.2.0       |
-# | Vulkan: https://packages.debian.org/sid/libvulkan-dev        1.4.309.0    |
-# | MESA:   https://packages.debian.org/sid/mesa-vulkan-drivers  25.3.3       |
+# | Vulkan: https://packages.debian.org/sid/libvulkan-dev        1.4.341.0    |
+# | MESA:   https://packages.debian.org/sid/mesa-vulkan-drivers  26.0.4       |
 # |                                                                           |
 # |---------------------------------------------------------------------------|
 # |                                                                           |
@@ -53,9 +53,9 @@
 ARG DEBIAN_VERSION=sid
 ARG DEBIAN_VERSION_NAME=unstable
 ARG GCC_VERSION=15.2.0
-ARG LLVM_VERSION=21
-ARG VULKAN_VERSION=1.4.335.0
-ARG MESA_VERSION=25.3.3
+ARG LLVM_VERSION=22
+ARG VULKAN_VERSION=1.4.341.1
+ARG MESA_VERSION=26.0.4
 
 # +-----------------------------+
 # | Downloader                  |
@@ -144,7 +144,9 @@ RUN echo "Packages" && \
     gnupg2 ca-certificates \
     # package seems gone, was used in LLVM section below: software-properties-common \
     build-essential \
-    wget git nano jq \
+    wget git nano jq ripgrep fd-find fzf \
+    # benchmarking
+    hyperfine \
     # code analysis
     cppcheck \
     valgrind \

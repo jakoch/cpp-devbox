@@ -15,18 +15,18 @@
 #
 #
 
-# /===========================================================================\
-# | Debian 12 - Bookworm                                                      |
-# |===========================================================================|
-# |                                                                           |
-# | Package Versions                                            (os upstream) |
-# |                                                                           |
-# | LLVM:   https://packages.debian.org/bookworm/llvm                14.0     |
-# | GCC:    https://packages.debian.org/bookworm/gcc                 12.2.0   |
-# | Vulkan: https://packages.debian.org/bookworm/libvulkan-dev       1.3.239.0|
-# | MESA:   https://packages.debian.org/bookworm/mesa-vulkan-drivers 22.3.6   |
-# |                                                                           |
-# \===========================================================================/
+# /============================================================================\
+# | Debian 12 - Bookworm                                                       |
+# |============================================================================|
+# |                                                                            |
+# | Package Versions                                             (OS upstream) |
+# |                                                                            |
+# | LLVM:   https://packages.debian.org/bookworm/llvm                14.0      |
+# | GCC:    https://packages.debian.org/bookworm/gcc                 12.2.0    |
+# | Vulkan: https://packages.debian.org/bookworm/libvulkan-dev       1.3.239.0 |
+# | MESA:   https://packages.debian.org/bookworm/mesa-vulkan-drivers 22.3.6    |
+# |                                                                            |
+# \============================================================================/
 
 # +-----------------------------+
 # | GLOBAL ARGS                 |
@@ -39,7 +39,7 @@ ARG DEBIAN_VERSION=12
 ARG DEBIAN_VERSION_NAME=bookworm
 ARG GCC_VERSION=13.4.0
 ARG LLVM_VERSION=20
-ARG VULKAN_VERSION=1.4.335.0
+ARG VULKAN_VERSION=1.4.341.1
 ARG MESA_VERSION=22.3.6
 
 # +-----------------------------+
@@ -125,7 +125,9 @@ RUN echo "Packages" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
     gnupg2 ca-certificates software-properties-common \
     build-essential \
-    wget git nano jq \
+    wget git nano jq ripgrep fd-find fzf \
+    # benchmarking
+    hyperfine \
     # code analysis
     cppcheck \
     valgrind \

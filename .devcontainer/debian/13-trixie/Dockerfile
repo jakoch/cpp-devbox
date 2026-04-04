@@ -19,7 +19,7 @@
 # | Debian 13 - Trixie                                                        |
 # |===========================================================================|
 # |                                                                           |
-# | Package Versions                                            (os upstream) |
+# | Package Versions                                            (OS upstream) |
 # |                                                                           |
 # | LLVM:   https://packages.debian.org/trixie/llvm                 19.0      |
 # | GCC:    https://packages.debian.org/trixie/gcc                  14.2.0    |
@@ -53,8 +53,8 @@
 ARG DEBIAN_VERSION=13
 ARG DEBIAN_VERSION_NAME=trixie
 ARG GCC_VERSION=14.2.0
-ARG LLVM_VERSION=21
-ARG VULKAN_VERSION=1.4.335.0
+ARG LLVM_VERSION=22
+ARG VULKAN_VERSION=1.4.341.1
 ARG MESA_VERSION=25.3.3
 
 # +-----------------------------+
@@ -144,12 +144,14 @@ RUN echo "Packages" && \
     gnupg2 ca-certificates \
     # package seems gone, was used in LLVM section below: software-properties-common \
     build-essential \
-    wget git nano jq \
+    wget git nano jq ripgrep fd-find fzf \
+    # benchmarking
+    hyperfine \
     # code analysis
     cppcheck \
     valgrind \
     # profiling
-    # gprof
+    # gprof (is part of binutils and already installed)
     linux-perf \
     # code coverage  (gcov is part of GCC)
     gcovr lcov \

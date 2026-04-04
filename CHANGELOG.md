@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.17] - 2026-04-04
+
+- updated versions:
+    - 12-bookworm: Vulkan 1.4.341.1
+    - 13-trixie: Vulkan 1.4.341.1, LLVM 22
+    - 14-forky:  Vulkan 1.4.341.1, LLVM 22, Mesa 26.0.3
+    - sid-unstable: Vulkan 1.4.341.1, LLVM 22, Mesa 26.0.4
+- added tools: hyperfine, fd-find, fzf, ripgrep ([#40](https://github.com/jakoch/cpp-devbox/issues/40))
 - combined zsh configuration commands using sed
 - disabled zsh update prompt and auto update feature (DISABLE_UPDATE_PROMPT & DISABLE_AUTO_UPDATE)
 - fix for "locale alias file `/usr/share/locale/locale.alias' not found" by removing parameter
@@ -227,7 +235,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Section for Reference Links -->
 
-[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.16...HEAD
+[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.17...HEAD
+[1.0.17]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.17
 [1.0.16]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.16
 [1.0.15]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.15
 [1.0.14]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.14

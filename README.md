@@ -70,8 +70,9 @@ For details, please refer to the Dockerfiles.
 On top of the Debian base image the following tools are installed:
 
 - zsh with plugins: autosuggestions, completions, history substring search
-- git, nano, jq
+- nano, jq, ripgrep, fd, fzf
 - curl, wget
+- hyperfine
 - cppcheck, valgrind
 - lcov, gcov, gcovr
 - strace, ltrace
@@ -99,14 +100,14 @@ The following C/C++ compilers and their toolchains are available:
 
 The following C/C++ compilers and their toolchains are available:
 
-- LLVM 21.1.0
+- LLVM 22.1.0
 - GCC 14.2.0
 
 ### [Dockerfile for Debian 14 - Forky](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/14-forky/Dockerfile) (testing)
 
 The following C/C++ compilers and their toolchains are available:
 
-- LLVM 21.1.0
+- LLVM 22.1.0
 - GCC 14.3.0
 - GCC 15.2.0
 
