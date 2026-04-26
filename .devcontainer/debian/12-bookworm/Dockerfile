@@ -57,7 +57,7 @@ ARG VULKAN_VERSION
 
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NOWARNINGS="yes" \
-    CURL_OPTIONS="--silent --show-error --retry 5 --location"
+    CURL_OPTIONS="--silent --show-error --location --retry 5 --retry-all-errors --retry-delay 3 --retry-max-time 30 --fail"
 
 WORKDIR /tmp
 RUN echo "Download Stage" && \
