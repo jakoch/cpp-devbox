@@ -25,7 +25,7 @@ jobs:
     # List Workflow Runs: https://api.github.com/repos/jakoch/cpp-devbox/actions/workflows
     steps:
       - name: ✂ Remove cancelled or skipped workflow runs
-        uses: actions/github-script@v8 # https://github.com/actions/github-script
+        uses: actions/github-script@v9 # https://github.com/actions/github-script
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -53,7 +53,7 @@ jobs:
             }
 
       - name: ✂ Remove 30 days old workflows runs
-        uses: actions/github-script@v8 # https://github.com/actions/github-script
+        uses: actions/github-script@v9 # https://github.com/actions/github-script
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -102,7 +102,7 @@ jobs:
 
       # https://api.github.com/repos/jakoch/cpp-devbox/actions/workflows/clean-workflows.yml/runs
       - name: ✂ Remove runs of the cleanup workflow itself
-        uses: actions/github-script@v8 # https://github.com/actions/github-script
+        uses: actions/github-script@v9 # https://github.com/actions/github-script
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -154,7 +154,7 @@ jobs:
             }
 
       - name: ✂ Remove Dependabot workflow runs
-        uses: actions/github-script@v8 # https://github.com/actions/github-script
+        uses: actions/github-script@v9 # https://github.com/actions/github-script
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -198,7 +198,7 @@ jobs:
             console.log("✅ Cleanup complete.");
 
       - name: ✂ Remove pages-build-deployment workflow runs except the most recent one
-        uses: actions/github-script@v8 # https://github.com/actions/github-script
+        uses: actions/github-script@v9 # https://github.com/actions/github-script
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
