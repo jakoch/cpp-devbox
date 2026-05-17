@@ -39,13 +39,16 @@ echo "Configuring GCC $GCC16_VERSION ..."
   --disable-libquadmath \
   --disable-vtable-verify \
   --disable-werror \
+  --enable-__cxa_atexit \
   --enable-cet \
   --enable-lto \
   --enable-checking=release \
   --enable-clocale=gnu \
   --enable-default-pie \
+  --enable-gnu-indirect-function \
   --enable-gnu-unique-object \
-  --enable-languages=c,c++ \
+  --enable-initfini-array \
+  --enable-languages=c,c++,lto \
   --enable-libstdcxx-debug \
   --enable-libstdcxx-time=yes \
   --enable-linker-build-id \
