@@ -291,14 +291,6 @@ jobs:
             README-${{ matrix.config.debian_codename }}-base.md
             README-${{ matrix.config.debian_codename }}-with-vulkansdk.md
 
-      - name: 📦 Provide SBOM as a release asset
-        uses: actions/upload-artifact@v7
-        with:
-          name: sbom-${{ matrix.config.debian_codename }}
-          path: |
-            ${{ matrix.config.debian_codename }}-sbom.json
-            ${{ matrix.config.debian_codename }}-with-vulkansdk-sbom.json
-
       - name: 🛡️🔍 Scan Image for Vulnerabilities using Trivy
         uses: aquasecurity/trivy-action@master # https://github.com/aquasecurity/trivy-action
         with:
