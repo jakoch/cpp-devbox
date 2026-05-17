@@ -377,6 +377,7 @@ jobs:
 
       - name: 📊 Overlay version data into website/_data/
         run: |
+          chmod +x ${{ env.SRC_DIR }}/build-tools/build-release-data.sh
           ${{ env.SRC_DIR }}/build-tools/build-release-data.sh \
             --version ${{ github.ref_name }} \
             --date $(date -u +%F) \
