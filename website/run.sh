@@ -5,7 +5,7 @@ jekyll build clean
 clear
 
 #
-# LiveReload isnt working properly in a Docker environment.
+# LiveReload isn't working properly in a Docker environment.
 # Force polling is enabled as a workaround.
 #
 
