@@ -1,0 +1,11 @@
+# This file configures editors using the EditorConfig scheme.
+# https://editorconfig.org/
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+
+[*.html]
+indent_size = 2

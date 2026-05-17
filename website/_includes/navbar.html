@@ -1,0 +1,18 @@
+<nav class="navbar">
+	<div class="container">
+	<a href="{{ '/' | relative_url }}" class="logo">
+		{% assign project = site.data.project %}
+		<img src="{{ project.logo | relative_url }}" alt="Project Logo"
+			style="height:2rem;vertical-align:middle;margin-right:0.5rem;">
+		{{ site.title }}
+	</a>
+	<ul class="nav-links">
+		<li><a href="{{ '/' | relative_url }}">Home</a></li>
+		<li><a href="{{ '/releases/' | relative_url }}">Releases</a></li>
+		<li><a href="{{ '/cpp-quick-links' | relative_url }}">C++ Quick Links</a></li>
+		<li><a href="https://github.com/jakoch/cpp-devbox" target="_blank" rel="noopener">GitHub</a></li>
+		<li><a href="https://github.com/jakoch/cpp-devbox/issues" target="_blank" rel="noopener">Report Issue</a>
+		</li>
+	</ul>
+	</div>
+</nav>

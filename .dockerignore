@@ -12,6 +12,7 @@
 assets/
 build-tools/
 devbox-test/
+website/
 
 # Files
 .dockleignore

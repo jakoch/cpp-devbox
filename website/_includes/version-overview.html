@@ -1,0 +1,91 @@
+<h2 id="{{ include.os }}-{{ include.variant }}">
+	{{ include.os | lowercase }}-{{ include.variant | lowercase }}
+</h2>
+
+<h3>Images</h3>
+<p class="image-info">
+  Please use one of the following commands to pull the image from the selected registry:
+</p>
+{% assign dockerhub_base = site.data.images.base_urls.dockerhub %}
+{% assign ghcr_base = site.data.images.base_urls.ghcr %}
+<div class="dockerhub-content registry-content" style="display: block;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      {% if include.variant == "with-vulkansdk" %}
+      docker pull {{ dockerhub_base }}{{ include.os }}-{{ include.variant }}-{{ page.version }}
+      {% else %}
+      docker pull {{ dockerhub_base }}{{ include.os }}-{{ page.version }}
+      {% endif %}
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<div class="ghcr-content registry-content" style="display: none;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      {% if include.variant == "with-vulkansdk" %}
+      docker pull {{ ghcr_base }}{{ include.os }}-{{ include.variant }}-{{ page.version }}
+      {% else %}
+      docker pull {{ ghcr_base }}{{ include.os }}-{{ page.version }}
+      {% endif %}
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<script>
+  function toggleVisibility(showId, hideId) {
+    const showElement = document.getElementById(showId);
+    const hideElement = document.getElementById(hideId);
+    if (showElement && hideElement) {
+      showElement.style.display = 'block';
+      hideElement.style.display = 'none';
+    }
+  }
+  function copyCommand(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre.textContent.trim();
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+<h3>Included Software</h3>
+
+{% if include.variant == "with-vulkansdk" %}
+<p class="variant-info">
+  This variant includes all base tools plus the Vulkan SDK and Mesa for GPU-accelerated rendering.
+</p>
+{% endif %}
+
+<div class="version-overview-table">
+	<table>
+		<thead>
+			<tr>
+				<th>Tool</th>
+				<th>Version</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- render _data/releases/{{ page.version }}.json-->
+			{% assign version_key = page.version | replace: '.', '_' %}
+			{% assign version_data = site.data.releases[version_key] %}
+			<!-- render the tools for the given image os and variant -->
+			{% assign tools = version_data.images[include.os][include.variant] %}
+			<!-- each tool has a software name and a version -->
+			{% for tool_pair in tools %}
+			{% assign software = tool_pair[0] %}
+			{% assign version = tool_pair[1] %}
+			<tr>
+				<td>{{ software }}</td>
+				<td>{{ version }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

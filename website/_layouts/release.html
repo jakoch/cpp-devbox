@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+	{% include head.html %}
+	<body>
+		{% include navbar.html %}
+		<main class="main" aria-label="Content">
+			<!-- Display Release: version date latest_version_tag -->
+			{% assign latest_release = site.data['release-tags'] | first %}
+			<h1>
+				Release: {{ page.version }}
+				<span class="release-date">{{ page.date }}</span>
+				{% if page.version == latest_release.version %}
+				  <span class="latest-tag" style="font-size:0.5em;">Latest</span>
+				{% endif %}
+			</h1>
+			<!-- Display old version notice -->
+			{% if page.version and page.version != latest_release.version %}
+			<p class="old-version-notice">
+				This is an old version. The latest release is <a href="{{ '/releases/' | append: latest_release.version | append: '.html' | relative_url }}">v{{
+					latest_release.version }}</a>.
+			</p>
+			{% endif %}
+
+			<!-- Display Changelog -->
+			<h2>Changelog</h2>
+			<p><a href="https://github.com/jakoch/cpp-devbox/releases/tag/v{{ page.version }}">Changelog on GitHub</a>.</p>
+
+			<!-- Display TOC to browse to the image variants -->
+			<h2>Table of Contents</h2>
+			{% include toc.html version=page.version %}
+
+			<!-- Display Available Images -->
+			<div class="images-header">
+				<h2>Available Images</h2>
+				<div class="filters">
+					<span class="select-os">
+						Select OS Version:
+						<span class="os-tabs">
+							<button class="os-tab" id="sid-tab" onclick="toggleOsVisibility('sid', event)">Debian vNext<br>SID<br>unstable</button>
+							<button class="os-tab" id="forky-tab" onclick="toggleOsVisibility('forky', event)">Debian 14<br>Forky<br>testing</button>
+							<button class="os-tab" id="trixie-tab" onclick="toggleOsVisibility('trixie', event)">Debian 13<br>Trixie<br>stable</button>
+							<button class="os-tab active" id="bookworm-tab" onclick="toggleOsVisibility('bookworm', event)">Debian 12<br>Bookworm<br>oldstable</button>
+						</span>
+					</span>
+					<span class="select-registry">
+						Select Container Registry:
+						<span class="registry-tabs">
+							<button class="registry-tab active" id="dockerhub-tab" onclick="toggleAllVisibility('dockerhub', event)">DockerHub</button>
+							<button class="registry-tab" id="ghcr-tab" onclick="toggleAllVisibility('ghcr', event)">GHCR</button>
+						</span>
+					</span>
+				</div>
+			</div>
+			<script>
+			function toggleAllVisibility(registry, event) {
+				// Toggle registry content visibility
+				var dockerhubElements = document.querySelectorAll('.dockerhub-content');
+				var ghcrElements = document.querySelectorAll('.ghcr-content');
+				if (registry === 'dockerhub') {
+				  dockerhubElements.forEach(function(el) { el.style.display = 'block'; });
+				  ghcrElements.forEach(function(el) { el.style.display = 'none'; });
+				} else if (registry === 'ghcr') {
+				  dockerhubElements.forEach(function(el) { el.style.display = 'none'; });
+				  ghcrElements.forEach(function(el) { el.style.display = 'block'; });
+				}
+				// Remove 'active' from all registry-tab buttons
+				var allTabs = document.querySelectorAll('.registry-tab');
+				allTabs.forEach(function(tab) { tab.classList.remove('active'); });
+				// Add 'active' to the clicked button
+				if (event && event.currentTarget) {
+				  event.currentTarget.classList.add('active');
+				}
+			}
+			function toggleOsVisibility(os, event) {
+				['bookworm', 'trixie', 'forky', 'sid'].forEach(function(o) {
+					var els = document.querySelectorAll('.os-' + o);
+					els.forEach(function(el) { el.style.display = (o === os) ? 'block' : 'none'; });
+				});
+				var allOsTabs = document.querySelectorAll('.os-tab');
+				allOsTabs.forEach(function(tab) { tab.classList.remove('active'); });
+				if (event && event.currentTarget) {
+					event.currentTarget.classList.add('active');
+				}
+			}
+			</script>
+
+			<div class="image-columns">
+				{% for image in site.data.images.images %}
+				<div class="image-column os-{{ image.debian }}"{% if image.debian != 'bookworm' %} style="display: none;"{% endif %}>
+					{% for variant in image.variants %}
+					{% include version-overview.html os=image.debian variant=variant.name %}
+					{% endfor %}
+				</div>
+				{% endfor %}
+			</div>
+
+			{% include version-comparison.html %}
+
+		</main>
+		{% include footer.html %}
+	</body>
+</html>

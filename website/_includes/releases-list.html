@@ -1,0 +1,12 @@
+<ul class="release-list">
+  {% assign latest = site.data['release-tags'] | first %}
+  {% for release in site.data['release-tags'] %}
+    <li>
+      <a href="{{ '/releases/' | append: release.version | append: '.html' | relative_url }}">v{{ release.version }}</a>
+	  <span class="release-date">({{ release.date }})</span>
+      {% if release.version == latest.version %}
+        <span class="latest-tag">latest</span>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>

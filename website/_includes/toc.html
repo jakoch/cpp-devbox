@@ -1,0 +1,29 @@
+<nav class="toc-table">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>⭣ Version Tag &nbsp; | &nbsp; OS Version ⭢</strong></th>
+        <th>Debian vNext<br>SID<br>unstable</th>
+        <th>Debian 14<br>Forky<br>testing</th>
+        <th>Debian 13<br>Trixie<br>stable</th>
+        <th>Debian 12<br>Bookworm<br>oldstable</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ version | default: "Latest" }} "base"</td>
+        <td><a href="#sid-base">sid-{{ version | default: "latest" }}</a></td>
+        <td><a href="#forky-base">forky-{{ version | default: "latest" }}</a></td>
+        <td><a href="#trixie-base">trixie-{{ version | default: "latest" }}</a></td>
+        <td><a href="#bookworm-base">bookworm-{{ version | default: "latest" }}</a></td>
+      </tr>
+      <tr>
+        <td>{{ version | default: "Latest" }} "with-vulkansdk"</td>
+        <td><a href="#sid-with-vulkansdk">sid-with-vulkansdk-{{ version | default: "latest" }}</a></td>
+        <td><a href="#forky-with-vulkansdk">forky-with-vulkansdk-{{ version | default: "latest" }}</a></td>
+        <td><a href="#trixie-with-vulkansdk">trixie-with-vulkansdk-{{ version | default: "latest" }}</a></td>
+        <td><a href="#bookworm-with-vulkansdk">bookworm-with-vulkansdk-{{ version | default: "latest" }}</a></td>
+      </tr>
+    </tbody>
+  </table>
+</nav>

@@ -1,0 +1,494 @@
+body {
+  font-family: 'Google Sans Text', 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #e0e0e0;
+  background-color: #181a1b;
+  margin: 0;
+}
+
+.navbar {
+  background: #23272e;
+  color: #e0e0e0;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #23272e;
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #e0e0e0;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 1rem;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+
+.nav-links a:hover {
+  opacity: 1;
+}
+
+.main {
+  display: block;
+  max-width: 1200px;
+  margin: 2.5rem auto 0 auto;
+  padding: 0 1rem;
+  min-height: 60vh;
+}
+
+.footer {
+  background: #23272e;
+  color: #888;
+  text-align: center;
+  padding: 1rem 0 0.5rem 0;
+  font-size: 0.95rem;
+  border-top: 1px solid #23272e;
+  margin-top: 2rem;
+}
+
+.footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.release-list {
+  list-style: none;
+  padding: 0;
+}
+
+.release-list li {
+  margin-bottom: 0.7em;
+}
+
+.release-list a {
+  color: #ffeb3b;
+  background: #23272e;
+  padding: 0.2em 0.6em;
+  border-radius: 4px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.release-list a:hover {
+  color: #23272e;
+  background: #ffeb3b;
+}
+
+.release-list span {
+  color: #888;
+  font-size: 0.95em;
+}
+
+.release-date {
+  font-size: 0.5em;
+  color: #888;
+}
+
+.latest-tag {
+  display: inline-block;
+  margin-left: 0.5em;
+  padding: 0.1em 0.4em;
+  background: #4caf50;
+  color: #fff;
+  font-size: 0.5em;
+  border-radius: 3px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+a {
+  color: #ffeb3b;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+a:hover, a:focus {
+  color: #fff176;
+}
+
+h2 {
+  margin-top: 2.5rem;
+  color: #fff;
+}
+
+/* ── Shared table styles ── */
+
+table {
+  border-collapse: collapse;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #1e2123;
+}
+
+tbody tr:hover {
+  background-color: #2a2e33;
+}
+
+/* ── TOC table ── */
+
+.toc-table {
+  margin: 1rem 0;
+
+  table {
+    width: 100%;
+    background: #202226;
+    color: #e0e0e0;
+
+    thead {
+      tr {
+        background: #23272e;
+
+        th {
+          padding: 0.5rem 1rem;
+          text-align: left;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          padding: 0.5rem 1rem;
+
+          a {
+            color: #8ecae6;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ── Version overview table ── */
+
+.version-overview-table {
+  margin: 1rem 0;
+
+  table {
+    width: 25%;
+    background: #202226;
+    color: #e0e0e0;
+
+    thead {
+      tr {
+        background: #23272e;
+
+        th {
+          padding: 0.5rem 1rem;
+          text-align: left;
+          width: 50%;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          padding: 0.5rem 1rem;
+          width: 50%;
+
+          a {
+            color: #8ecae6;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ── Version matrix ── */
+
+.version-matrix {
+  margin-top: 2.5rem;
+  color: #fff;
+
+  table {
+    width: 100%;
+    background: #202226;
+    color: #e0e0e0;
+
+    thead {
+      tr {
+        background: #23272e;
+      }
+    }
+
+    th {
+      padding: 0.5rem 1rem;
+      text-align: left;
+    }
+
+    tbody {
+      td {
+        padding: 0.5rem 1rem;
+      }
+    }
+  }
+}
+
+.old-version-notice {
+  margin: 1rem 0;
+  color: #ffb703;
+  font-weight: bold;
+}
+
+.old-version-notice a {
+  color: #8ecae6;
+}
+
+.navbar img {
+  height: 2rem;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+.navbar .nav-links a {
+  color: #8ecae6;
+}
+
+.image-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.image-column {
+  flex: 1 1 calc(50% - 1rem);
+  box-sizing: border-box;
+}
+
+.variant-info {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background-color: #23272e;
+  border-left: 4px solid #8ecae6;
+  color: #e0e0e0;
+  font-size: 0.9em;
+}
+
+/* ── OS & Registry tab buttons ── */
+
+.os-tabs, .registry-tabs {
+  margin: 1rem 0;
+  gap: 0.5rem;
+}
+
+.os-tab, .registry-tab {
+  padding: 0.5rem 1rem;
+  background-color: #23272e;
+  color: #e0e0e0;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.os-tab:hover, .registry-tab:hover {
+  background-color: #8ecae6;
+  color: #23272e;
+}
+
+.os-tab.active, .registry-tab.active {
+  background-color: #8ecae6 !important;
+  color: #23272e !important;
+  font-weight: bold;
+  border: 1px solid #8ecae6 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  z-index: 1;
+}
+
+/* ── Copy-paste blocks ── */
+
+.copy-wrapper {
+  position: relative;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  background: #3a3f47;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.copy-btn:hover {
+  background: #8ecae6;
+  color: #23272e;
+}
+
+.copy-btn.copied {
+  background: #4caf50;
+  color: #fff;
+  border-color: #4caf50;
+}
+
+.copy-pasteable {
+  background-color: #202226;
+  color: #e0e0e0;
+  padding: 1rem;
+  border-radius: 4px;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+
+.registry-content {
+  font-size: 12px;
+}
+
+.images-header {
+  margin-bottom: 1rem;
+}
+
+.images-header h2 {
+  margin: 0 0 0.75rem 0;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.select-os, .select-registry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ── Version comparison table ── */
+
+.version-comparison-table {
+  margin: 2rem 0;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.version-comparison-table table {
+  width: 100%;
+  background: #202226;
+  color: #e0e0e0;
+  font-size: 0.85rem;
+}
+
+.version-comparison-table thead tr {
+  background: #23272e;
+}
+
+.version-comparison-table th,
+.version-comparison-table td {
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.version-comparison-table th:first-child,
+.version-comparison-table td:first-child {
+  position: sticky;
+  left: 0;
+  background: #23272e;
+  z-index: 1;
+}
+
+.version-comparison-table td:first-child {
+  background: #202226;
+  font-weight: 600;
+}
+
+.version-comparison-table tbody tr:nth-child(even) td:first-child {
+  background: #1e2123;
+}
+
+.version-comparison-table td.na {
+  color: #555;
+  text-align: center;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 900px) {
+  .image-column {
+    flex: 1 1 100%;
+  }
+
+  .version-overview-table table {
+    width: 100%;
+  }
+
+  .toc-table table {
+    font-size: 0.85rem;
+  }
+
+  .toc-table th, .toc-table td {
+    padding: 0.4rem 0.5rem;
+  }
+
+  .images-header .filters {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .select-os, .select-registry {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar .container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+
+  .version-matrix table {
+    font-size: 0.8rem;
+  }
+
+  .version-matrix th, .version-matrix td {
+    padding: 0.3rem 0.4rem;
+  }
+
+  .main {
+    margin-top: 1.5rem;
+  }
+}

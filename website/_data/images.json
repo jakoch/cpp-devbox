@@ -1,0 +1,101 @@
+{
+  "base_urls": {
+    "dockerhub": "https://hub.docker.com/r/jakoch/cpp-devbox:",
+    "ghcr": "https://ghcr.io/jakoch/cpp-devbox:"
+  },
+  "images": [
+    {
+      "debian": "bookworm",
+      "version": "12",
+      "variants": [
+        {
+          "name": "base",
+          "tags": [
+            "bookworm-latest",
+            "bookworm-1.2.3",
+            "bookworm-1.2.2",
+            "bookworm-20250731",
+            "bookworm-20250615"
+          ]
+        },
+        {
+          "name": "with-vulkansdk",
+          "tags": [
+            "bookworm-with-vulkansdk-latest",
+            "bookworm-with-vulkansdk-1.2.3",
+            "bookworm-with-vulkansdk-1.2.2",
+            "bookworm-with-vulkansdk-20250731",
+            "bookworm-with-vulkansdk-20250615"
+          ]
+        }
+      ]
+    },
+    {
+      "debian": "trixie",
+      "version": "13",
+      "variants": [
+        {
+          "name": "base",
+          "tags": [
+            "trixie-latest",
+            "trixie-1.2.3",
+            "trixie-1.2.2",
+            "trixie-20250731",
+            "trixie-20250615"
+          ]
+        },
+        {
+          "name": "with-vulkansdk",
+          "tags": [
+            "trixie-with-vulkansdk-latest",
+            "trixie-with-vulkansdk-1.2.3",
+            "trixie-with-vulkansdk-1.2.2",
+            "trixie-with-vulkansdk-20250731",
+            "trixie-with-vulkansdk-20250615"
+          ]
+        }
+      ]
+    },
+    {
+      "debian": "forky",
+      "version": "14",
+      "variants": [
+        {
+          "name": "base",
+          "tags": [
+            "forky-latest",
+            "forky-1.2.3",
+            "forky-1.2.2"
+          ]
+        },
+        {
+          "name": "with-vulkansdk",
+          "tags": [
+            "forky-with-vulkansdk-latest",
+            "forky-with-vulkansdk-1.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "debian": "sid",
+      "version": "sid",
+      "variants": [
+        {
+          "name": "base",
+          "tags": [
+            "unstable-latest",
+            "unstable-1.2.3"
+          ]
+        },
+        {
+          "name": "with-vulkansdk",
+          "tags": [
+            "unstable-with-vulkansdk-latest",
+            "unstable-with-vulkansdk-1.2.3"
+          ]
+        }
+      ]
+    }
+  ]
+}

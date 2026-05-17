@@ -1,0 +1,63 @@
+<h2>Version Comparison (with-vulkansdk)</h2>
+<p class="variant-info">
+  Side-by-side comparison of all tool versions across every Debian OS variant and with Vulkan SDK.
+</p>
+
+{% assign version_key = page.version | replace: '.', '_' %}
+{% assign version_data = site.data.releases[version_key] %}
+{% assign oses = "sid,forky,trixie,bookworm" | split: "," %}
+{% assign os_labels = "Debian vNext SID unstable,Debian 14 Forky testing,Debian 13 Trixie stable,Debian 12 Bookworm oldstable" | split: "," %}
+
+{% comment %}
+  Build a unique ordered list of tool names across all with-vulkansdk variants.
+{% endcomment %}
+{% assign all_tools = "||" %}
+{% for os in oses %}
+  {% assign tools = version_data.images[os]["with-vulkansdk"] %}
+  {% for pair in tools %}
+    {% assign name = pair[0] %}
+    {% assign check = "||" | append: name | append: "||" %}
+    {% unless all_tools contains check %}
+      {% assign all_tools = all_tools | append: name | append: "||" %}
+    {% endunless %}
+  {% endfor %}
+{% endfor %}
+{% assign tool_names = all_tools | split: "||" %}
+
+<div class="version-comparison-table">
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Tool</th>
+          {% for os in oses %}
+            {% assign label_parts = os_labels[forloop.index0] | split: " " %}
+            <th>Debian {{ label_parts[1] }}<br>{{ os }}<br>{{ label_parts | last }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for tool_name in tool_names %}
+          {% if tool_name == "" %}{% continue %}{% endif %}
+          <tr>
+            <td><strong>{{ tool_name }}</strong></td>
+            {% for os in oses %}
+              {% assign tools = version_data.images[os]["with-vulkansdk"] %}
+              {% assign found = false %}
+              {% for pair in tools %}
+                {% if pair[0] == tool_name %}
+                  <td>{{ pair[1] }}</td>
+                  {% assign found = true %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+              {% unless found %}
+                <td class="na">—</td>
+              {% endunless %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

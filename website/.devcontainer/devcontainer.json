@@ -1,0 +1,20 @@
+// For full details see https://containers.dev/guide/
+// and https://containers.dev/implementors/json_reference/
+{
+    "name": "Jekyll DevBox",
+    "image": "ghcr.io/jakoch/jekyll-devbox:20260517-sha-360a8e4",
+    "forwardPorts": [4000, 35729],
+    "postCreateCommand": "./.devcontainer/scripts/post-create.sh",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/zsh"
+            }
+        }
+    },
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+    ],
+    "workspaceFolder": "/workspace",
+    "remoteUser": "root"
+}

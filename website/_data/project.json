@@ -1,0 +1,4 @@
+{
+  "logo": "/assets/images/logo.svg",
+  "description": "A Docker-based devcontainer for C++ development."
+}

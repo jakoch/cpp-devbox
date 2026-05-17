@@ -224,29 +224,42 @@ jobs:
         id: run-container-base
         run: |
           README="README-${{ matrix.config.debian_codename }}-base.md"
-          VERSIONS="versions-${{ matrix.config.debian_codename }}-base.md"
+          VERSIONS="versions-${{ matrix.config.debian_codename }}-base.json"
           echo "# cpp-devbox ${{ github.ref_name }} ($(date '+%Y-%m-%d'))" >> $README
           echo -e "\n" >> $README
           echo "OS Version:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }}" >> $README
           echo "Image Version: ${{ steps.get_image_name_base.outputs.name }}" >> $README
           echo -e "\n" >> $README
           docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base.outputs.name }} /bin/zsh -c "cat /etc/os-release; pwd; ls -l /workspace"
-          docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base.outputs.name }} /bin/zsh -c "/workspace/show-tool-versions.sh" > $VERSIONS
+          docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base.outputs.name }} /bin/zsh -c "/workspace/show-tool-versions.sh json" > $VERSIONS
           cat $VERSIONS >> $README
 
       - name: ℹ️ Run cpp-devbox-with-vulkansdk Container to grab version info
         id: run-container-with-vulkan
         run: |
           README="README-${{ matrix.config.debian_codename }}-with-vulkansdk.md"
-          VERSIONS="versions-${{ matrix.config.debian_codename }}-with-vulkan.md"
+          VERSIONS="versions-${{ matrix.config.debian_codename }}-with-vulkan.json"
           echo "# cpp-devbox ${{ github.ref_name }} ($(date '+%Y-%m-%d'))" >> $README
           echo -e "\n" >> $README
           echo "OS Version:  Debian ${{ matrix.config.debian_version }} ${{ matrix.config.debian_codename }} with Vulkan SDK" >> $README
           echo "Image Version: ${{ steps.get_image_name_base_with_vulkan.outputs.name }}" >> $README
           echo -e "\n" >> $README
           docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base_with_vulkan.outputs.name }} /bin/zsh -c "cat /etc/os-release; pwd; ls -l /workspace"
-          docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base_with_vulkan.outputs.name }} /bin/zsh -c "/workspace/show-tool-versions.sh" > $VERSIONS
+          docker run --rm -v ${{ github.workspace }}/.devcontainer/scripts:/workspace ${{ steps.get_image_name_base_with_vulkan.outputs.name }} /bin/zsh -c "/workspace/show-tool-versions.sh json" > $VERSIONS
           cat $VERSIONS >> $README
+
+      - name: 📊 Aggregate versions into combined release JSON
+        run: |
+          chmod +x ${{ github.workspace }}/build-tools/aggregate-versions.sh
+          ${{ github.workspace }}/build-tools/aggregate-versions.sh \
+            --codename ${{ matrix.config.debian_codename }} \
+            --debian-version ${{ matrix.config.debian_version }} \
+            --version ${{ github.ref_name }} \
+            --commit ${{ github.sha }} \
+            --date $(date -u +%F) \
+            --base-json versions-${{ matrix.config.debian_codename }}-base.json \
+            --vulkan-json versions-${{ matrix.config.debian_codename }}-with-vulkan.json \
+            --output versions-${{ matrix.config.debian_codename }}.json
 
       - name: Push all images and all tags
         run: |
@@ -272,8 +285,9 @@ jobs:
           name: version-info-${{ matrix.config.debian_codename }}
           path: |
             info-${{ matrix.config.debian_codename }}.json
-            versions-${{ matrix.config.debian_codename }}-base.md
-            versions-${{ matrix.config.debian_codename }}-with-vulkan.md
+            versions-${{ matrix.config.debian_codename }}.json
+            versions-${{ matrix.config.debian_codename }}-base.json
+            versions-${{ matrix.config.debian_codename }}-with-vulkan.json
             README-${{ matrix.config.debian_codename }}-base.md
             README-${{ matrix.config.debian_codename }}-with-vulkansdk.md
             ${{ matrix.config.debian_codename }}-sbom.json
@@ -342,49 +356,61 @@ jobs:
     # run this job only on main branch or on tags, this avoids running on PRs
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
 
+    env:
+      JEKYLL_IMAGE: ghcr.io/jakoch/jekyll-devbox:20260517-sha-360a8e4
+      SRC_DIR: source
+      GH_PAGES_DIR: gh-pages
+      ARTIFACTS_DIR: artifacts
+
     steps:
+
+      - name: 🤘 Checkout cpp-devbox source (website + build-tools)
+        uses: actions/checkout@v6
+        with:
+          path: ${{ env.SRC_DIR }}
+          fetch-depth: 1
+
+      - name: 🔽 Download all version artifacts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: version-info-*
+          merge-multiple: true
+          path: ${{ env.SRC_DIR }}/${{ env.ARTIFACTS_DIR }}
+
+      - name: 📊 Overlay version data into website/_data/
+        run: |
+          ${{ env.SRC_DIR }}/build-tools/build-release-data.sh \
+            --version ${{ github.ref_name }} \
+            --date $(date -u +%F) \
+            --commit ${{ github.sha }} \
+            --input-dir ${{ env.SRC_DIR }}/${{ env.ARTIFACTS_DIR }} \
+            --data-dir ${{ env.SRC_DIR }}/website/_data
+
+      - name: 🏗️ Build Jekyll site
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/${{ env.SRC_DIR }}/website:/workspace \
+            ${{ env.JEKYLL_IMAGE }} \
+            /bin/zsh -c "bundle install && bundle exec jekyll build"
 
       - name: 🤘 Checkout gh-pages branch
         uses: actions/checkout@v6
         with:
           ref: gh-pages
+          path: ${{ env.GH_PAGES_DIR }}
           fetch-depth: 1
 
-      - name: 🔽 Download all docs artifacts
-        uses: actions/download-artifact@v8
-        with:
-          pattern: version-info-*
-          merge-multiple: true
-          path: tmp
-
-      - name: 📝 Merge both READMEs into a Github Pages index.md
+      - name: 📝 Copy built site to gh-pages
         run: |
-          cd tmp
-          echo "# cpp-devbox ${{ github.ref_name }} ($(date '+%Y-%m-%d'))" > index.md
-          echo "" >> index.md
-          echo "## Images" >> index.md
-          echo "" >> index.md
-          for codename in bookworm trixie forky unstable; do
-            if [ -f README-${codename}-base.md ]; then
-              echo "### Base Image (${codename})" >> index.md
-              grep -A2 '^OS Version:' README-${codename}-base.md >> index.md
-              echo "" >> index.md
-            fi
-            if [ -f README-${codename}-with-vulkansdk.md ]; then
-              echo "### With VulkanSDK (${codename})" >> index.md
-              grep -A2 '^OS Version:' README-${codename}-with-vulkansdk.md >> index.md
-              echo "" >> index.md
-            fi
-          done
+          rm -rf ${{ env.GH_PAGES_DIR }}/*
+          cp -r ${{ env.SRC_DIR }}/website/_site/* ${{ env.GH_PAGES_DIR }}/
+          touch ${{ env.GH_PAGES_DIR }}/.nojekyll
 
-      - name: ✔ Commit index.md to gh-pages branch
+      - name: ✔ Commit and push to gh-pages
         run: |
-          cp tmp/index.md index.md
+          cd ${{ env.GH_PAGES_DIR }}
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.md
-          git commit -m "Publish docs from ${GITHUB_REPOSITORY}@${GITHUB_SHA:0:9}"
-
-      - name: 🚀 Push to gh-pages branch
-        run: |
+          git add -A
+          git diff --staged --quiet || git commit -m "Publish site from ${GITHUB_REPOSITORY}@${GITHUB_SHA:0:9}"
           git push origin gh-pages

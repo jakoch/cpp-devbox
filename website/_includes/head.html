@@ -1,0 +1,16 @@
+<head>
+  <meta charset="utf-8">
+  <title>
+  {% if page.title %}
+    {{ page.title }} | {{ site.title }}
+  {% else %}
+    {{ site.title }}
+  {% endif %}
+  </title>
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}" />
+  <link rel="icon" href="{{ '/assets/images/logo.svg' | relative_url }}" />
+  {% if site.livereload %}
+  <!-- Enables LiveReloading of the browser page, when a change in the editor is detected -->
+  <script src="http://127.0.0.1:35729/livereload.js"></script>
+  {% endif %}
+</head>

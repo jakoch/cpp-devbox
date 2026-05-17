@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+	{% include head.html %}
+		<body>
+		{% include navbar.html %}
+		<main class="main" aria-label="Content">
+			{% assign project = site.data.project %}
+			<h1 style="margin-top:0;">jakoch/cpp-devbox</h1>
+			<p style="margin-top:0.5rem; color:#bdbdbd;">{{ project.description }}</p>
+			{% assign release_tags = site.data['release-tags'] %}
+			{% assign latest = release_tags | first %}
+			{% if latest and latest.version %}
+			<div style="margin:1.5rem 0;">
+			  <strong>Latest Release:</strong>
+			  <span style="color:#fff;">v{{ latest.version }}</span>
+			  <span style="color:#888; font-size:0.95em;">({{ latest.date }})</span>
+			</div>
+			{% endif %}
+			{% if page.version and page.version != latest.version %}
+			<div style="margin:1rem 0; color:#ffb703; font-weight:bold;">
+			  This is an old version. The latest release is <a href="{{ '/releases/' | append: latest.version | append: '.html' | relative_url }}" style="color:#8ecae6;">v{{ latest.version }}</a>.
+			</div>
+			{% endif %}
+			{{ content }}
+			{% unless page.no_matrix %}
+
+			<div class="version-matrix">
+			<h2>Version Matrix</h2>
+			<div style="overflow-x:auto;">
+				<table>
+				<thead>
+					<tr>
+					<th>Debian OS</th>
+					<th>Image Variant</th>
+					<th>Tags</th>
+					<th>DockerHub</th>
+					<th>GHCR</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% assign dockerhub_base = site.data.images.base_urls.dockerhub %}
+					{% assign ghcr_base = site.data.images.base_urls.ghcr %}
+					{% for v in site.data.images.images %}
+					{% for variant in v.variants %}
+						{% for tag in variant.tags %}
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">{{ v.debian }}</td>
+						<td style="padding:0.5rem 1rem;">{{ variant.name }}</td>
+						<td style="padding:0.5rem 1rem;">{{ tag }}</td>
+						<td style="padding:0.5rem 1rem;"><a href="{{ dockerhub_base }}{{ tag }}" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="{{ ghcr_base }}{{ tag }}" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						{% endfor %}
+					{% endfor %}
+					{% endfor %}
+				</tbody>
+				</table>
+			</div>
+			</div>
+			{% endunless %}
+		</main>
+		{% include footer.html %}
+	</body>
+</html>

@@ -1,0 +1,38 @@
+title: cpp-devbox — Docker devcontainer for C/C++ development
+project_name: cpp-devbox
+project_url: https://github.com/jakoch/cpp-devbox
+author: Jens A. Koch
+author_url: https://github.com/jakoch
+description: >-
+  A Docker-based development container for C/C++ development.
+
+url: https://jakoch.github.io
+baseurl: /cpp-devbox
+
+livereload: false
+
+page_gen:
+  - data: 'release-tags'
+    template: 'release'
+    name: 'version'
+    dir: 'releases'
+    extension: 'html'
+    title: 'Release :version'
+    layout: 'release'
+
+plugins:
+  - jekyll-datapage-generator
+
+exclude:
+  - run.sh
+  - notes.md
+  - todo-refresh.md
+  - todo-website-refresh.md
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - .devcontainer/
+  - .github/
+  - .vscode/
+  - .editorconfig
+  - .gitignore
