@@ -11,6 +11,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.18] - 2026-05-17
+
+**Added**
+
+- added GCC 16.1.0 compilation from source to the images:
+  - trixie (next to distro GCC 14)
+  - forky  (next to distro GCC 15)
+- added `uv` (Python package manager) for all Debian Dockerfiles
+- updated `show-tool-locations.sh` and `show-tool-versions.sh` with uv entries
+- added `--api` flag and upstream version column to `compare-versions.sh`
+
+**Changed**
+
+- updated Vulkan SDK to v1.4.350.0 for all images
+- updated Mesa to v26.0.6 for forky and sid-unstable images
+- updated `show-tool-locations.sh` with `g++-16` detection
+
+**Fixed**
+
+- corrected `ln -sF` to `ln -sf` in CMake install for all Debian Dockerfiles (GNU `-F` means `--directory`, not force)
+- removed redundant `zsh` from base packages apt-get (zsh is installed in ZSH section)
+- use consistent formatting with spaces in all Dockerfiles
+- removed unused `jq` from downloader stage apt-get
+- removed `aria2` (optional downloader for VCPKG), because `--x-use-aria2` was deleted from vcpkg-tool
+- removed stray blank line with trailing spaces after CCache section in trixie Dockerfile
+- removed redundant `SHELL ["/bin/bash", "-o", "pipefail", "-c"]` resets in sections without pipes (user-creation, VCPKG, GCC compile)
+- normalized all curl invocations to use `$CURL_OPTIONS` and added `--fail`, `--retry-all-errors`, `--retry-delay 3`, `--retry-max-time 30` to the base stage `$CURL_OPTIONS`
+
 ## [1.0.17] - 2026-04-04
 
 **Added**

@@ -21,10 +21,11 @@
 # |                                                                           |
 # | Package Versions                                            (os upstream) |
 # |                                                                           |
-# | LLVM:   https://packages.debian.org/forky/llvm                 21.1       |
+# | LLVM:   https://packages.debian.org/forky/llvm                 21.1.6       |
 # | GCC:    https://packages.debian.org/forky/gcc                  15.2.0     |
+# | GCC16:  https://ftp.gnu.org/gnu/gcc/gcc-16.1.0/                16.1.0    |
 # | Vulkan: https://packages.debian.org/forky/libvulkan-dev        1.4.341.0  |
-# | MESA:   https://packages.debian.org/forky/mesa-vulkan-drivers  26.0.3     |
+# | MESA:   https://packages.debian.org/forky/mesa-vulkan-drivers  26.0.6     |
 # |                                                                           |
 # |---------------------------------------------------------------------------|
 # |                                                                           |
@@ -42,6 +43,7 @@
 # +-----------------------------+
 # GCC: Because Debian Forky ships GCC 15.2.0 by default, our GCC compilation is disabled.
 #      We install GCC 15 from the distribution provided packages.
+#      Additionally, GCC 16.1.0 is compiled from source for access to the latest features.
 
 # +-----------------------------+
 # | GLOBAL ARGS                 |
@@ -53,15 +55,16 @@
 ARG DEBIAN_VERSION=14
 ARG DEBIAN_VERSION_NAME=forky
 ARG GCC_VERSION=15.2.0
+ARG GCC16_VERSION=16.1.0
 ARG LLVM_VERSION=22
-ARG VULKAN_VERSION=1.4.341.1
-ARG MESA_VERSION=26.0.3
+ARG VULKAN_VERSION=1.4.350.0
+ARG MESA_VERSION=26.0.6
 
 # +-----------------------------+
 # | Downloader                  |
 # +-----------------------------+
 # Download Stage is for caching:
-# - /tmp/gcc.xz
+# - /tmp/gcc16.xz
 # - /tmp/vulkansdk.xz
 # - /tmp/mesa.xz
 
@@ -69,6 +72,7 @@ FROM debian:forky-slim AS downloader
 
 # Reuse global arguments
 #ARG GCC_VERSION
+ARG GCC16_VERSION
 ARG VULKAN_VERSION
 #ARG MESA_VERSION
 
@@ -79,12 +83,13 @@ ENV DEBIAN_FRONTEND=noninteractive \
 WORKDIR /tmp
 RUN echo "Download Stage" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-    ca-certificates curl jq && \
+    ca-certificates curl && \
+    curl $CURL_OPTIONS -o gcc16.xz "http://ftp.gnu.org/gnu/gcc/gcc-${GCC16_VERSION}/gcc-${GCC16_VERSION}.tar.xz" && \
 #   curl $CURL_OPTIONS -o gcc.xz "http://ftp.gnu.org/gnu/gcc/gcc-15.2.0/gcc-15.2.0.tar.xz" && \
     curl $CURL_OPTIONS -o vulkansdk.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_VERSION}.tar.xz" && \
     #curl $CURL_OPTIONS -o mesa.xz "https://archive.mesa3d.org/mesa-${MESA_VERSION}.tar.xz" && \
-	# Cleanup
-	apt-get autoremove -y && \
+    # Cleanup
+    apt-get autoremove -y && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/* && \
     # List files in /tmp
@@ -103,6 +108,7 @@ FROM debian:forky-slim AS cpp-devbox-base
 ARG DEBIAN_VERSION
 ARG DEBIAN_VERSION_NAME
 ARG GCC_VERSION
+ARG GCC16_VERSION
 ARG LLVM_VERSION
 
 # +-----------------------------+
@@ -137,7 +143,7 @@ LABEL \
 
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NOWARNINGS="yes" \
-    CURL_OPTIONS="--silent --show-error --retry 5 --location"
+    CURL_OPTIONS="--silent --show-error --retry 5 --location --retry-all-errors --retry-delay 3 --retry-max-time 30 --fail"
 
 RUN echo "Packages" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
@@ -165,14 +171,10 @@ RUN echo "Packages" && \
     g++ gdb make ninja-build rsync zip sudo \
     # required by VCPKG
     openssh-server tar curl unzip pkg-config bash-completion \
-    # optional downloader for VCPKG
-    aria2 \
     # required by LLVM
     lsb-release zlib1g-dev \
     # locale
     locales \
-    # shell
-    zsh \
     # optional tools for Doxygen
     python3 python3-pip \
     python3-sphinx python3-sphinx-rtd-theme python3-defusedxml sphinx-common \
@@ -182,6 +184,15 @@ RUN echo "Packages" && \
     apt-get autoremove -y && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# +-----------------------------+
+# | UV (Python Package Manager) |
+# +-----------------------------+
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN echo "UV" && \
+    curl $CURL_OPTIONS --fail https://astral.sh/uv/install.sh | sh && \
+    ln -sf /root/.local/bin/uv /usr/local/bin/uv
 
 #
 # Add a non-root user to the container
@@ -207,7 +218,6 @@ ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "Create the user" && \
     groupadd --gid $USER_GID $USERNAME && \
     useradd --uid $USER_UID --gid $USER_GID -m $USERNAME && \
@@ -231,7 +241,7 @@ RUN echo "Create the user" && \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "GITHUB CLI" && \
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
+    curl $CURL_OPTIONS --fail https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
     chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
@@ -256,16 +266,16 @@ RUN echo "GITHUB CLI" && \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "CMake" && \
-    version="$(curl -s https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
+    version="$(curl $CURL_OPTIONS https://api.github.com/repos/Kitware/CMake/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
     url="https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version-linux-x86_64.sh"; echo "Download URL: \"$url\"" && \
     curl $CURL_OPTIONS -O $url && \
     mkdir /opt/cmake && \
     sh cmake-$version-linux-x86_64.sh --prefix=/opt/cmake --skip-license && \
-    ln -sF /opt/cmake/bin/cmake /usr/bin/cmake && \
-    ln -sF /opt/cmake/bin/ccmake /usr/bin/ccmake && \
-    ln -sF /opt/cmake/bin/cmake-gui /usr/bin/cmake-gui && \
-    ln -sF /opt/cmake/bin/cpack /usr/bin/cpack && \
-    ln -sF /opt/cmake/bin/ctest /usr/bin/ctest && \
+    ln -sf /opt/cmake/bin/cmake /usr/bin/cmake && \
+    ln -sf /opt/cmake/bin/ccmake /usr/bin/ccmake && \
+    ln -sf /opt/cmake/bin/cmake-gui /usr/bin/cmake-gui && \
+    ln -sf /opt/cmake/bin/cpack /usr/bin/cpack && \
+    ln -sf /opt/cmake/bin/ctest /usr/bin/ctest && \
     rm -rf cmake-$version-linux-x86_64.sh
 
 #
@@ -282,6 +292,8 @@ RUN echo "CMake" && \
 # vcpkg requires curl, unzip, tar, pkg-config (optional cmake).
 # We use the installed binaries from the system.
 # We do not download latest version of CMake and Ninja during vcpkg bootstrap.
+# vcpkg is intentionally not pinned to a specific commit, the pinning belongs
+# in the project using this container, not in the image itself.
 
 ENV VCPKG_ROOT=/opt/vcpkg \
     VCPKG_TRIPLET=x64-linux \
@@ -289,7 +301,6 @@ ENV VCPKG_ROOT=/opt/vcpkg \
     VCPKG_USE_SYSTEM_BINARIES=1
 ENV PATH="${PATH}:${VCPKG_ROOT}"
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "VCPKG" && \
     git clone --depth=1 --no-tags \
     -c core.eol=lf \
@@ -313,13 +324,13 @@ RUN echo "VCPKG" && \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "CCACHE" && \
-    version="$(curl -s https://api.github.com/repos/ccache/ccache/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
+    version="$(curl $CURL_OPTIONS https://api.github.com/repos/ccache/ccache/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
     url="https://github.com/ccache/ccache/releases/download/v$version/ccache-$version-linux-x86_64-glibc.tar.xz"; echo "Download URL: \"$url\"" && \
-    curl $CURL_OPTIONS -sLO $url && \
+    curl $CURL_OPTIONS -LO $url && \
     mkdir -p /opt/ccache/bin &&\
     tar xf ccache-$version-linux-x86_64-glibc.tar.xz --strip-components=1 -C /opt/ccache/bin && \
-	ln -s /opt/ccache/bin/ccache /usr/bin && \
-	rm ccache-$version-linux-x86_64-glibc.tar.xz
+    ln -s /opt/ccache/bin/ccache /usr/bin && \
+    rm ccache-$version-linux-x86_64-glibc.tar.xz
 
 #
 #  8888888b.   .d88888b.  Y88b   d88P Y88b   d88P  .d8888b.  8888888888 888b    888
@@ -336,10 +347,10 @@ RUN echo "CCACHE" && \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "DOXYGEN" && \
-    version_string="$(curl -s https://api.github.com/repos/doxygen/doxygen/releases/latest | jq -r '.tag_name')"; echo "Latest Version: \"$version_string\"" && \
+    version_string="$(curl $CURL_OPTIONS https://api.github.com/repos/doxygen/doxygen/releases/latest | jq -r '.tag_name')"; echo "Latest Version: \"$version_string\"" && \
     version_number="$(echo $version_string | cut -c 9- | sed 's/_/./g')" && \
     url="https://github.com/doxygen/doxygen/releases/download/$version_string/doxygen-$version_number.linux.bin.tar.gz"; echo "Download URL: \"$url\"" && \
-    curl $CURL_OPTIONS -sLO $url && \
+    curl $CURL_OPTIONS -LO $url && \
     mkdir /opt/doxygen && \
     tar xf doxygen-$version_number.linux.bin.tar.gz --strip-components=1 -C /opt/doxygen && \
     ln -s /opt/doxygen/bin/doxygen /usr/bin && \
@@ -366,7 +377,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "LLVM" && \
     if [ "$DEBIAN_VERSION_NAME" == "forky" ]; then DEBIAN_VERSION_NAME="unstable"; fi && \
     if [ "$DEBIAN_VERSION_NAME" == "unstable" ]; then LINKNAME=""; else LINKNAME="-$DEBIAN_VERSION_NAME"; fi && \
-    curl -s https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
+    curl $CURL_OPTIONS https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
     echo "deb http://apt.llvm.org/$DEBIAN_VERSION_NAME/ llvm-toolchain$LINKNAME-$LLVM_VERSION main" >> /etc/apt/sources.list.d/llvm.list && \
     echo "deb http://httpredir.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
@@ -432,6 +443,8 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 #  888       888  "Y88P"  888  "Y88888
 #
 
+# Mold is compiled from source with Clang to produce a glibc-linked binary,
+# ensuring ABI compatibility with LTO and LLVM plugins at runtime.
 # We are using Clang++ for compilation, so this download + compile step must happen after installing LLVM+Clang.
 # We don't need to call mold's ./install-build-deps.sh, because all build dependencies are present.
 # Note to overwrite ld: sudo ln -sf /opt/mold/bin/mold $(realpath /usr/bin/ld)
@@ -439,7 +452,7 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "MOLD" && \
-    version="$(curl -s https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
+    version="$(curl $CURL_OPTIONS https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
     git clone --branch "v$version" --single-branch --depth 1 --no-tags https://github.com/rui314/mold.git "/tmp/mold" && \
     cmake -S /tmp/mold -B /tmp/mold/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ && \
     cmake --build /tmp/mold/build -j "$(nproc)" && \
@@ -459,7 +472,7 @@ RUN echo "MOLD" && \
 #   "Y8888P88  "Y8888P"   "Y8888P"
 #
 
-RUN echo "GCC - Extract" && \
+RUN echo "GCC 14" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
     cpp-14 g++-14 && \
     # Cleanup
@@ -467,81 +480,68 @@ RUN echo "GCC - Extract" && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# COPY --from=downloader /tmp/gcc.xz /tmp/gcc.xz
-# RUN echo "GCC - Extract" && \
-#     tar xf /tmp/gcc.xz && rm /tmp/gcc.xz && \
-#     apt-get update && apt-get install --no-install-recommends --assume-yes \
-#     libmpfr-dev libgmp3-dev libmpc-dev
+COPY --from=downloader /tmp/gcc16.xz /tmp/gcc16.xz
+RUN echo "GCC 16 - Extract" && \
+    tar xf /tmp/gcc16.xz && rm /tmp/gcc16.xz && \
+    apt-get update && apt-get install --no-install-recommends --assume-yes \
+    libmpfr-dev libgmp3-dev libmpc-dev && \
+    echo "GCC 16 - Compile" && \
+    cd gcc-${GCC16_VERSION} && \
+    ./configure \
+    --libdir=/usr/lib \
+    --libexecdir=/usr/lib \
+    --prefix=/usr \
+    --program-suffix=-16 \
+    --build=x86_64-linux-gnu \
+    --host=x86_64-linux-gnu \
+    --target=x86_64-linux-gnu \
+    --disable-multilib \
+    --disable-libquadmath \
+    --disable-vtable-verify \
+    --disable-werror \
+    --enable-cet \
+    --enable-lto \
+    --enable-checking=release \
+    --enable-clocale=gnu \
+    --enable-default-pie \
+    --enable-gnu-unique-object \
+    --enable-languages=c,c++ \
+    --enable-libstdcxx-debug \
+    --enable-libstdcxx-time=yes \
+    --enable-linker-build-id \
+    --enable-nls \
+    --enable-multiarch \
+    --enable-plugin \
+    --enable-shared \
+    --enable-shared-libgcc \
+    --enable-static \
+    --enable-threads=posix \
+    --enable-libsanitizer \
+    --without-included-gettext \
+    --without-cuda-driver \
+    --with-arch-32=i686 \
+    --with-abi=m64 \
+    --with-tune=generic \
+    --with-default-libstdcxx-abi=new \
+    --with-gcc-major-version-only \
+    --with-system-zlib && \
+    make -s -j"$(nproc)" all-gcc > /dev/null 2>&1 && \
+    make -s -j"$(nproc)" all-target-libgcc > /dev/null 2>&1 && \
+    make -s -j"$(nproc)" all-target-libatomic > /dev/null 2>&1 && \
+    echo "GCC 16 - Copy libatomic to xgcc B-dir" && \
+    cp -a gcc/libatomic* host-x86_64-linux-gnu/gcc/ && \
+    make -s -j"$(nproc)" all-target-libsanitizer > /dev/null 2>&1 && \
+    make install-gcc && \
+    make install-target-libgcc && \
+    make install-target-libsanitizer && \
+    make install-target-libatomic && \
+    cd / && \
+    rm -rf gcc-${GCC16_VERSION} && \
+    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev && \
+    apt-get clean autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# set default compiler to gcc
-# ENV CC=/usr/bin/gcc \
-#     CXX=/usr/bin/g++
-
-# installing into /usr instead of /usr/local to have consistent paths in CMakePresets:
-# /usr/bin/g++-12
-# /usr/bin/g++-13
-# WORKDIR /gcc-14.2.0
-
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-# https://gcc.gnu.org/install/configure.html
-# RUN echo "GCC - Compile" && \
-#     ./configure \
-#     --libdir=/usr/lib \
-#     --libexecdir=/usr/lib \
-#     --prefix=/usr \
-#     --program-suffix=-14 \
-#     --build=x86_64-linux-gnu \
-#     --host=x86_64-linux-gnu \
-#     --target=x86_64-linux-gnu \
-#     --disable-multilib \
-#     --disable-libquadmath \
-#     --disable-vtable-verify \
-#     --disable-werror \
-#     --enable-cet \
-#     --enable-lto \
-#     --enable-checking=release \
-#     --enable-clocale=gnu \
-#     --enable-default-pie \
-#     --enable-gnu-unique-object \
-#     --enable-languages=c,c++ \
-#     --enable-libstdcxx-debug \
-#     --enable-libstdcxx-time=yes \
-#     --enable-linker-build-id \
-#     --enable-nls \
-#     --enable-multiarch \
-#     --enable-plugin \
-#     --enable-shared \
-#     --enable-shared-libgcc \
-#     --enable-static \
-#     --enable-threads=posix \
-#     --enable-libsanitizer \
-#     --without-included-gettext \
-#     --without-cuda-driver \
-#     --with-arch-32=i686 \
-#     --with-abi=m64 \
-#     --with-tune=generic \
-#     --with-default-libstdcxx-abi=new \
-#     --with-gcc-major-version-only \
-#     --with-system-zlib && \
-#     make -s -j"$(nproc)" all-gcc > /dev/null 2>&1 && \
-#     make -s -j"$(nproc)" all-target-libgcc > /dev/null 2>&1 && \
-#     make -s -j"$(nproc)" all-target-libsanitizer > /dev/null 2>&1 && \
-#     make -s -j"$(nproc)" all-target-libatomic > /dev/null 2>&1 && \
-#     make install-gcc && \
-#     make install-target-libgcc && \
-#     make install-target-libsanitizer && \
-#     make install-target-libatomic
-
-# return from /gcc-x.y.z folder
-#WORKDIR /
-
-# remove gcc source folder and dependencies
-#RUN echo "GCC - Cleanup" && \
-#    rm -rf gcc-14.2.0 && \
-#    apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev
-
-# reset default compiler to clang
+    # reset default compiler to clang
 ENV CC=/usr/bin/clang \
     CXX=/usr/bin/clang++
 
@@ -568,7 +568,7 @@ RUN echo "ZSH" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
     zsh fontconfig fonts-powerline && \
     # Install Oh My Zsh
-    curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
+    curl $CURL_OPTIONS --fail https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh && \
     # Add Zsh plugins
     git clone --depth=1 --no-tags https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
     git clone --depth=1 --no-tags https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions && \
@@ -580,8 +580,8 @@ RUN echo "ZSH" && \
       -e 's/^# *DISABLE_UPDATE_PROMPT="true"/DISABLE_UPDATE_PROMPT="true"/' \
       -e 's/^# *DISABLE_AUTO_UPDATE="true"/DISABLE_AUTO_UPDATE="true"/' \
     /root/.zshrc && \
-	# Cleanup
-	apt-get autoremove -y && \
+    # Cleanup
+    apt-get autoremove -y && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

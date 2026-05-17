@@ -30,6 +30,7 @@ show_tool_locations() {
   get_command_paths g++-13
   get_command_paths g++-14
   get_command_paths g++-15
+  get_command_paths g++-16
   get_command_paths clang++-16
   get_command_paths clang++-17
   get_command_paths clang++-18
@@ -37,6 +38,7 @@ show_tool_locations() {
   get_command_paths clang++-20
   get_command_paths clang++-21
   get_command_paths cmake
+  get_command_paths uv
   get_command_paths meson
   get_command_paths ninja
   get_command_paths ccache

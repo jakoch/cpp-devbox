@@ -82,6 +82,7 @@ show_tool_versions() {
     # Assign versions to variables
     clang_version=$(clang --version | head -n1 | awk '{print $4}')
     cmake_version=$(cmake --version | head -n1 | awk '{print $3}')
+    uv_version=$(uv --version | awk '{print $2}')
     meson_version=$(meson --version)
     ninja_version=$(ninja --version)
     ccache_version=$(ccache --version | head -n1 | awk '{print $3}')
@@ -122,6 +123,7 @@ show_tool_versions() {
     # Print each row of the table in Markdown format
     print_rows_gcc
     print_rows_clang
+    print_row "uv" "$uv_version"
     print_row "CMake" "$cmake_version"
     print_row "Meson" "$meson_version"
     print_row "Ninja" "$ninja_version"
