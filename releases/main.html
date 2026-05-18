@@ -1,0 +1,6198 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+  <meta charset="utf-8">
+  <title>
+  
+    main | cpp-devbox — Docker devcontainer for C/C++ development
+  
+  </title>
+  <link rel="stylesheet" href="/cpp-devbox/assets/css/main.css" />
+  <link rel="icon" href="/cpp-devbox/assets/images/logo.svg" />
+  
+</head>
+	<body>
+		<nav class="navbar">
+	<div class="container">
+	<a href="/cpp-devbox/" class="logo">
+		
+		<img src="/cpp-devbox/assets/images/logo.svg" alt="Project Logo"
+			style="height:2rem;vertical-align:middle;margin-right:0.5rem;">
+		cpp-devbox — Docker devcontainer for C/C++ development
+	</a>
+	<ul class="nav-links">
+		<li><a href="/cpp-devbox/">Home</a></li>
+		<li><a href="/cpp-devbox/releases/">Releases</a></li>
+		<li><a href="/cpp-devbox/cpp-quick-links">C++ Quick Links</a></li>
+		<li><a href="https://github.com/jakoch/cpp-devbox" target="_blank" rel="noopener">GitHub</a></li>
+		<li><a href="https://github.com/jakoch/cpp-devbox/issues" target="_blank" rel="noopener">Report Issue</a>
+		</li>
+	</ul>
+	</div>
+</nav>
+		<main class="main" aria-label="Content">
+			<!-- Display Release: version date latest_version_tag -->
+			
+			<h1>
+				Release: main
+				<span class="release-date">2026-05-18</span>
+				
+				  <span class="latest-tag" style="font-size:0.5em;">Latest</span>
+				
+			</h1>
+			<!-- Display old version notice -->
+			
+
+			<!-- Display Changelog -->
+			<h2>Changelog</h2>
+			<p><a href="https://github.com/jakoch/cpp-devbox/releases/tag/vmain">Changelog on GitHub</a>.</p>
+
+			<!-- Display TOC to browse to the image variants -->
+			<h2>Table of Contents</h2>
+			<nav class="toc-table">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>⭣ Version Tag &nbsp; | &nbsp; OS Version ⭢</strong></th>
+        <th>Debian vNext<br>SID<br>unstable</th>
+        <th>Debian 14<br>Forky<br>testing</th>
+        <th>Debian 13<br>Trixie<br>stable</th>
+        <th>Debian 12<br>Bookworm<br>oldstable</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Latest "base"</td>
+        <td><a href="#sid-base">sid-latest</a></td>
+        <td><a href="#forky-base">forky-latest</a></td>
+        <td><a href="#trixie-base">trixie-latest</a></td>
+        <td><a href="#bookworm-base">bookworm-latest</a></td>
+      </tr>
+      <tr>
+        <td>Latest "with-vulkansdk"</td>
+        <td><a href="#sid-with-vulkansdk">sid-with-vulkansdk-latest</a></td>
+        <td><a href="#forky-with-vulkansdk">forky-with-vulkansdk-latest</a></td>
+        <td><a href="#trixie-with-vulkansdk">trixie-with-vulkansdk-latest</a></td>
+        <td><a href="#bookworm-with-vulkansdk">bookworm-with-vulkansdk-latest</a></td>
+      </tr>
+    </tbody>
+  </table>
+</nav>
+
+
+			<!-- Display Available Images -->
+			<div class="images-header">
+				<h2>Available Images</h2>
+				<div class="filters">
+					<span class="select-os">
+						Select OS Version:
+						<span class="os-tabs">
+							<button class="os-tab" id="sid-tab" onclick="toggleOsVisibility('sid', event)">Debian vNext<br>SID<br>unstable</button>
+							<button class="os-tab" id="forky-tab" onclick="toggleOsVisibility('forky', event)">Debian 14<br>Forky<br>testing</button>
+							<button class="os-tab" id="trixie-tab" onclick="toggleOsVisibility('trixie', event)">Debian 13<br>Trixie<br>stable</button>
+							<button class="os-tab active" id="bookworm-tab" onclick="toggleOsVisibility('bookworm', event)">Debian 12<br>Bookworm<br>oldstable</button>
+						</span>
+					</span>
+					<span class="select-registry">
+						Select Container Registry:
+						<span class="registry-tabs">
+							<button class="registry-tab active" id="dockerhub-tab" onclick="toggleAllVisibility('dockerhub', event)">DockerHub</button>
+							<button class="registry-tab" id="ghcr-tab" onclick="toggleAllVisibility('ghcr', event)">GHCR</button>
+						</span>
+					</span>
+				</div>
+			</div>
+			<script>
+			function toggleAllVisibility(registry, event) {
+				// Toggle registry content visibility
+				var dockerhubElements = document.querySelectorAll('.dockerhub-content');
+				var ghcrElements = document.querySelectorAll('.ghcr-content');
+				if (registry === 'dockerhub') {
+				  dockerhubElements.forEach(function(el) { el.style.display = 'block'; });
+				  ghcrElements.forEach(function(el) { el.style.display = 'none'; });
+				} else if (registry === 'ghcr') {
+				  dockerhubElements.forEach(function(el) { el.style.display = 'none'; });
+				  ghcrElements.forEach(function(el) { el.style.display = 'block'; });
+				}
+				// Remove 'active' from all registry-tab buttons
+				var allTabs = document.querySelectorAll('.registry-tab');
+				allTabs.forEach(function(tab) { tab.classList.remove('active'); });
+				// Add 'active' to the clicked button
+				if (event && event.currentTarget) {
+				  event.currentTarget.classList.add('active');
+				}
+			}
+			function toggleOsVisibility(os, event) {
+				['bookworm', 'trixie', 'forky', 'sid'].forEach(function(o) {
+					var els = document.querySelectorAll('.os-' + o);
+					els.forEach(function(el) { el.style.display = (o === os) ? 'block' : 'none'; });
+				});
+				var allOsTabs = document.querySelectorAll('.os-tab');
+				allOsTabs.forEach(function(tab) { tab.classList.remove('active'); });
+				if (event && event.currentTarget) {
+					event.currentTarget.classList.add('active');
+				}
+			}
+			</script>
+
+			<div class="image-columns">
+				
+				<div class="image-column os-bookworm">
+					
+					<h2 id="bookworm-base">
+	bookworm-base
+</h2>
+
+<h3>Images</h3>
+<p class="image-info">
+  Please use one of the following commands to pull the image from the selected registry:
+</p>
+
+
+<div class="dockerhub-content registry-content" style="display: block;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://hub.docker.com/r/jakoch/cpp-devbox:bookworm-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<div class="ghcr-content registry-content" style="display: none;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://ghcr.io/jakoch/cpp-devbox:bookworm-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<script>
+  function toggleVisibility(showId, hideId) {
+    const showElement = document.getElementById(showId);
+    const hideElement = document.getElementById(hideId);
+    if (showElement && hideElement) {
+      showElement.style.display = 'block';
+      hideElement.style.display = 'none';
+    }
+  }
+  function copyCommand(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre.textContent.trim();
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+<h3>Included Software</h3>
+
+
+
+<div class="version-overview-table">
+	<table>
+		<thead>
+			<tr>
+				<th>Tool</th>
+				<th>Version</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- render _data/releases/main.json-->
+			
+			
+			<!-- render the tools for the given image os and variant -->
+			
+			<!-- each tool has a software name and a version -->
+			
+			
+			
+			<tr>
+				<td>GCC 12</td>
+				<td>12.2.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>GCC 13</td>
+				<td>13.4.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Clang 20</td>
+				<td>20.1.8</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>uv</td>
+				<td>0.11.14</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>CMake</td>
+				<td>4.3.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Meson</td>
+				<td>1.0.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Ninja</td>
+				<td>1.11.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>ccache</td>
+				<td>4.13.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>mold</td>
+				<td>2.41.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>vcpkg</td>
+				<td>2026-04-08-e0612b42</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>lldb</td>
+				<td>20.1.8</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Valgrind</td>
+				<td>3.19.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>cppcheck</td>
+				<td>2.10</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gprof</td>
+				<td>2.40</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>perf</td>
+				<td>6.1.172</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>strace</td>
+				<td>6.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>ltrace</td>
+				<td>version</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>lcov</td>
+				<td>1.16</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gcov</td>
+				<td>12.2.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gcovr</td>
+				<td>5.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>nasm</td>
+				<td>2.16.01</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>fasm</td>
+				<td>1.73.30</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Doxygen</td>
+				<td>1.17.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>sphinx</td>
+				<td>5.3.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>git</td>
+				<td>2.39.5</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gh cli</td>
+				<td>2.92.0</td>
+			</tr>
+			
+		</tbody>
+	</table>
+</div>
+					
+					<h2 id="bookworm-with-vulkansdk">
+	bookworm-with-vulkansdk
+</h2>
+
+<h3>Images</h3>
+<p class="image-info">
+  Please use one of the following commands to pull the image from the selected registry:
+</p>
+
+
+<div class="dockerhub-content registry-content" style="display: block;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://hub.docker.com/r/jakoch/cpp-devbox:bookworm-with-vulkansdk-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<div class="ghcr-content registry-content" style="display: none;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<script>
+  function toggleVisibility(showId, hideId) {
+    const showElement = document.getElementById(showId);
+    const hideElement = document.getElementById(hideId);
+    if (showElement && hideElement) {
+      showElement.style.display = 'block';
+      hideElement.style.display = 'none';
+    }
+  }
+  function copyCommand(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre.textContent.trim();
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+<h3>Included Software</h3>
+
+
+<p class="variant-info">
+  This variant includes all base tools plus the Vulkan SDK and Mesa for GPU-accelerated rendering.
+</p>
+
+
+<div class="version-overview-table">
+	<table>
+		<thead>
+			<tr>
+				<th>Tool</th>
+				<th>Version</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- render _data/releases/main.json-->
+			
+			
+			<!-- render the tools for the given image os and variant -->
+			
+			<!-- each tool has a software name and a version -->
+			
+			
+			
+			<tr>
+				<td>GCC 12</td>
+				<td>12.2.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>GCC 13</td>
+				<td>13.4.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Clang 20</td>
+				<td>20.1.8</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>uv</td>
+				<td>0.11.14</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>CMake</td>
+				<td>4.3.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Meson</td>
+				<td>1.0.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Ninja</td>
+				<td>1.11.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>ccache</td>
+				<td>4.13.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>mold</td>
+				<td>2.41.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>vcpkg</td>
+				<td>2026-04-08-e0612b42</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>lldb</td>
+				<td>20.1.8</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Valgrind</td>
+				<td>3.19.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>cppcheck</td>
+				<td>2.10</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gprof</td>
+				<td>2.40</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>perf</td>
+				<td>6.1.172</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>strace</td>
+				<td>6.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>ltrace</td>
+				<td>version</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>lcov</td>
+				<td>1.16</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gcov</td>
+				<td>12.2.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gcovr</td>
+				<td>5.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>nasm</td>
+				<td>2.16.01</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>fasm</td>
+				<td>1.73.30</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Doxygen</td>
+				<td>1.17.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>sphinx</td>
+				<td>5.3.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>git</td>
+				<td>2.39.5</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gh cli</td>
+				<td>2.92.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Mesa</td>
+				<td>22.3.6-1+deb12u1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Vulkan SDK</td>
+				<td>1.4.350.0</td>
+			</tr>
+			
+		</tbody>
+	</table>
+</div>
+					
+				</div>
+				
+				<div class="image-column os-trixie" style="display: none;">
+					
+					<h2 id="trixie-base">
+	trixie-base
+</h2>
+
+<h3>Images</h3>
+<p class="image-info">
+  Please use one of the following commands to pull the image from the selected registry:
+</p>
+
+
+<div class="dockerhub-content registry-content" style="display: block;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://hub.docker.com/r/jakoch/cpp-devbox:trixie-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<div class="ghcr-content registry-content" style="display: none;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://ghcr.io/jakoch/cpp-devbox:trixie-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<script>
+  function toggleVisibility(showId, hideId) {
+    const showElement = document.getElementById(showId);
+    const hideElement = document.getElementById(hideId);
+    if (showElement && hideElement) {
+      showElement.style.display = 'block';
+      hideElement.style.display = 'none';
+    }
+  }
+  function copyCommand(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre.textContent.trim();
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+<h3>Included Software</h3>
+
+
+
+<div class="version-overview-table">
+	<table>
+		<thead>
+			<tr>
+				<th>Tool</th>
+				<th>Version</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- render _data/releases/main.json-->
+			
+			
+			<!-- render the tools for the given image os and variant -->
+			
+			<!-- each tool has a software name and a version -->
+			
+			
+			
+			<tr>
+				<td>GCC 14</td>
+				<td>14.2.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>GCC 16</td>
+				<td>16.1.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Clang 22</td>
+				<td>22.1.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>uv</td>
+				<td>0.11.14</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>CMake</td>
+				<td>4.3.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Meson</td>
+				<td>1.7.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Ninja</td>
+				<td>1.12.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>ccache</td>
+				<td>4.13.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>mold</td>
+				<td>2.41.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>vcpkg</td>
+				<td>2026-04-08-e0612b42</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>lldb</td>
+				<td>22.1.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Valgrind</td>
+				<td>3.24.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>cppcheck</td>
+				<td>2.17.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gprof</td>
+				<td>2.44</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>perf</td>
+				<td>6.12.88</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>strace</td>
+				<td>6.13</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>ltrace</td>
+				<td>0.7.91</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>lcov</td>
+				<td>2.0-1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gcov</td>
+				<td>14.2.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gcovr</td>
+				<td>7.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>nasm</td>
+				<td>2.16.03</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>fasm</td>
+				<td>1.73.32</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Doxygen</td>
+				<td>1.17.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>sphinx</td>
+				<td>8.1.3</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>git</td>
+				<td>2.47.3</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gh cli</td>
+				<td>2.92.0</td>
+			</tr>
+			
+		</tbody>
+	</table>
+</div>
+					
+					<h2 id="trixie-with-vulkansdk">
+	trixie-with-vulkansdk
+</h2>
+
+<h3>Images</h3>
+<p class="image-info">
+  Please use one of the following commands to pull the image from the selected registry:
+</p>
+
+
+<div class="dockerhub-content registry-content" style="display: block;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://hub.docker.com/r/jakoch/cpp-devbox:trixie-with-vulkansdk-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<div class="ghcr-content registry-content" style="display: none;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<script>
+  function toggleVisibility(showId, hideId) {
+    const showElement = document.getElementById(showId);
+    const hideElement = document.getElementById(hideId);
+    if (showElement && hideElement) {
+      showElement.style.display = 'block';
+      hideElement.style.display = 'none';
+    }
+  }
+  function copyCommand(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre.textContent.trim();
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+<h3>Included Software</h3>
+
+
+<p class="variant-info">
+  This variant includes all base tools plus the Vulkan SDK and Mesa for GPU-accelerated rendering.
+</p>
+
+
+<div class="version-overview-table">
+	<table>
+		<thead>
+			<tr>
+				<th>Tool</th>
+				<th>Version</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- render _data/releases/main.json-->
+			
+			
+			<!-- render the tools for the given image os and variant -->
+			
+			<!-- each tool has a software name and a version -->
+			
+			
+			
+			<tr>
+				<td>GCC 14</td>
+				<td>14.2.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>GCC 16</td>
+				<td>16.1.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Clang 22</td>
+				<td>22.1.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>uv</td>
+				<td>0.11.14</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>CMake</td>
+				<td>4.3.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Meson</td>
+				<td>1.7.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Ninja</td>
+				<td>1.12.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>ccache</td>
+				<td>4.13.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>mold</td>
+				<td>2.41.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>vcpkg</td>
+				<td>2026-04-08-e0612b42</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>lldb</td>
+				<td>22.1.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Valgrind</td>
+				<td>3.24.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>cppcheck</td>
+				<td>2.17.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gprof</td>
+				<td>2.44</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>perf</td>
+				<td>6.12.88</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>strace</td>
+				<td>6.13</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>ltrace</td>
+				<td>0.7.91</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>lcov</td>
+				<td>2.0-1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gcov</td>
+				<td>14.2.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gcovr</td>
+				<td>7.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>nasm</td>
+				<td>2.16.03</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>fasm</td>
+				<td>1.73.32</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Doxygen</td>
+				<td>1.17.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>sphinx</td>
+				<td>8.1.3</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>git</td>
+				<td>2.47.3</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gh cli</td>
+				<td>2.92.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Mesa</td>
+				<td>25.0.7-2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Vulkan SDK</td>
+				<td>1.4.350.0</td>
+			</tr>
+			
+		</tbody>
+	</table>
+</div>
+					
+				</div>
+				
+				<div class="image-column os-forky" style="display: none;">
+					
+					<h2 id="forky-base">
+	forky-base
+</h2>
+
+<h3>Images</h3>
+<p class="image-info">
+  Please use one of the following commands to pull the image from the selected registry:
+</p>
+
+
+<div class="dockerhub-content registry-content" style="display: block;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://hub.docker.com/r/jakoch/cpp-devbox:forky-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<div class="ghcr-content registry-content" style="display: none;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://ghcr.io/jakoch/cpp-devbox:forky-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<script>
+  function toggleVisibility(showId, hideId) {
+    const showElement = document.getElementById(showId);
+    const hideElement = document.getElementById(hideId);
+    if (showElement && hideElement) {
+      showElement.style.display = 'block';
+      hideElement.style.display = 'none';
+    }
+  }
+  function copyCommand(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre.textContent.trim();
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+<h3>Included Software</h3>
+
+
+
+<div class="version-overview-table">
+	<table>
+		<thead>
+			<tr>
+				<th>Tool</th>
+				<th>Version</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- render _data/releases/main.json-->
+			
+			
+			<!-- render the tools for the given image os and variant -->
+			
+			<!-- each tool has a software name and a version -->
+			
+			
+			
+			<tr>
+				<td>GCC 14</td>
+				<td>14.3.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>GCC 15</td>
+				<td>15.2.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>GCC 16</td>
+				<td>16.1.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Clang 22</td>
+				<td>22.1.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>uv</td>
+				<td>0.11.14</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>CMake</td>
+				<td>4.3.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Meson</td>
+				<td>1.11.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Ninja</td>
+				<td>1.13.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>ccache</td>
+				<td>4.13.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>mold</td>
+				<td>2.41.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>vcpkg</td>
+				<td>2026-04-08-e0612b42</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>lldb</td>
+				<td>22.1.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Valgrind</td>
+				<td>3.25.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>cppcheck</td>
+				<td>2.20.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gprof</td>
+				<td>2.46</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>perf</td>
+				<td>7.0.7</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>strace</td>
+				<td>6.18</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>ltrace</td>
+				<td>0.7.91</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>lcov</td>
+				<td>2.0-1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gcov</td>
+				<td>15.2.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gcovr</td>
+				<td>7.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>nasm</td>
+				<td>3.01</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>fasm</td>
+				<td>1.73.35</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Doxygen</td>
+				<td>1.17.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>sphinx</td>
+				<td>9.1.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>git</td>
+				<td>2.53.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gh cli</td>
+				<td>2.92.0</td>
+			</tr>
+			
+		</tbody>
+	</table>
+</div>
+					
+					<h2 id="forky-with-vulkansdk">
+	forky-with-vulkansdk
+</h2>
+
+<h3>Images</h3>
+<p class="image-info">
+  Please use one of the following commands to pull the image from the selected registry:
+</p>
+
+
+<div class="dockerhub-content registry-content" style="display: block;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://hub.docker.com/r/jakoch/cpp-devbox:forky-with-vulkansdk-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<div class="ghcr-content registry-content" style="display: none;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://ghcr.io/jakoch/cpp-devbox:forky-with-vulkansdk-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<script>
+  function toggleVisibility(showId, hideId) {
+    const showElement = document.getElementById(showId);
+    const hideElement = document.getElementById(hideId);
+    if (showElement && hideElement) {
+      showElement.style.display = 'block';
+      hideElement.style.display = 'none';
+    }
+  }
+  function copyCommand(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre.textContent.trim();
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+<h3>Included Software</h3>
+
+
+<p class="variant-info">
+  This variant includes all base tools plus the Vulkan SDK and Mesa for GPU-accelerated rendering.
+</p>
+
+
+<div class="version-overview-table">
+	<table>
+		<thead>
+			<tr>
+				<th>Tool</th>
+				<th>Version</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- render _data/releases/main.json-->
+			
+			
+			<!-- render the tools for the given image os and variant -->
+			
+			<!-- each tool has a software name and a version -->
+			
+			
+			
+			<tr>
+				<td>GCC 14</td>
+				<td>14.3.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>GCC 15</td>
+				<td>15.2.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>GCC 16</td>
+				<td>16.1.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Clang 22</td>
+				<td>22.1.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>uv</td>
+				<td>0.11.14</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>CMake</td>
+				<td>4.3.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Meson</td>
+				<td>1.11.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Ninja</td>
+				<td>1.13.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>ccache</td>
+				<td>4.13.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>mold</td>
+				<td>2.41.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>vcpkg</td>
+				<td>2026-04-08-e0612b42</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>lldb</td>
+				<td>22.1.6</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Valgrind</td>
+				<td>3.25.1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>cppcheck</td>
+				<td>2.20.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gprof</td>
+				<td>2.46</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>perf</td>
+				<td>7.0.7</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>strace</td>
+				<td>6.18</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>ltrace</td>
+				<td>0.7.91</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>lcov</td>
+				<td>2.0-1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gcov</td>
+				<td>15.2.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gcovr</td>
+				<td>7.2</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>nasm</td>
+				<td>3.01</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>fasm</td>
+				<td>1.73.35</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Doxygen</td>
+				<td>1.17.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>sphinx</td>
+				<td>9.1.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>git</td>
+				<td>2.53.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>gh cli</td>
+				<td>2.92.0</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Mesa</td>
+				<td>26.0.6-1</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>Vulkan SDK</td>
+				<td>1.4.350.0</td>
+			</tr>
+			
+		</tbody>
+	</table>
+</div>
+					
+				</div>
+				
+				<div class="image-column os-sid" style="display: none;">
+					
+					<h2 id="sid-base">
+	sid-base
+</h2>
+
+<h3>Images</h3>
+<p class="image-info">
+  Please use one of the following commands to pull the image from the selected registry:
+</p>
+
+
+<div class="dockerhub-content registry-content" style="display: block;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://hub.docker.com/r/jakoch/cpp-devbox:sid-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<div class="ghcr-content registry-content" style="display: none;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://ghcr.io/jakoch/cpp-devbox:sid-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<script>
+  function toggleVisibility(showId, hideId) {
+    const showElement = document.getElementById(showId);
+    const hideElement = document.getElementById(hideId);
+    if (showElement && hideElement) {
+      showElement.style.display = 'block';
+      hideElement.style.display = 'none';
+    }
+  }
+  function copyCommand(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre.textContent.trim();
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+<h3>Included Software</h3>
+
+
+
+<div class="version-overview-table">
+	<table>
+		<thead>
+			<tr>
+				<th>Tool</th>
+				<th>Version</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- render _data/releases/main.json-->
+			
+			
+			<!-- render the tools for the given image os and variant -->
+			
+			<!-- each tool has a software name and a version -->
+			
+		</tbody>
+	</table>
+</div>
+					
+					<h2 id="sid-with-vulkansdk">
+	sid-with-vulkansdk
+</h2>
+
+<h3>Images</h3>
+<p class="image-info">
+  Please use one of the following commands to pull the image from the selected registry:
+</p>
+
+
+<div class="dockerhub-content registry-content" style="display: block;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://hub.docker.com/r/jakoch/cpp-devbox:sid-with-vulkansdk-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<div class="ghcr-content registry-content" style="display: none;">
+  <div class="copy-wrapper">
+    <pre class="copy-pasteable">
+      
+      docker pull https://ghcr.io/jakoch/cpp-devbox:sid-with-vulkansdk-main
+      
+    </pre>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+</div>
+<script>
+  function toggleVisibility(showId, hideId) {
+    const showElement = document.getElementById(showId);
+    const hideElement = document.getElementById(hideId);
+    if (showElement && hideElement) {
+      showElement.style.display = 'block';
+      hideElement.style.display = 'none';
+    }
+  }
+  function copyCommand(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre.textContent.trim();
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+<h3>Included Software</h3>
+
+
+<p class="variant-info">
+  This variant includes all base tools plus the Vulkan SDK and Mesa for GPU-accelerated rendering.
+</p>
+
+
+<div class="version-overview-table">
+	<table>
+		<thead>
+			<tr>
+				<th>Tool</th>
+				<th>Version</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- render _data/releases/main.json-->
+			
+			
+			<!-- render the tools for the given image os and variant -->
+			
+			<!-- each tool has a software name and a version -->
+			
+		</tbody>
+	</table>
+</div>
+					
+				</div>
+				
+			</div>
+
+			<h2>Version Comparison (with-vulkansdk)</h2>
+<p class="variant-info">
+  Side-by-side comparison of all tool versions across every Debian OS variant and with Vulkan SDK.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="version-comparison-table">
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Tool</th>
+          
+            
+            <th>Debian vNext<br>sid<br>unstable</th>
+          
+            
+            <th>Debian 14<br>forky<br>testing</th>
+          
+            
+            <th>Debian 13<br>trixie<br>stable</th>
+          
+            
+            <th>Debian 12<br>bookworm<br>oldstable</th>
+          
+        </tr>
+      </thead>
+      <tbody>
+        
+          
+          
+          <tr>
+            <td><strong>GCC 14</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+                  <td>14.3.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+                  <td>14.2.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+              
+                <td class="na">—</td>
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>GCC 15</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+                  <td>15.2.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+              
+                <td class="na">—</td>
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>GCC 16</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+                  <td>16.1.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+                  <td>16.1.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+              
+                <td class="na">—</td>
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>Clang 22</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>22.1.6</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+                  <td>22.1.6</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+              
+                <td class="na">—</td>
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>uv</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>0.11.14</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>0.11.14</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>0.11.14</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>CMake</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>4.3.2</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>4.3.2</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>4.3.2</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>Meson</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.11.1</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.7.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.0.1</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>Ninja</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.13.2</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.12.1</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.11.1</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>ccache</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>4.13.6</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>4.13.6</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>4.13.6</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>mold</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.41.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.41.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.41.0</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>vcpkg</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2026-04-08-e0612b42</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2026-04-08-e0612b42</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2026-04-08-e0612b42</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>lldb</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>22.1.6</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>22.1.6</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>20.1.8</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>Valgrind</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>3.25.1</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>3.24.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>3.19.0</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>cppcheck</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.20.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.17.1</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.10</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>gprof</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.46</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.44</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.40</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>perf</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>7.0.7</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>6.12.88</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>6.1.172</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>strace</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>6.18</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>6.13</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>6.1</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>ltrace</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>0.7.91</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>0.7.91</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>version</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>lcov</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.0-1</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.0-1</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.16</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>gcov</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>15.2.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>14.2.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>12.2.0</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>gcovr</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>7.2</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>7.2</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>5.2</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>nasm</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>3.01</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.16.03</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.16.01</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>fasm</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.73.35</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.73.32</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.73.30</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>Doxygen</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.17.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.17.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.17.0</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>sphinx</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>9.1.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>8.1.3</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>5.3.0</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>git</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.53.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.47.3</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.39.5</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>gh cli</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.92.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.92.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>2.92.0</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>Mesa</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>26.0.6-1</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>25.0.7-2</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>22.3.6-1+deb12u1</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>Vulkan SDK</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.4.350.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.4.350.0</td>
+                  
+                  
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <td>1.4.350.0</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>GCC 12</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+                  <td>12.2.0</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>GCC 13</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+                  <td>13.4.0</td>
+                  
+                  
+              
+            
+          </tr>
+        
+          
+          <tr>
+            <td><strong>Clang 20</strong></td>
+            
+              
+              
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+              
+                <td class="na">—</td>
+              
+            
+              
+              
+              
+                
+              
+                
+              
+                
+                  <td>20.1.8</td>
+                  
+                  
+              
+            
+          </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+		</main>
+		<footer class="footer">
+    <div class="container">
+        &copy; 2026
+		<a href="https://github.com/jakoch/cpp-devbox">cpp-devbox</a>
+        by <a href="https://github.com/jakoch">Jens A. Koch</a>.
+		All rights reserved.
+    </div>
+</footer>
+
+	</body>
+</html>

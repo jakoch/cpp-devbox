@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+  <meta charset="utf-8">
+  <title>
+  
+    cpp-devbox — Docker devcontainer for C/C++ development
+  
+  </title>
+  <link rel="stylesheet" href="/cpp-devbox/assets/css/main.css" />
+  <link rel="icon" href="/cpp-devbox/assets/images/logo.svg" />
+  
+</head>
+		<body>
+		<nav class="navbar">
+	<div class="container">
+	<a href="/cpp-devbox/" class="logo">
+		
+		<img src="/cpp-devbox/assets/images/logo.svg" alt="Project Logo"
+			style="height:2rem;vertical-align:middle;margin-right:0.5rem;">
+		cpp-devbox — Docker devcontainer for C/C++ development
+	</a>
+	<ul class="nav-links">
+		<li><a href="/cpp-devbox/">Home</a></li>
+		<li><a href="/cpp-devbox/releases/">Releases</a></li>
+		<li><a href="/cpp-devbox/cpp-quick-links">C++ Quick Links</a></li>
+		<li><a href="https://github.com/jakoch/cpp-devbox" target="_blank" rel="noopener">GitHub</a></li>
+		<li><a href="https://github.com/jakoch/cpp-devbox/issues" target="_blank" rel="noopener">Report Issue</a>
+		</li>
+	</ul>
+	</div>
+</nav>
+		<main class="main" aria-label="Content">
+			
+			<h1 style="margin-top:0;">jakoch/cpp-devbox</h1>
+			<p style="margin-top:0.5rem; color:#bdbdbd;">A Docker-based devcontainer for C++ development.</p>
+			
+			
+			
+			<div style="margin:1.5rem 0;">
+			  <strong>Latest Release:</strong>
+			  <span style="color:#fff;">vmain</span>
+			  <span style="color:#888; font-size:0.95em;">(2026-05-18)</span>
+			</div>
+			
+			
+			<h2 id="quick-start">Quick Start</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull ghcr.io/jakoch/cpp-devbox:bookworm-latest
+
+docker run <span class="nt">--rm</span> <span class="nt">-it</span> ghcr.io/jakoch/cpp-devbox:bookworm-latest
+</code></pre></div></div>
+
+<h2 id="features">Features</h2>
+
+<ul>
+  <li><strong>Compilers</strong>: GCC 12–16, Clang 16–22, full LLVM toolchain (clangd, clang-tidy, clang-format, lld, lldb, libc++, libomp, libfuzzer)</li>
+  <li><strong>Build systems</strong>: CMake, Meson, Ninja</li>
+  <li><strong>Package managers</strong>: vcpkg, uv (Python)</li>
+  <li><strong>Linker</strong>: mold (compiled from source with Clang)</li>
+  <li><strong>Caching</strong>: ccache</li>
+  <li><strong>Analysis</strong>: cppcheck, valgrind, gcovr, lcov</li>
+  <li><strong>Profiling &amp; tracing</strong>: perf, gprof, strace, ltrace</li>
+  <li><strong>Assemblers</strong>: nasm, fasm</li>
+  <li><strong>Documentation</strong>: Doxygen, Sphinx</li>
+  <li><strong>Utilities</strong>: zsh + ohmyzsh, git, gh CLI, hyperfine, ripgrep, fd, fzf, jq, nano</li>
+  <li><strong>with-vulkansdk variant adds</strong>: Vulkan SDK + Mesa (lavapipe)</li>
+</ul>
+
+<h1 id="releases">Releases</h1>
+
+<p>This is the list of Github Release tags.</p>
+
+<p>Each tag has container images on <a href="https://hub.docker.com/r/jakoch/cpp-devbox">DockerHub</a> and <a href="https://ghcr.io/jakoch/cpp-devbox">GHCR</a>.</p>
+
+<p>Each tag has a Debian version (12-bookworm, 13-trixie, 14-forky (testing), sid-unstable) and an image variant (base, with-vulkansdk).</p>
+
+<p>The “with-vulkansdk” image includes Vulkan SDK and Mesa on top of the “base”.</p>
+
+<p>Each release page provides:</p>
+<ul>
+  <li>an overview of the software versions included in the image variant,</li>
+  <li>a link to the changelog, and</li>
+  <li>copy-pasteable commands to pull the image from a registry.</li>
+</ul>
+
+<ul class="release-list">
+  
+  
+    <li>
+      <a href="/cpp-devbox/releases/main.html">vmain</a>
+	  <span class="release-date">(2026-05-18)</span>
+      
+        <span class="latest-tag">latest</span>
+      
+    </li>
+  
+    <li>
+      <a href="/cpp-devbox/releases/1.2.3.html">v1.2.3</a>
+	  <span class="release-date">(2025-07-31)</span>
+      
+    </li>
+  
+    <li>
+      <a href="/cpp-devbox/releases/1.2.2.html">v1.2.2</a>
+	  <span class="release-date">(2025-06-15)</span>
+      
+    </li>
+  
+</ul>
+
+<h2 id="registries">Registries</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Registry</th>
+      <th>URL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>GitHub Container Registry</td>
+      <td><a href="https://ghcr.io/jakoch/cpp-devbox">ghcr.io/jakoch/cpp-devbox</a></td>
+    </tr>
+    <tr>
+      <td>Docker Hub</td>
+      <td><a href="https://hub.docker.com/r/jakoch/cpp-devbox">jakoch/cpp-devbox</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="image-matrix">Image Matrix</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Debian Base</th>
+      <th>Version</th>
+      <th>Codename</th>
+      <th>Variants</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Unstable</td>
+      <td>sid</td>
+      <td>unstable</td>
+      <td>base, with-vulkansdk</td>
+    </tr>
+    <tr>
+      <td>Testing</td>
+      <td>14</td>
+      <td>forky</td>
+      <td>base, with-vulkansdk</td>
+    </tr>
+    <tr>
+      <td>Stable</td>
+      <td>13</td>
+      <td>trixie</td>
+      <td>base, with-vulkansdk</td>
+    </tr>
+    <tr>
+      <td>Oldstable</td>
+      <td>12</td>
+      <td>bookworm</td>
+      <td>base, with-vulkansdk</td>
+    </tr>
+  </tbody>
+</table>
+
+
+			
+
+			<div class="version-matrix">
+			<h2>Version Matrix</h2>
+			<div style="overflow-x:auto;">
+				<table>
+				<thead>
+					<tr>
+					<th>Debian OS</th>
+					<th>Image Variant</th>
+					<th>Tags</th>
+					<th>DockerHub</th>
+					<th>GHCR</th>
+					</tr>
+				</thead>
+				<tbody>
+					
+					
+					
+					
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">bookworm</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">bookworm-latest</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:bookworm-latest" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:bookworm-latest" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">bookworm</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">bookworm-1.2.3</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:bookworm-1.2.3" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:bookworm-1.2.3" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">bookworm</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">bookworm-1.2.2</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:bookworm-1.2.2" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:bookworm-1.2.2" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">bookworm</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">bookworm-20250731</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:bookworm-20250731" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:bookworm-20250731" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">bookworm</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">bookworm-20250615</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:bookworm-20250615" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:bookworm-20250615" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+					
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">bookworm</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">bookworm-with-vulkansdk-latest</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:bookworm-with-vulkansdk-latest" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-latest" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">bookworm</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">bookworm-with-vulkansdk-1.2.3</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:bookworm-with-vulkansdk-1.2.3" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-1.2.3" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">bookworm</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">bookworm-with-vulkansdk-1.2.2</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:bookworm-with-vulkansdk-1.2.2" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-1.2.2" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">bookworm</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">bookworm-with-vulkansdk-20250731</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:bookworm-with-vulkansdk-20250731" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-20250731" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">bookworm</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">bookworm-with-vulkansdk-20250615</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:bookworm-with-vulkansdk-20250615" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:bookworm-with-vulkansdk-20250615" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+					
+					
+					
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">trixie</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">trixie-latest</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:trixie-latest" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:trixie-latest" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">trixie</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">trixie-1.2.3</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:trixie-1.2.3" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:trixie-1.2.3" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">trixie</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">trixie-1.2.2</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:trixie-1.2.2" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:trixie-1.2.2" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">trixie</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">trixie-20250731</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:trixie-20250731" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:trixie-20250731" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">trixie</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">trixie-20250615</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:trixie-20250615" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:trixie-20250615" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+					
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">trixie</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">trixie-with-vulkansdk-latest</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:trixie-with-vulkansdk-latest" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-latest" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">trixie</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">trixie-with-vulkansdk-1.2.3</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:trixie-with-vulkansdk-1.2.3" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-1.2.3" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">trixie</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">trixie-with-vulkansdk-1.2.2</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:trixie-with-vulkansdk-1.2.2" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-1.2.2" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">trixie</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">trixie-with-vulkansdk-20250731</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:trixie-with-vulkansdk-20250731" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-20250731" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">trixie</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">trixie-with-vulkansdk-20250615</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:trixie-with-vulkansdk-20250615" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:trixie-with-vulkansdk-20250615" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+					
+					
+					
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">forky</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">forky-latest</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:forky-latest" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:forky-latest" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">forky</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">forky-1.2.3</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:forky-1.2.3" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:forky-1.2.3" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">forky</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">forky-1.2.2</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:forky-1.2.2" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:forky-1.2.2" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+					
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">forky</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">forky-with-vulkansdk-latest</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:forky-with-vulkansdk-latest" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:forky-with-vulkansdk-latest" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">forky</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">forky-with-vulkansdk-1.2.3</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:forky-with-vulkansdk-1.2.3" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:forky-with-vulkansdk-1.2.3" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+					
+					
+					
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">sid</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">unstable-latest</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:unstable-latest" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:unstable-latest" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">sid</td>
+						<td style="padding:0.5rem 1rem;">base</td>
+						<td style="padding:0.5rem 1rem;">unstable-1.2.3</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:unstable-1.2.3" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:unstable-1.2.3" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+					
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">sid</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">unstable-with-vulkansdk-latest</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:unstable-with-vulkansdk-latest" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:unstable-with-vulkansdk-latest" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+						<tr style="border-top:1px solid #23272e;">
+						<td style="padding:0.5rem 1rem;">sid</td>
+						<td style="padding:0.5rem 1rem;">with-vulkansdk</td>
+						<td style="padding:0.5rem 1rem;">unstable-with-vulkansdk-1.2.3</td>
+						<td style="padding:0.5rem 1rem;"><a href="https://hub.docker.com/r/jakoch/cpp-devbox:unstable-with-vulkansdk-1.2.3" style="color:#8ecae6;">DockerHub</a></td>
+						<td style="padding:0.5rem 1rem;"><a href="https://ghcr.io/jakoch/cpp-devbox:unstable-with-vulkansdk-1.2.3" style="color:#8ecae6;">GHCR</a></td>
+						</tr>
+						
+					
+					
+				</tbody>
+				</table>
+			</div>
+			</div>
+			
+		</main>
+		<footer class="footer">
+    <div class="container">
+        &copy; 2026
+		<a href="https://github.com/jakoch/cpp-devbox">cpp-devbox</a>
+        by <a href="https://github.com/jakoch">Jens A. Koch</a>.
+		All rights reserved.
+    </div>
+</footer>
+
+	</body>
+</html>
