@@ -4,9 +4,10 @@
 	<body>
 		{% include navbar.html %}
 		<main class="main" aria-label="Content">
+			<p style="margin-bottom:0.5rem;"><a href="{{ '/releases/' | relative_url }}" style="color:#8ecae6;">← Back to releases</a></p>
 			<!-- Display Release: version date latest_version_tag -->
 			{% assign latest_release = site.data['release-tags'] | first %}
-			<h1>
+			<h1 id="release-{{ page.version | replace: '.', '-' }}">
 				Release: {{ page.version }}
 				<span class="release-date">{{ page.date }}</span>
 				{% if page.version == latest_release.version %}
@@ -22,16 +23,16 @@
 			{% endif %}
 
 			<!-- Display Changelog -->
-			<h2>Changelog</h2>
-			<p><a href="https://github.com/jakoch/cpp-devbox/releases/tag/v{{ page.version }}">Changelog on GitHub</a>.</p>
+			<h2 id="changelog">Changelog</h2>
+			<p>View <a href="https://github.com/jakoch/cpp-devbox/blob/v{{ page.version }}/CHANGELOG.md">Changelog</a> on GitHub.</p>
 
 			<!-- Display TOC to browse to the image variants -->
-			<h2>Table of Contents</h2>
+			<h2 id="table-of-contents">Table of Contents</h2>
 			{% include toc.html version=page.version %}
 
 			<!-- Display Available Images -->
 			<div class="images-header">
-				<h2>Available Images</h2>
+				<h2 id="available-images">Available Images</h2>
 				<div class="filters">
 					<span class="select-os">
 						Select OS Version:
@@ -86,9 +87,15 @@
 
 			<div class="image-columns">
 				{% for image in site.data.images.images %}
-				<div class="image-column os-{{ image.debian }}"{% if image.debian != 'bookworm' %} style="display: none;"{% endif %}>
+				<div class="os-group os-{{ image.debian }}"{% if image.debian != 'bookworm' %} style="display: none;"{% endif %}>
 					{% for variant in image.variants %}
+					<div class="variant-column">
+					{% if variant.name == "with-vulkansdk" %}
+					{% include version-overview.html os=image.debian variant=variant.name show_diff_only=true %}
+					{% else %}
 					{% include version-overview.html os=image.debian variant=variant.name %}
+					{% endif %}
+					</div>
 					{% endfor %}
 				</div>
 				{% endfor %}

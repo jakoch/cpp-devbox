@@ -2,6 +2,8 @@
 layout: default
 ---
 
+cpp-devbox streamlines the setup of a complete C++ development stack in standardized and portable Docker containers. It provides compilers, build systems, debuggers, and analysis tools — optimized for modern C++ projects on Linux, VSCode devcontainers, and CI/CD pipelines.
+
 ## Quick Start
 
 ```bash
@@ -10,51 +12,55 @@ docker pull ghcr.io/jakoch/cpp-devbox:bookworm-latest
 docker run --rm -it ghcr.io/jakoch/cpp-devbox:bookworm-latest
 ```
 
-## Features
+## Technical Base and Images
 
-- **Compilers**: GCC 12–16, Clang 16–22, full LLVM toolchain (clangd, clang-tidy, clang-format, lld, lldb, libc++, libomp, libfuzzer)
-- **Build systems**: CMake, Meson, Ninja
-- **Package managers**: vcpkg, uv (Python)
-- **Linker**: mold (compiled from source with Clang)
-- **Caching**: ccache
-- **Analysis**: cppcheck, valgrind, gcovr, lcov
-- **Profiling & tracing**: perf, gprof, strace, ltrace
-- **Assemblers**: nasm, fasm
-- **Documentation**: Doxygen, Sphinx
-- **Utilities**: zsh + ohmyzsh, git, gh CLI, hyperfine, ripgrep, fd, fzf, jq, nano
-- **with-vulkansdk variant adds**: Vulkan SDK + Mesa (lavapipe)
+### Distributions
 
-# Releases
+This repository provides Dockerfiles for building container images based on Debian Linux.
 
-This is the list of Github Release tags.
+We offer images for:
 
-Each tag has container images on [DockerHub](https://hub.docker.com/r/jakoch/cpp-devbox) and [GHCR](https://ghcr.io/jakoch/cpp-devbox).
+- Debian 12 (Bookworm, oldstable),
+- Debian 13 (Trixie, stable),
+- Debian 14 (Forky, testing) and
+- Debian SID (unstable).
 
-Each tag has a Debian version (12-bookworm, 13-trixie, 14-forky (testing), sid-unstable) and an image variant (base, with-vulkansdk).
+### Container Images
 
-The "with-vulkansdk" image includes Vulkan SDK and Mesa on top of the "base".
+There are two main variants per distribution: one with the standard toolchain
+and one with an additional Vulkan SDK and Mesa for graphics development.
 
-Each release page provides:
- - an overview of the software versions included in the image variant,
- - a link to the changelog, and
- - copy-pasteable commands to pull the image from a registry.
+- **base:** Includes GCC and LLVM.
+- **with-vulkansdk:** Includes GCC, LLVM, and additionally the Vulkan SDK with Mesa.
 
-{% include releases-list.html %}
+### Image Matrix
 
-## Registries
+| Debian Base | Version | Codename | Variants             |
+|-------------|---------|----------|----------------------|
+| unstable    | sid     | unstable | base, with-vulkansdk |
+| testing     | 14      | forky    | base, with-vulkansdk |
+| stable      | 13      | trixie   | base, with-vulkansdk |
+| oldstable   | 12      | bookworm | base, with-vulkansdk |
+
+## Container Registries
+
+The images are automatically published to Github Container Registry (GHCR) and
+the Docker Hub (hub.docker.com) upon updates.
+
+For a complete list of C++ related tools, see [What is pre-installed?](#what-is-pre-installed).
 
 | Registry                  | URL                                                             |
 |---------------------------|-----------------------------------------------------------------|
 | GitHub Container Registry | [ghcr.io/jakoch/cpp-devbox](https://ghcr.io/jakoch/cpp-devbox)  |
 | Docker Hub                | [jakoch/cpp-devbox](https://hub.docker.com/r/jakoch/cpp-devbox) |
 
-## Image Matrix
+## What is pre-installed?
 
-| Debian Base | Version | Codename | Variants             |
-|-------------|---------|----------|----------------------|
-| Unstable    | sid     | unstable | base, with-vulkansdk |
-| Testing     | 14      | forky    | base, with-vulkansdk |
-| Stable      | 13      | trixie   | base, with-vulkansdk |
-| Oldstable   | 12      | bookworm | base, with-vulkansdk |
+The image includes GCC v12–v16, Clang v16–v22 (full LLVM toolchain), CMake, Meson, Ninja, vcpkg, mold, and many more. The **with-vulkansdk** variant additionally includes the Vulkan SDK and Mesa.
 
+See the [releases page](/releases/) for exact tool versions per release, or the [Version Comparison](/releases/#version-comparison) for a side-by-side view across Debian variants.
+
+## Usage
+
+For detailed setup instructions — including building locally, devcontainer configuration, CI/CD usage, and version pinning — see the [GitHub README](https://github.com/jakoch/cpp-devbox).
 

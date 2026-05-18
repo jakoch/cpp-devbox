@@ -2,7 +2,7 @@
 	{{ include.os | lowercase }}-{{ include.variant | lowercase }}
 </h2>
 
-<h3>Images</h3>
+<h3 id="{{ include.os }}-{{ include.variant }}-images">Images</h3>
 <p class="image-info">
   Please use one of the following commands to pull the image from the selected registry:
 </p>
@@ -55,7 +55,7 @@
   }
 </script>
 
-<h3>Included Software</h3>
+<h3 id="{{ include.os }}-{{ include.variant }}-software">Included Software</h3>
 
 {% if include.variant == "with-vulkansdk" %}
 <p class="variant-info">
@@ -77,12 +77,22 @@
 			{% assign version_data = site.data.releases[version_key] %}
 			<!-- render the tools for the given image os and variant -->
 			{% assign tools = version_data.images[include.os][include.variant] %}
+			{% if include.show_diff_only %}
+			{% assign filtered = "" | split: "" %}
+			{% for tp in tools %}
+			{% assign s = tp[0] %}
+			{% if s contains "Vulkan" or s contains "Mesa" %}
+			{% assign filtered = filtered | push: tp %}
+			{% endif %}
+			{% endfor %}
+			{% assign tools = filtered %}
+			{% endif %}
 			<!-- each tool has a software name and a version -->
 			{% for tool_pair in tools %}
 			{% assign software = tool_pair[0] %}
 			{% assign version = tool_pair[1] %}
 			<tr>
-				<td>{{ software }}</td>
+				<td>{% if software contains "GCC" or software contains "Clang" %}<strong>{{ software }}</strong>{% else %}{{ software }}{% endif %}</td>
 				<td>{{ version }}</td>
 			</tr>
 			{% endfor %}

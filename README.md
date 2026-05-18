@@ -7,39 +7,13 @@ A Docker-based development container for C/C++ development.
 It is designed especially for use with Visual Studio Code or any IDE
 that supports the devcontainer standard. The images can also be used in CI workflows.
 
+> **Quick Reference:** [Website](https://jakoch.github.io/cpp-devbox/) · [Releases & tool versions](https://jakoch.github.io/cpp-devbox/releases/) · [DockerHub](https://hub.docker.com/r/jakoch/cpp-devbox) · [GHCR](https://github.com/jakoch/cpp-devbox/pkgs/container/cpp-devbox)
+
 ## Purpose
 
 cpp-devbox streamlines the setup of a complete C++ development stack in standardized and portable containers. It is optimized for modern C++ projects on Linux, providing compilers and tools for debugging, testing, documentation, CI.
 
 The primary goal of these images is to enable a ready-to-use C++ development environment within Visual Studio Code using a [devcontainer configuration](https://github.com/jakoch/cpp-devbox#fetching-the-prebuilt-container-images-using-a-devcontainer-config).
-
-## Technical Base and Images
-
-### Distributions
-
-This repository provides Dockerfiles for building container images based on Debian Linux.
-
-We offer images for:
-
-- Debian 12 (Bookworm, oldstable),
-- Debian 13 (Trixie, stable),
-- Debian 14 (Forky, testing) and
-- Debian SID (unstable).
-
-## Container Images
-
-There are two main variants per distribution: one with the standard toolchain
-and one with an additional Vulkan SDK and Mesa for graphics development.
-
-- **base:** Includes GCC and LLVM.
-- **with-vulkansdk:** Includes GCC, LLVM, and additionally the Vulkan SDK with Mesa.
-
-## Container Registries
-
-The images are automatically published to Github Container Registry (GHCR) and
-the Docker Hub (hub.docker.com) upon updates.
-
-For a complete list of C++ related tools, see [What is pre-installed?](#what-is-pre-installed).
 
 ## Available Images
 
@@ -55,71 +29,15 @@ For a complete list of C++ related tools, see [What is pre-installed?](#what-is-
 | Latest | [bookworm-latest] <br> ![Latest Version of Bookworm](https://img.shields.io/docker/v/jakoch/cpp-devbox/bookworm-latest?label=Latest%20Version) <br> ![bookworm-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-latest&label=image+size) | [trixie-latest] <br> ![Latest Version of Trixie](https://img.shields.io/docker/v/jakoch/cpp-devbox/trixie-latest?label=Latest%20Version) <br> ![trixie-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-latest&label=image+size) | [forky-latest] <br> ![Latest Version of Forky](https://img.shields.io/docker/v/jakoch/cpp-devbox/forky-latest?label=Latest%20Version) <br> ![forky-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=forky-latest&label=image+size)
 | Latest "with-vulkansdk" | [bookworm-with-vulkansdk-latest] <br> ![Latest Version of Bookworm with VulkanSDK](https://img.shields.io/docker/v/jakoch/cpp-devbox/bookworm-with-vulkansdk-latest?label=Latest%20Version) <br> ![bookworm-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=bookworm-with-vulkansdk-latest&label=image+size) | [trixie-with-vulkansdk-latest] <br> ![Latest Version of Trixie with VulkanSDK](https://img.shields.io/docker/v/jakoch/cpp-devbox/trixie-with-vulkansdk-latest?label=Latest%20Version) <br> ![trixie-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=trixie-with-vulkansdk-latest&label=image+size) | [forky-with-vulkansdk-latest] <br> ![Latest Version of Forky with VulkanSDK](https://img.shields.io/docker/v/jakoch/cpp-devbox/forky-with-vulkansdk-latest?label=Latest%20Version) <br> ![forky-with-vulkansdk-latest](https://ghcr-badge.egpl.dev/jakoch/cpp-devbox/size?color=%2344cc11&tag=forky-with-vulkansdk-latest&label=image+size)
 
+Images are built on Debian Linux: **Bookworm** (12, oldstable), **Trixie** (13, stable), **Forky** (14, testing), and **SID** (unstable).
+
 You find the [versioning scheme for images below](#versioning-scheme-for-images).
 
 ## What is pre-installed?
 
-The image provides all essential C++ ecosystem tools for a complete development
-environment. Including shell & basic utilities, compilers, build systems,
-debugging tools, assemblers, package managers, documentation tools, and
-optional graphics SDKs.
+The image includes GCC v12–v16, Clang v16–v22 (full LLVM toolchain), CMake, Meson, Ninja, vcpkg, mold, and many more. The **with-vulkansdk** variant additionally includes the Vulkan SDK and Mesa.
 
-Here is a basic overview of the pre-installed tools.
-For details, please refer to the Dockerfiles.
-
-On top of the Debian base image the following tools are installed:
-
-- zsh with plugins: autosuggestions, completions, history substring search
-- nano, jq, ripgrep, fd, fzf
-- curl, wget
-- hyperfine
-- cppcheck, valgrind
-- lcov, gcov, gcovr
-- strace, ltrace
-- perf, gprof
-- nasm, fasm
-- meson
-- CMake (latest version)
-- ccache (latest version)
-- vcpkg (latest version)
-- mold (latest version)
-- Doxygen (latest version)
-- git, github cli
-
-The **with-vulkansdk** distributions additionally contain the Vulkan SDK and Mesa.
-
-### [Dockerfile for Debian 12 - Bookworm](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/12-bookworm/Dockerfile) (oldstable)
-
-The following C/C++ compilers and their toolchains are available:
-
-- LLVM 20.1.0
-- GCC 12.2.0
-- GCC 13.4.0
-
-### [Dockerfile for Debian 13 - Trixie](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/13-trixie/Dockerfile) (stable)
-
-The following C/C++ compilers and their toolchains are available:
-
-- LLVM 22.1.0
-- GCC 14.2.0
-
-### [Dockerfile for Debian 14 - Forky](https://github.com/jakoch/cpp-devbox/blob/main/.devcontainer/debian/14-forky/Dockerfile) (testing)
-
-The following C/C++ compilers and their toolchains are available:
-
-- LLVM 22.1.0
-- GCC 14.3.0
-- GCC 15.2.0
-
-### VulkanSDK
-
-The `with-vulkansdk` image variant additionally contains:
-
-- Vulkan SDK 1.4.321.1
-- Mesa 22.3.6 (bookworm), 24.2.8 (trixie), 24.2.8 (forky)
-  - (for software rendering with [LLVMpipe](https://docs.mesa3d.org/drivers/llvmpipe.html))
-
-[What is the latest version of VulkanSDK?](https://vulkan.lunarg.com/sdk/latest.json)
+See [jakoch.github.io/cpp-devbox/releases/](https://jakoch.github.io/cpp-devbox/releases/) for a detailed, version-specific breakdown of all included tools.
 
 ## Prerequisites
 

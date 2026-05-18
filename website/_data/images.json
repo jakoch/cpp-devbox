@@ -11,21 +11,13 @@
         {
           "name": "base",
           "tags": [
-            "bookworm-latest",
-            "bookworm-1.2.3",
-            "bookworm-1.2.2",
-            "bookworm-20250731",
-            "bookworm-20250615"
+            "bookworm-latest"
           ]
         },
         {
           "name": "with-vulkansdk",
           "tags": [
-            "bookworm-with-vulkansdk-latest",
-            "bookworm-with-vulkansdk-1.2.3",
-            "bookworm-with-vulkansdk-1.2.2",
-            "bookworm-with-vulkansdk-20250731",
-            "bookworm-with-vulkansdk-20250615"
+            "bookworm-with-vulkansdk-latest"
           ]
         }
       ]
@@ -37,21 +29,13 @@
         {
           "name": "base",
           "tags": [
-            "trixie-latest",
-            "trixie-1.2.3",
-            "trixie-1.2.2",
-            "trixie-20250731",
-            "trixie-20250615"
+            "trixie-latest"
           ]
         },
         {
           "name": "with-vulkansdk",
           "tags": [
-            "trixie-with-vulkansdk-latest",
-            "trixie-with-vulkansdk-1.2.3",
-            "trixie-with-vulkansdk-1.2.2",
-            "trixie-with-vulkansdk-20250731",
-            "trixie-with-vulkansdk-20250615"
+            "trixie-with-vulkansdk-latest"
           ]
         }
       ]
@@ -63,16 +47,13 @@
         {
           "name": "base",
           "tags": [
-            "forky-latest",
-            "forky-1.2.3",
-            "forky-1.2.2"
+            "forky-latest"
           ]
         },
         {
           "name": "with-vulkansdk",
           "tags": [
-            "forky-with-vulkansdk-latest",
-            "forky-with-vulkansdk-1.2.3"
+            "forky-with-vulkansdk-latest"
           ]
         }
       ]
@@ -84,15 +65,13 @@
         {
           "name": "base",
           "tags": [
-            "unstable-latest",
-            "unstable-1.2.3"
+            "unstable-latest"
           ]
         },
         {
           "name": "with-vulkansdk",
           "tags": [
-            "unstable-with-vulkansdk-latest",
-            "unstable-with-vulkansdk-1.2.3"
+            "unstable-with-vulkansdk-latest"
           ]
         }
       ]
