@@ -355,8 +355,7 @@ jobs:
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
 
     env:
-      JEKYLL_IMAGE: ghcr.io/jakoch/jekyll-devbox:20260517-sha-360a8e4
-      SRC_DIR: source
+      JEKYLL_IMAGE: ghcr.io/jakoch/jekyll-devbox:sha-360a8e4
       GH_PAGES_DIR: gh-pages
       ARTIFACTS_DIR: artifacts
 
@@ -365,7 +364,7 @@ jobs:
       - name: 🤘 Checkout cpp-devbox source (website + build-tools)
         uses: actions/checkout@v6
         with:
-          path: ${{ env.SRC_DIR }}
+          path: source
           fetch-depth: 1
 
       - name: 🔽 Download all version artifacts
@@ -373,22 +372,22 @@ jobs:
         with:
           pattern: version-info-*
           merge-multiple: true
-          path: ${{ env.SRC_DIR }}/${{ env.ARTIFACTS_DIR }}
+          path: source/${{ env.ARTIFACTS_DIR }}
 
       - name: 📊 Overlay version data into website/_data/
         run: |
-          chmod +x ${{ env.SRC_DIR }}/build-tools/build-release-data.sh
-          ${{ env.SRC_DIR }}/build-tools/build-release-data.sh \
+          chmod +x source/build-tools/build-release-data.sh
+          source/build-tools/build-release-data.sh \
             --version ${{ github.ref_name }} \
             --date $(date -u +%F) \
             --commit ${{ github.sha }} \
-            --input-dir ${{ env.SRC_DIR }}/${{ env.ARTIFACTS_DIR }} \
-            --data-dir ${{ env.SRC_DIR }}/website/_data
+            --input-dir source/${{ env.ARTIFACTS_DIR }} \
+            --data-dir source/website/_data
 
       - name: 🏗️ Build Jekyll site
         run: |
           docker run --rm \
-            -v ${{ github.workspace }}/${{ env.SRC_DIR }}/website:/workspace \
+            -v ${{ github.workspace }}/source/website:/workspace \
             ${{ env.JEKYLL_IMAGE }} \
             /bin/zsh -c "bundle install && bundle exec jekyll build"
 
@@ -402,7 +401,7 @@ jobs:
       - name: 📝 Copy built site to gh-pages
         run: |
           rm -rf ${{ env.GH_PAGES_DIR }}/*
-          cp -r ${{ env.SRC_DIR }}/website/_site/* ${{ env.GH_PAGES_DIR }}/
+          cp -r source/website/_site/* ${{ env.GH_PAGES_DIR }}/
           touch ${{ env.GH_PAGES_DIR }}/.nojekyll
 
       - name: ✔ Commit and push to gh-pages
