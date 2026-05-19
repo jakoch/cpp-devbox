@@ -27,6 +27,7 @@ Debian
 defusedxml
 DESTDIR
 devbox
+devcontainers
 dfsg
 distro
 DLLVM
@@ -49,6 +50,7 @@ Godbolt
 gprof
 graphviz
 hadolint
+healthcheck
 ikos
 isnt
 jakoch
