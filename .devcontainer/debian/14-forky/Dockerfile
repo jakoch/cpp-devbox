@@ -538,13 +538,16 @@ RUN echo "GCC 16 - Extract" && \
     make install-target-libgcc && \
     make install-target-libsanitizer && \
     make install-target-libatomic && \
+    echo "Make GCC 16's libstdc++ findable at runtime" && \
+    echo "/usr/lib64" > /etc/ld.so.conf.d/gcc-multilib.conf && \
+    ldconfig && \
     cd / && \
     rm -rf gcc-${GCC16_VERSION} && \
     apt-get autoremove -y libmpfr-dev libgmp3-dev libmpc-dev && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-    # reset default compiler to clang
+# reset default compiler to clang
 ENV CC=/usr/bin/clang \
     CXX=/usr/bin/clang++
 

@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+- add GCC 16's libstdc++ into ld config for gcc-multilib so that it's findable at runtime
+
 ## [1.0.18] - 2026-05-17
 
 **Added**
