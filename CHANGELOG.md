@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.19] - 2026-05-22
+
+**Changed**
+
+- publish website with image, release, and version comparison overviews to GitHub Pages
+- website: restructure version comparison table with proper group separators
+
+**Fixed**
+
 - add GCC 16's libstdc++ into ld config for gcc-multilib so that it's findable at runtime
 
 ## [1.0.18] - 2026-05-17
@@ -270,7 +279,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Section for Reference Links -->
 
-[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.18...HEAD
+[vNext]: https://github.com/jakoch/cpp-devbox/compare/v1.0.19...HEAD
+[1.0.19]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.19
 [1.0.18]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.18
 [1.0.17]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.17
 [1.0.16]: https://github.com/jakoch/cpp-devbox/releases/tag/v1.0.16
