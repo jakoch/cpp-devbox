@@ -445,8 +445,8 @@ tbody tr:hover {
   text-align: center;
 }
 
-.version-comparison-table tbody.bordered-group {
-  outline: 2px solid #555;
+.version-comparison-table tbody + tbody {
+  border-top: 2px solid #555;
 }
 
 /* ── Responsive ── */

@@ -25,17 +25,24 @@
 {% assign tool_names = all_tools | split: "||" %}
 
 {% comment %}
-  Sort tools: GCC first (by version), then Clang (by version), then everything else.
+  Sorting order:
+  GCC first (by version),
+  then Clang (by version),
+  then other tools,
+  then Mesa/Vulkan SDK last.
 {% endcomment %}
 {% assign gcc_tools = "" | split: "" %}
 {% assign clang_tools = "" | split: "" %}
 {% assign other_tools = "" | split: "" %}
+{% assign mesa_vulkan_tools = "" | split: "" %}
 {% for tool_name in tool_names %}
   {% if tool_name == "" %}{% continue %}{% endif %}
   {% if tool_name contains "GCC" %}
     {% assign gcc_tools = gcc_tools | push: tool_name %}
   {% elsif tool_name contains "Clang" %}
     {% assign clang_tools = clang_tools | push: tool_name %}
+  {% elsif tool_name == "Vulkan SDK" or tool_name == "Mesa" %}
+    {% assign mesa_vulkan_tools = mesa_vulkan_tools | push: tool_name %}
   {% else %}
     {% assign other_tools = other_tools | push: tool_name %}
   {% endif %}
@@ -43,7 +50,7 @@
 {% assign gcc_tools = gcc_tools | sort %}
 {% assign clang_tools = clang_tools | sort %}
 {% assign other_tools = other_tools | sort %}
-{% assign sorted_tools = gcc_tools | concat: clang_tools | concat: other_tools %}
+{% assign mesa_vulkan_tools = mesa_vulkan_tools | sort %}
 
 <div class="version-comparison-table">
   <div class="table-scroll">
@@ -57,18 +64,10 @@
           {% endfor %}
         </tr>
       </thead>
+
+      {% if gcc_tools.size > 0 %}
       <tbody>
-        {% assign bordered_open = false %}
-        {% for tool_name in sorted_tools %}
-          {% if tool_name == "" %}{% continue %}{% endif %}
-
-          {% if tool_name == "Vulkan SDK" or tool_name == "Mesa" %}
-            {% unless bordered_open %}
-              {% assign bordered_open = true %}
-              </tbody><tbody class="bordered-group">
-            {% endunless %}
-          {% endif %}
-
+        {% for tool_name in gcc_tools %}
           <tr>
             <td><strong>{{ tool_name }}</strong></td>
             {% for os in oses %}
@@ -86,13 +85,81 @@
               {% endunless %}
             {% endfor %}
           </tr>
-
-          {% if tool_name == "Mesa" %}
-            {% assign bordered_open = false %}
-            </tbody><tbody>
-          {% endif %}
         {% endfor %}
       </tbody>
+      {% endif %}
+
+      {% if clang_tools.size > 0 %}
+      <tbody>
+        {% for tool_name in clang_tools %}
+          <tr>
+            <td><strong>{{ tool_name }}</strong></td>
+            {% for os in oses %}
+              {% assign tools = version_data.images[os]["with-vulkansdk"] %}
+              {% assign found = false %}
+              {% for pair in tools %}
+                {% if pair[0] == tool_name %}
+                  <td>{{ pair[1] }}</td>
+                  {% assign found = true %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+              {% unless found %}
+                <td class="na">&nbsp;</td>
+              {% endunless %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+      {% endif %}
+
+      {% if other_tools.size > 0 %}
+      <tbody>
+        {% for tool_name in other_tools %}
+          <tr>
+            <td><strong>{{ tool_name }}</strong></td>
+            {% for os in oses %}
+              {% assign tools = version_data.images[os]["with-vulkansdk"] %}
+              {% assign found = false %}
+              {% for pair in tools %}
+                {% if pair[0] == tool_name %}
+                  <td>{{ pair[1] }}</td>
+                  {% assign found = true %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+              {% unless found %}
+                <td class="na">&nbsp;</td>
+              {% endunless %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+      {% endif %}
+
+      {% if mesa_vulkan_tools.size > 0 %}
+      <tbody>
+        {% for tool_name in mesa_vulkan_tools %}
+          <tr>
+            <td><strong>{{ tool_name }}</strong></td>
+            {% for os in oses %}
+              {% assign tools = version_data.images[os]["with-vulkansdk"] %}
+              {% assign found = false %}
+              {% for pair in tools %}
+                {% if pair[0] == tool_name %}
+                  <td>{{ pair[1] }}</td>
+                  {% assign found = true %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+              {% unless found %}
+                <td class="na">&nbsp;</td>
+              {% endunless %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+      {% endif %}
     </table>
   </div>
 </div>
