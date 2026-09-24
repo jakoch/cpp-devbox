@@ -21,10 +21,10 @@
 # |                                                                           |
 # | Package Versions                                            (os upstream) |
 # |                                                                           |
-# | LLVM:   https://packages.debian.org/sid/llvm                 21.1.6       |
-# | GCC:    https://packages.debian.org/sid/gcc                  15.2.0       |
-# | Vulkan: https://packages.debian.org/sid/libvulkan-dev        1.4.341.0    |
-# | MESA:   https://packages.debian.org/sid/mesa-vulkan-drivers  26.0.4       |
+# | LLVM:   https://packages.debian.org/sid/llvm                 21.1.8       |
+# | GCC:    https://packages.debian.org/sid/gcc                  16.1.0       |
+# | Vulkan: https://packages.debian.org/sid/libvulkan-dev        1.4.357.0    |
+# | MESA:   https://packages.debian.org/sid/mesa-vulkan-drivers  26.2.3       |
 # |                                                                           |
 # |---------------------------------------------------------------------------|
 # |                                                                           |
@@ -40,8 +40,8 @@
 # +-----------------------------+
 # | Versions Notes              |
 # +-----------------------------+
-# GCC: Because Debian SID ships GCC 15.2.0 by default, our GCC compilation is disabled.
-#      We install GCC 15 from the distribution provided packages.
+# GCC: Because Debian SID ships GCC 16.1.0 by default, our GCC-16 compilation is disabled.
+#      Additionally we install GCC 15 from the distribution provided packages.
 
 # +-----------------------------+
 # | GLOBAL ARGS                 |
@@ -52,10 +52,10 @@
 
 ARG DEBIAN_VERSION=sid
 ARG DEBIAN_VERSION_NAME=unstable
-ARG GCC_VERSION=15.2.0
+ARG GCC_VERSION=16.1.0
 ARG LLVM_VERSION=22
-ARG VULKAN_VERSION=1.4.350.0
-ARG MESA_VERSION=26.0.6
+ARG VULKAN_VERSION=1.4.357.0
+ARG MESA_VERSION=26.2.3
 
 # +-----------------------------+
 # | Downloader                  |
@@ -463,7 +463,7 @@ RUN echo "MOLD" && \
 
 RUN echo "GCC - Extract" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes \
-    cpp-14 g++-14 && \
+    cpp-15 g++-15 && \
     # Cleanup
     apt-get autoremove -y && \
     apt-get clean autoclean && \

@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [1.0.20] - 2026-09-24
+
+**Changed**
+
+- updated Vulkan SDK to v1.4.357.0 on Forky and Sid-Unstable images
+- updated Mesa to v26.2.3 on sid-unstable image and v26.1.6 on Forky image
+- updated GCC to v15 on sid-unstable image and v15.3.0 on Forky image
+
 ## [1.0.19] - 2026-05-22
 
 **Changed**

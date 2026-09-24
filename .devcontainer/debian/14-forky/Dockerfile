@@ -21,11 +21,12 @@
 # |                                                                           |
 # | Package Versions                                            (os upstream) |
 # |                                                                           |
-# | LLVM:   https://packages.debian.org/forky/llvm                 21.1.6       |
-# | GCC:    https://packages.debian.org/forky/gcc                  15.2.0     |
-# | GCC16:  https://ftp.gnu.org/gnu/gcc/gcc-16.1.0/                16.1.0    |
-# | Vulkan: https://packages.debian.org/forky/libvulkan-dev        1.4.341.0  |
-# | MESA:   https://packages.debian.org/forky/mesa-vulkan-drivers  26.0.6     |
+# | LLVM:   https://packages.debian.org/forky/llvm                 21.1.8     |
+# | GCC:    https://packages.debian.org/forky/gcc                  16.1.0     |
+# | GCC15:  https://packages.debian.org/forky/gcc-15               15.3.0     |
+# | GCC16:  https://ftp.gnu.org/gnu/gcc/gcc-16.2.0/                16.2.0     |
+# | Vulkan: https://packages.debian.org/forky/libvulkan-dev        1.4.357.0  |
+# | MESA:   https://packages.debian.org/forky/mesa-vulkan-drivers  26.1.6     |
 # |                                                                           |
 # |---------------------------------------------------------------------------|
 # |                                                                           |
@@ -41,9 +42,8 @@
 # +-----------------------------+
 # | Versions Notes              |
 # +-----------------------------+
-# GCC: Because Debian Forky ships GCC 15.2.0 by default, our GCC compilation is disabled.
+# GCC: Because Debian Forky ships GCC 16.1.0 by default, our GCC-16 compilation is disabled.
 #      We install GCC 15 from the distribution provided packages.
-#      Additionally, GCC 16.1.0 is compiled from source for access to the latest features.
 
 # +-----------------------------+
 # | GLOBAL ARGS                 |
@@ -54,11 +54,11 @@
 
 ARG DEBIAN_VERSION=14
 ARG DEBIAN_VERSION_NAME=forky
-ARG GCC_VERSION=15.2.0
-ARG GCC16_VERSION=16.1.0
+ARG GCC_VERSION=15.3.0
+ARG GCC16_VERSION=16.2.0
 ARG LLVM_VERSION=22
-ARG VULKAN_VERSION=1.4.350.0
-ARG MESA_VERSION=26.0.6
+ARG VULKAN_VERSION=1.4.357.0
+ARG MESA_VERSION=26.1.6
 
 # +-----------------------------+
 # | Downloader                  |
@@ -472,9 +472,18 @@ RUN echo "MOLD" && \
 #   "Y8888P88  "Y8888P"   "Y8888P"
 #
 
-RUN echo "GCC 14" && \
-    apt-get update && apt-get install --no-install-recommends --assume-yes \
-    cpp-14 g++-14 && \
+RUN echo "GCC 15" && \
+    apt-get update && apt-get install --no-install-recommends --assume-yes --allow-downgrades \
+    cpp-15=15.3.0-3 \
+    cpp-15-x86-64-linux-gnu=15.3.0-3 \
+    g++-15=15.3.0-3 \
+    g++-15-x86-64-linux-gnu=15.3.0-3 \
+    gcc-15=15.3.0-3 \
+    gcc-15-base=15.3.0-3 \
+    gcc-15-x86-64-linux-gnu=15.3.0-3 \
+    libgcc-15-dev=15.3.0-3 \
+    libobjc-15-dev=15.3.0-3 \
+    libstdc++-15-dev=15.3.0-3 && \
     # Cleanup
     apt-get autoremove -y && \
     apt-get clean autoclean && \

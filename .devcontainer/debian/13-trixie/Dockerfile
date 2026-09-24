@@ -23,7 +23,7 @@
 # |                                                                           |
 # | LLVM:   https://packages.debian.org/trixie/llvm                 19.0      |
 # | GCC:    https://packages.debian.org/trixie/gcc                  14.2.0    |
-# | GCC16:  https://ftp.gnu.org/gnu/gcc/gcc-16.1.0/                16.1.0    |
+# | GCC16:  https://ftp.gnu.org/gnu/gcc/gcc-16.1.0/                 16.1.0    |
 # | Vulkan: https://packages.debian.org/trixie/libvulkan-dev        1.4.309.0 |
 # | MESA:   https://packages.debian.org/trixie/mesa-vulkan-drivers  25.0.7    |
 # |                                                                           |
