@@ -4,11 +4,14 @@
     "ghcr": "https://ghcr.io/jakoch/cpp-devbox:"
   },
   "web_urls": {
-    "dockerhub": "https://hub.docker.com/layers/jakoch/cpp-devbox/"
+    "dockerhub": "https://hub.docker.com/layers/jakoch/cpp-devbox/",
+    "dockerhub_tags": "https://hub.docker.com/r/jakoch/cpp-devbox/tags",
+    "ghcr_tags": "https://github.com/jakoch/cpp-devbox/pkgs/container/cpp-devbox/tags"
   },
   "images": [
     {
       "debian": "bookworm",
+      "prefix": "bookworm",
       "version": "12",
       "variants": [
         {
@@ -27,6 +30,7 @@
     },
     {
       "debian": "trixie",
+      "prefix": "trixie",
       "version": "13",
       "variants": [
         {
@@ -45,6 +49,7 @@
     },
     {
       "debian": "forky",
+      "prefix": "forky",
       "version": "14",
       "variants": [
         {
@@ -63,6 +68,7 @@
     },
     {
       "debian": "sid",
+      "prefix": "unstable",
       "version": "sid",
       "variants": [
         {

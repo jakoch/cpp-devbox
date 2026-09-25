@@ -1,12 +1,103 @@
+{% comment %}
+  The rolling build of the default branch is listed first, it is the newest
+  thing that can be pulled. Below it are the versioned releases, which are built
+  from the git tags. The scheduled builds are no releases of their own, they are
+  listed separately at the bottom of the page.
+{% endcomment %}
+{% assign rolling = site.data['release-tags'] | where: "kind", "rolling" | first %}
+{% assign releases = site.data['release-tags'] | where: "kind", "release" %}
+{% assign latest = releases | first %}
+{% assign dockerhub_url = site.data.images.web_urls.dockerhub_tags %}
+{% assign ghcr_url = site.data.images.web_urls.ghcr_tags %}
+
+<h2 id="rolling-build">Rolling Build</h2>
+<p class="variant-info">
+  The images of the <code>main</code> branch are rebuilt every Sunday and
+  published under the floating <code>-latest</code> tags. Every one of those
+  builds is also tagged with its build date, see
+  <a href="#recent-builds">Recent Scheduled Builds</a>.
+</p>
+{% if rolling %}
 <ul class="release-list">
-  {% assign latest = site.data['release-tags'] | first %}
-  {% for release in site.data['release-tags'] %}
-    <li>
-      <a href="{{ '/releases/' | append: release.version | append: '.html' | relative_url }}">v{{ release.version }}</a>
-	  <span class="release-date">({{ release.date }})</span>
-      {% if release.version == latest.version %}
-        <span class="latest-tag">latest</span>
-      {% endif %}
-    </li>
+  <li>
+    <a href="{{ '/releases/' | append: rolling.version | append: '.html' | relative_url }}">Rolling ({{ rolling.version }})</a>
+    <span class="release-date">({{ rolling.date }})</span>
+    <span class="latest-tag">latest</span>
+  </li>
+</ul>
+{% endif %}
+
+<h2 id="releases">Releases</h2>
+{% if releases.size > 0 %}
+<ul class="release-list">
+  {% for release in releases %}
+  <li>
+    <a href="{{ '/releases/' | append: release.version | append: '.html' | relative_url }}">v{{ release.version }}</a>
+    <span class="release-date">({{ release.date }})</span>
+    {% if release.version == latest.version %}
+      <span class="latest-tag">newest release</span>
+    {% endif %}
+  </li>
   {% endfor %}
 </ul>
+{% else %}
+<p>No versioned release tags found.</p>
+{% endif %}
+
+{% comment %}
+  Scheduled builds: the images built from main on a schedule. Those get no
+  release page, only their image tags are listed.
+{% endcomment %}
+{% assign builds = site.data.builds %}
+{% if builds and builds.size > 0 %}
+<h2 id="recent-builds">Recent Scheduled Builds</h2>
+<p class="variant-info">
+  The release workflow builds all Debian variants from the <code>main</code>
+  branch every Sunday and tags the images with the build date. The full tag
+  history is listed on
+  <a href="{{ ghcr_url }}">GHCR</a> and
+  <a href="{{ dockerhub_url }}">DockerHub</a>.
+</p>
+<div class="builds-table">
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Build date</th>
+          {% for image in site.data.images.images %}
+          {% if image.version == "sid" %}
+          <th>Debian vNext<br>{{ image.debian }}<br>{{ image.prefix }}</th>
+          {% else %}
+          <th>Debian {{ image.version }}<br>{{ image.debian }}</th>
+          {% endif %}
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for build in builds %}
+        <tr>
+          <td>{{ build.date }}</td>
+          {% for image in site.data.images.images %}
+          {% assign tags = build.tags[image.prefix] %}
+          <td>
+            {% if tags.base %}
+            <a href="{{ dockerhub_url }}?name={{ tags.base | url_encode }}">{{ tags.base }}</a>
+            {% else %}
+            <span class="na">&mdash;</span>
+            {% endif %}
+            {% if tags['with-vulkansdk'] %}
+            <br>
+            <a href="{{ dockerhub_url }}?name={{ tags['with-vulkansdk'] | url_encode }}">{{ tags['with-vulkansdk'] }}</a>
+            {% endif %}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<p class="table-legend">
+  Upper tag: <strong>base</strong> &middot; lower tag: <strong>with-vulkansdk</strong>
+</p>
+{% endif %}

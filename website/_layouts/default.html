@@ -8,15 +8,22 @@
 			<h1 style="margin-top:0;">jakoch/cpp-devbox</h1>
 			<p style="margin-top:0.5rem; color:#bdbdbd;">{{ project.description }}</p>
 			{% assign release_tags = site.data['release-tags'] %}
-			{% assign latest = release_tags | first %}
+			{% assign rolling = release_tags | where: "kind", "rolling" | first %}
+			{% assign latest = release_tags | where: "kind", "release" | first %}
 			{% if latest and latest.version %}
 			<div style="margin:1.5rem 0;">
 			  <strong>Latest Release:</strong>
 			  <span style="color:#fff;">v{{ latest.version }}</span>
 			  <span style="color:#888; font-size:0.95em;">({{ latest.date }})</span>
+			  {% if rolling and rolling.version %}
+			  <br>
+			  <strong>Rolling Build:</strong>
+			  <span style="color:#fff;">{{ rolling.version }}</span>
+			  <span style="color:#888; font-size:0.95em;">({{ rolling.date }}, rebuilt every Sunday)</span>
+			  {% endif %}
 			</div>
 			{% endif %}
-			{% if page.version and page.version != latest.version %}
+			{% if page.version and latest and page.version != latest.version %}
 			<div style="margin:1rem 0; color:#ffb703; font-weight:bold;">
 			  This is an old version. The latest release is <a href="{{ '/releases/' | append: latest.version | append: '.html' | relative_url }}" style="color:#8ecae6;">v{{ latest.version }}</a>.
 			</div>
@@ -26,6 +33,11 @@
 
 			<div class="version-matrix">
 			<h2 id="version-matrix">Version Matrix</h2>
+			<p class="table-legend">
+				The floating tags below move to every new build. The dated tags of
+				the individual scheduled builds are listed on the
+				<a href="{{ '/releases/#recent-builds' | relative_url }}">releases page</a>.
+			</p>
 			<div style="overflow-x:auto;">
 				<table>
 				<thead>

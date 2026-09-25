@@ -1,10 +1,11 @@
+{% assign version_key = page.version | replace: '.', '_' %}
+{% assign version_data = site.data.releases[version_key] %}
+{% if version_data %}
 <h2 id="version-comparison">Version Comparison (with-vulkansdk)</h2>
 <p class="variant-info">
   Side-by-side comparison of all tool versions across every Debian OS variant and with Vulkan SDK.
 </p>
 
-{% assign version_key = page.version | replace: '.', '_' %}
-{% assign version_data = site.data.releases[version_key] %}
 {% assign oses = "sid,forky,trixie,bookworm" | split: "," %}
 {% assign os_labels = "Debian vNext SID unstable,Debian 14 Forky testing,Debian 13 Trixie stable,Debian 12 Bookworm oldstable" | split: "," %}
 
@@ -163,3 +164,8 @@
     </table>
   </div>
 </div>
+{% else %}
+{% comment %}
+  No version data for this release, the notice in the page header explains why.
+{% endcomment %}
+{% endif %}

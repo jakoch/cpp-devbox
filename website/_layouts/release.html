@@ -6,25 +6,55 @@
 		<main class="main" aria-label="Content">
 			<p style="margin-bottom:0.5rem;"><a href="{{ '/releases/' | relative_url }}" style="color:#8ecae6;">← Back to releases</a></p>
 			<!-- Display Release: version date latest_version_tag -->
-			{% assign latest_release = site.data['release-tags'] | first %}
+			{% assign rolling = site.data['release-tags'] | where: "kind", "rolling" | first %}
+			{% assign releases = site.data['release-tags'] | where: "kind", "release" %}
+			{% assign latest_release = releases | first %}
+			{% assign entry = site.data['release-tags'] | where: "version", page.version | first %}
+			{% assign is_rolling = false %}
+			{% if entry.kind == "rolling" %}{% assign is_rolling = true %}{% endif %}
 			<h1 id="release-{{ page.version | replace: '.', '-' }}">
-				Release: {{ page.version }}
+				{% if is_rolling %}Rolling Build:{% else %}Release:{% endif %} {{ page.version }}
 				<span class="release-date">{{ page.date }}</span>
-				{% if page.version == latest_release.version %}
-				  <span class="latest-tag" style="font-size:0.5em;">Latest</span>
+				{% if is_rolling %}
+				  <span class="latest-tag" style="font-size:0.5em;">latest</span>
+				{% elsif latest_release and page.version == latest_release.version %}
+				  <span class="latest-tag" style="font-size:0.5em;">Newest</span>
 				{% endif %}
 			</h1>
 			<!-- Display old version notice -->
-			{% if page.version and page.version != latest_release.version %}
+			{% unless is_rolling %}
+			{% if page.version and latest_release and page.version != latest_release.version %}
 			<p class="old-version-notice">
 				This is an old version. The latest release is <a href="{{ '/releases/' | append: latest_release.version | append: '.html' | relative_url }}">v{{
 					latest_release.version }}</a>.
 			</p>
 			{% endif %}
+			{% endunless %}
+			<!-- The software versions are only recorded for the build that published
+			     the release. The oldest releases predate the per-codename version
+			     tags, so their images are gone from the registries as well. -->
+			{% assign version_key = page.version | replace: '.', '_' %}
+			{% assign version_data = site.data.releases[version_key] %}
+			{% unless version_data %}
+			<p class="old-version-notice">
+				{% if is_rolling %}
+					The software versions of this build were not recorded. Its images
+					are published under the <code>-latest</code> tags.
+				{% elsif entry.tags == false %}
+					The software versions of this release were not recorded and its
+					images are no longer published. The pull commands below show the
+					tag naming scheme this release used.
+				{% else %}
+					The software versions of this release were not recorded. Its images
+					are published under the <code>{{ page.version }}</code> tags, the
+					pull commands below show how to get them.
+				{% endif %}
+			</p>
+			{% endunless %}
 
 			<!-- Display Changelog -->
-			{% if page.version == "main" %}
-			{% assign changelog_ref = "main" %}
+			{% if is_rolling %}
+			{% assign changelog_ref = entry.version %}
 			{% else %}
 			{% assign changelog_ref = page.version | prepend: "v" %}
 			{% endif %}
@@ -96,9 +126,9 @@
 					{% for variant in image.variants %}
 					<div class="variant-column">
 					{% if variant.name == "with-vulkansdk" %}
-					{% include version-overview.html os=image.debian variant=variant.name show_diff_only=true %}
+					{% include version-overview.html os=image.debian variant=variant.name show_diff_only=true has_data=version_data %}
 					{% else %}
-					{% include version-overview.html os=image.debian variant=variant.name %}
+					{% include version-overview.html os=image.debian variant=variant.name has_data=version_data %}
 					{% endif %}
 					</div>
 					{% endfor %}

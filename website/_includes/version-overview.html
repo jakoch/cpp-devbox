@@ -55,6 +55,12 @@
   }
 </script>
 
+{% comment %}
+  The software versions are only known for the build that created this release.
+  include.has_data is false for older releases, which then only show the pull
+  commands.
+{% endcomment %}
+{% if include.has_data %}
 <h3 id="{{ include.os }}-{{ include.variant }}-software">Included Software</h3>
 
 {% if include.variant == "with-vulkansdk" %}
@@ -99,3 +105,4 @@
 		</tbody>
 	</table>
 </div>
+{% endif %}

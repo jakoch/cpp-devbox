@@ -271,6 +271,27 @@ jobs:
           docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"
           docker images --digests
 
+      # The tags the metadata action generated are the tags that got pushed.
+      # The docs job uses them to list the scheduled builds of this run, even
+      # before the registries report them.
+      - name: 🏷️ Record published image tags
+        env:
+          BASE_TAGS: ${{ steps.metadata-base.outputs.tags }}
+          VULKANSDK_TAGS: ${{ steps.metadata-base-with-vulkansdk.outputs.tags }}
+        run: |
+          jq -n \
+            --arg date "$(date -u +%F)" \
+            --arg ref "${{ github.ref_name }}" \
+            --arg codename "${{ matrix.config.debian_codename }}" \
+            --arg base "$BASE_TAGS" \
+            --arg vulkan "$VULKANSDK_TAGS" \
+            'def tag_names: split("\n") | map(select(length > 0) | split(":") | last) | unique;
+             { date: $date, ref: $ref, codename: $codename,
+               base: ($base | tag_names),
+               "with-vulkansdk": ($vulkan | tag_names) }' \
+            > build-tags-${{ matrix.config.debian_codename }}.json
+          cat build-tags-${{ matrix.config.debian_codename }}.json
+
       - name: Test Docker Image (base)
         run: |
           docker run --rm -v "${PWD}/devbox-test:/src" -w /src ghcr.io/jakoch/cpp-devbox:${{ matrix.config.debian_codename }}-latest zsh -c "./build.sh"
@@ -285,6 +306,7 @@ jobs:
           name: version-info-${{ matrix.config.debian_codename }}
           path: |
             info-${{ matrix.config.debian_codename }}.json
+            build-tags-${{ matrix.config.debian_codename }}.json
             versions-${{ matrix.config.debian_codename }}.json
             versions-${{ matrix.config.debian_codename }}-base.json
             versions-${{ matrix.config.debian_codename }}-with-vulkan.json
@@ -365,6 +387,15 @@ jobs:
         uses: actions/checkout@v7
         with:
           path: source
+          # the list of releases is built from the git tags, so the tags are
+          # needed as well
+          fetch-depth: 0
+
+      - name: 🤘 Checkout gh-pages branch
+        uses: actions/checkout@v7
+        with:
+          ref: gh-pages
+          path: ${{ env.GH_PAGES_DIR }}
           fetch-depth: 1
 
       - name: 🔽 Download all version artifacts
@@ -376,7 +407,7 @@ jobs:
 
       - name: 📊 Overlay version data into website/_data/
         run: |
-          chmod +x source/build-tools/build-release-data.sh
+          chmod +x source/build-tools/*.sh
           source/build-tools/build-release-data.sh \
             --version ${{ github.ref_name }} \
             --date $(date -u +%F) \
@@ -384,19 +415,33 @@ jobs:
             --input-dir source/${{ env.ARTIFACTS_DIR }} \
             --data-dir source/website/_data
 
+      - name: 📅 Collect the scheduled image builds
+        run: |
+          source/build-tools/build-builds-data.sh \
+            --data-dir source/website/_data \
+            --input-dir source/${{ env.ARTIFACTS_DIR }} \
+            --fallback ${{ env.GH_PAGES_DIR }}/builds.json
+
+      - name: 🏷️ Build the release list from the git tags
+        run: |
+          source/build-tools/build-release-tags.sh \
+            --data-dir source/website/_data \
+            --repo-dir source \
+            --ref-name ${{ github.ref_name }} \
+            --ref-type ${{ github.ref_type }} \
+            --date $(date -u +%F) \
+            --commit ${{ github.sha }} \
+            --tags-file source/website/_data/registry-tags.json
+
       - name: 🏗️ Build Jekyll site
         run: |
           docker run --rm \
             -v ${{ github.workspace }}/source/website:/workspace \
             ${{ env.JEKYLL_IMAGE }} \
             /bin/zsh -c "bundle install && bundle exec jekyll build"
-
-      - name: 🤘 Checkout gh-pages branch
-        uses: actions/checkout@v7
-        with:
-          ref: gh-pages
-          path: ${{ env.GH_PAGES_DIR }}
-          fetch-depth: 1
+          # publish the build list as a machine readable feed, the next publish
+          # uses it as fallback when the DockerHub API is unavailable
+          cp source/website/_data/builds.json source/website/_site/builds.json
 
       - name: 📝 Copy built site to gh-pages
         run: |

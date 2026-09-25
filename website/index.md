@@ -58,7 +58,8 @@ For a complete list of C++ related tools, see [What is pre-installed?](#what-is-
 
 The image includes GCC v12–v16, Clang v16–v22 (full LLVM toolchain), CMake, Meson, Ninja, vcpkg, mold, and many more. The **with-vulkansdk** variant additionally includes the Vulkan SDK and Mesa.
 
-{% assign latest_release = site.data['release-tags'] | first %}
+{% assign latest_release = site.data['release-tags'] | where: "kind", "rolling" | first %}
+{% unless latest_release %}{% assign latest_release = site.data['release-tags'] | first %}{% endunless %}
 See the [releases page]({{ '/releases/' | relative_url }}) for exact tool versions per release{% if latest_release.version %}, or the [Version Comparison]({{ '/releases/' | append: latest_release.version | append: '.html#version-comparison' | relative_url }}) for a side-by-side view across Debian variants{% endif %}.
 
 ## Usage

@@ -14,8 +14,8 @@ Steps:
   1. Merge into _data/releases/<version_sanitized>.json
      { images: { bookworm: { base: [...], "with-vulkansdk": [...] }, ... } }
 
-  2. Prepend a new entry to _data/release-tags.json
-     [{ "version": "...", "date": "...", "git-sha": "..." }, ...]
+The list of releases in _data/release-tags.json is written by
+build-release-tags.sh, which reads the git tags.
 
 Input JSON format (per file):
   { "version": "v1.2.3", "codename": "bookworm", "debian_version": "12",
@@ -96,24 +96,5 @@ jq -n \
   > "$RELEASE_FILE"
 
 echo "  Written: $RELEASE_FILE"
-
-# ---------------------------------------------------------------------------
-# Step 2: Update release-tags.json (prepend new entry)
-# ---------------------------------------------------------------------------
-TAGS_FILE="$DATA_DIR/release-tags.json"
-
-if [[ ! -f "$TAGS_FILE" ]]; then
-  echo "[]" > "$TAGS_FILE"
-fi
-
-jq \
-  --arg version "$STRIP_V" \
-  --arg date "$DATE" \
-  --arg sha "$COMMIT" \
-  '[{version: $version, date: $date, "git-sha": $sha}] + .' \
-  "$TAGS_FILE" > "${TAGS_FILE}.tmp"
-
-mv "${TAGS_FILE}.tmp" "$TAGS_FILE"
-echo "  Updated: $TAGS_FILE"
 
 echo "=== Done ==="
