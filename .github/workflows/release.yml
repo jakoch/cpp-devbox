@@ -439,14 +439,16 @@ jobs:
             -v ${{ github.workspace }}/source/website:/workspace \
             ${{ env.JEKYLL_IMAGE }} \
             /bin/zsh -c "bundle install && bundle exec jekyll build"
-          # publish the build list as a machine readable feed, the next publish
-          # uses it as fallback when the DockerHub API is unavailable
-          cp source/website/_data/builds.json source/website/_site/builds.json
 
       - name: 📝 Copy built site to gh-pages
         run: |
           rm -rf ${{ env.GH_PAGES_DIR }}/*
           cp -r source/website/_site/* ${{ env.GH_PAGES_DIR }}/
+          # the build list is also published as a machine readable feed, the next
+          # publish uses it as fallback when the DockerHub API is unavailable
+          # (it must not be written into _site, that is owned by the root user of
+          # the jekyll image)
+          cp source/website/_data/builds.json ${{ env.GH_PAGES_DIR }}/builds.json
           touch ${{ env.GH_PAGES_DIR }}/.nojekyll
 
       - name: ✔ Commit and push to gh-pages
