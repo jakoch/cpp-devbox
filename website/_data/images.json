@@ -3,6 +3,9 @@
     "dockerhub": "https://hub.docker.com/r/jakoch/cpp-devbox:",
     "ghcr": "https://ghcr.io/jakoch/cpp-devbox:"
   },
+  "web_urls": {
+    "dockerhub": "https://hub.docker.com/layers/jakoch/cpp-devbox/"
+  },
   "images": [
     {
       "debian": "bookworm",

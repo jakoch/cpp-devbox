@@ -355,7 +355,7 @@ jobs:
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
 
     env:
-      JEKYLL_IMAGE: ghcr.io/jakoch/jekyll-devbox:sha-360a8e4
+      JEKYLL_IMAGE: ghcr.io/jakoch/jekyll-devbox:20260906-sha-deee15e
       GH_PAGES_DIR: gh-pages
       ARTIFACTS_DIR: artifacts
 

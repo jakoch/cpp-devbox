@@ -38,7 +38,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{% assign dockerhub_base = site.data.images.base_urls.dockerhub %}
+					{% assign dockerhub_base = site.data.images.web_urls.dockerhub %}
 					{% assign ghcr_base = site.data.images.base_urls.ghcr %}
 					{% for v in site.data.images.images %}
 					{% for variant in v.variants %}
