@@ -176,9 +176,10 @@ tbody tr:hover {
 /* ── Version overview table ── */
 .version-overview-table {
   margin: 1rem 0;
+  overflow-x: auto;
 }
 .version-overview-table table {
-  width: 25%;
+  width: 100%;
   background: #202226;
   color: #e0e0e0;
 }
@@ -188,14 +189,15 @@ tbody tr:hover {
 .version-overview-table table thead tr th {
   padding: 0.5rem 1rem;
   text-align: left;
-  width: 50%;
 }
 .version-overview-table table tbody tr td {
   padding: 0.5rem 1rem;
-  width: 50%;
 }
 .version-overview-table table tbody tr td a {
   color: #8ecae6;
+}
+.version-overview-table th, .version-overview-table td {
+  white-space: nowrap;
 }
 
 /* ── Version matrix ── */
@@ -413,13 +415,48 @@ tbody tr:hover {
   border-top: 2px solid #555;
 }
 
+/* ── Scheduled builds table ── */
+.builds-table {
+  margin: 1rem 0;
+}
+
+.builds-table table {
+  width: 100%;
+  background: #202226;
+  color: #e0e0e0;
+  font-size: 0.85rem;
+}
+
+.builds-table thead tr {
+  background: #23272e;
+}
+
+.builds-table th,
+.builds-table td {
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.builds-table td:first-child {
+  font-weight: 600;
+}
+
+.builds-table .na {
+  color: #555;
+  text-align: center;
+}
+
+.table-legend {
+  color: #888;
+  font-size: 0.9em;
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .image-column {
     flex: 1 1 100%;
-  }
-  .version-overview-table table {
-    width: 100%;
   }
   .toc-table table {
     font-size: 0.85rem;

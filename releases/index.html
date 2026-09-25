@@ -37,47 +37,817 @@
 			
 			
 			
+			
 			<div style="margin:1.5rem 0;">
 			  <strong>Latest Release:</strong>
-			  <span style="color:#fff;">vmain</span>
-			  <span style="color:#888; font-size:0.95em;">(2026-09-25)</span>
+			  <span style="color:#fff;">v1.0.19</span>
+			  <span style="color:#888; font-size:0.95em;">(2026-05-22)</span>
+			  
+			  <br>
+			  <strong>Rolling Build:</strong>
+			  <span style="color:#fff;">main</span>
+			  <span style="color:#888; font-size:0.95em;">(2026-09-25, rebuilt every Sunday)</span>
+			  
 			</div>
 			
 			
 			<h1 id="releases">Releases</h1>
 
-<p>This is the list of Github Release tags.</p>
+<p>cpp-devbox publishes two kinds of builds to
+<a href="https://hub.docker.com/r/jakoch/cpp-devbox">DockerHub</a> and
+<a href="https://ghcr.io/jakoch/cpp-devbox">GHCR</a>:</p>
 
-<p>Each tag has container images on <a href="https://hub.docker.com/r/jakoch/cpp-devbox">DockerHub</a> and <a href="https://ghcr.io/jakoch/cpp-devbox">GHCR</a>.</p>
-
-<p>Each tag has a Debian version (12-bookworm, 13-trixie, 14-forky (testing), sid-unstable) and an image variant (base, with-vulkansdk).</p>
-
-<p>The “with-vulkansdk” image includes Vulkan SDK and Mesa on top of the “base”.</p>
-
-<p>Each release page provides:</p>
 <ul>
-  <li>an overview of the software versions included in the image variant,</li>
-  <li>a link to the changelog, and</li>
-  <li>copy-pasteable commands to pull the image from a registry.</li>
+  <li>a <strong>release</strong> for every semantic version tag (<code class="language-plaintext highlighter-rouge">v1.0.19</code>), tagged
+<code class="language-plaintext highlighter-rouge">&lt;codename&gt;-&lt;version&gt;</code>, e.g. <code class="language-plaintext highlighter-rouge">jakoch/cpp-devbox:bookworm-1.0.19</code>. The page of a
+release lists the software versions of every image variant, a side-by-side
+version comparison of all Debian variants, a link to the changelog and
+copy-pasteable pull commands. The software versions are only recorded for the
+build that published the release, so the pages of the older releases show the
+pull commands and the changelog only.</li>
+  <li>a <strong>scheduled build</strong> of the <code class="language-plaintext highlighter-rouge">main</code> branch, every Sunday. The newest of them
+is the rolling build, published under the floating <code class="language-plaintext highlighter-rouge">-latest</code> tags, e.g.
+<code class="language-plaintext highlighter-rouge">jakoch/cpp-devbox:bookworm-latest</code>. Every scheduled build is additionally
+tagged with its build date, e.g. <code class="language-plaintext highlighter-rouge">jakoch/cpp-devbox:bookworm-20260920</code>, which
+pins that build.</li>
 </ul>
+
+<h2 id="rolling-build">Rolling Build</h2>
+<p class="variant-info">
+  The images of the <code>main</code> branch are rebuilt every Sunday and
+  published under the floating <code>-latest</code> tags. Every one of those
+  builds is also tagged with its build date, see
+  <a href="#recent-builds">Recent Scheduled Builds</a>.
+</p>
+
+<ul class="release-list">
+  <li>
+    <a href="/cpp-devbox/releases/main.html">Rolling (main)</a>
+    <span class="release-date">(2026-09-25)</span>
+    <span class="latest-tag">latest</span>
+  </li>
+</ul>
+
+<h2 id="releases">Releases</h2>
 
 <ul class="release-list">
   
+  <li>
+    <a href="/cpp-devbox/releases/1.0.19.html">v1.0.19</a>
+    <span class="release-date">(2026-05-22)</span>
+    
+      <span class="latest-tag">newest release</span>
+    
+  </li>
   
-    <li>
-      <a href="/cpp-devbox/releases/main.html">vmain</a>
-	  <span class="release-date">(2026-09-25)</span>
-      
-        <span class="latest-tag">latest</span>
-      
-    </li>
+  <li>
+    <a href="/cpp-devbox/releases/1.0.18.html">v1.0.18</a>
+    <span class="release-date">(2026-05-17)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.17.html">v1.0.17</a>
+    <span class="release-date">(2026-04-04)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.16.html">v1.0.16</a>
+    <span class="release-date">(2026-01-17)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.15.html">v1.0.15</a>
+    <span class="release-date">(2025-10-14)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.14.html">v1.0.14</a>
+    <span class="release-date">(2025-08-25)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.13.html">v1.0.13</a>
+    <span class="release-date">(2025-08-15)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.12.html">v1.0.12</a>
+    <span class="release-date">(2025-07-30)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.11.html">v1.0.11</a>
+    <span class="release-date">(2025-06-13)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.10.html">v1.0.10</a>
+    <span class="release-date">(2025-03-25)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.9.html">v1.0.9</a>
+    <span class="release-date">(2025-03-13)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.8.html">v1.0.8</a>
+    <span class="release-date">(2025-02-04)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.7.html">v1.0.7</a>
+    <span class="release-date">(2025-01-26)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.6.html">v1.0.6</a>
+    <span class="release-date">(2024-12-26)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.5.html">v1.0.5</a>
+    <span class="release-date">(2024-07-09)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.4.html">v1.0.4</a>
+    <span class="release-date">(2024-07-04)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.3.html">v1.0.3</a>
+    <span class="release-date">(2024-05-23)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.2.html">v1.0.2</a>
+    <span class="release-date">(2024-02-15)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.1.html">v1.0.1</a>
+    <span class="release-date">(2023-10-09)</span>
+    
+  </li>
+  
+  <li>
+    <a href="/cpp-devbox/releases/1.0.0.html">v1.0.0</a>
+    <span class="release-date">(2023-10-01)</span>
+    
+  </li>
   
 </ul>
+
+<h2 id="recent-builds">Recent Scheduled Builds</h2>
+<p class="variant-info">
+  The release workflow builds all Debian variants from the <code>main</code>
+  branch every Sunday and tags the images with the build date. The full tag
+  history is listed on
+  <a href="https://github.com/jakoch/cpp-devbox/pkgs/container/cpp-devbox/tags">GHCR</a> and
+  <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags">DockerHub</a>.
+</p>
+<div class="builds-table">
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Build date</th>
+          
+          
+          <th>Debian 12<br />bookworm</th>
+          
+          
+          
+          <th>Debian 13<br />trixie</th>
+          
+          
+          
+          <th>Debian 14<br />forky</th>
+          
+          
+          
+          <th>Debian vNext<br />sid<br />unstable</th>
+          
+          
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>2026-09-24</td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-20260924">bookworm-20260924</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-with-vulkansdk-20260924">bookworm-with-vulkansdk-20260924</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <span class="na">&mdash;</span>
+            
+            
+          </td>
+          
+          
+          <td>
+            
+            <span class="na">&mdash;</span>
+            
+            
+          </td>
+          
+          
+          <td>
+            
+            <span class="na">&mdash;</span>
+            
+            
+          </td>
+          
+        </tr>
+        
+        <tr>
+          <td>2026-09-20</td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-20260920">bookworm-20260920</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-with-vulkansdk-20260920">bookworm-with-vulkansdk-20260920</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-20260920">trixie-20260920</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-with-vulkansdk-20260920">trixie-with-vulkansdk-20260920</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-20260920">forky-20260920</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-with-vulkansdk-20260920">forky-with-vulkansdk-20260920</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-20260920">unstable-20260920</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-with-vulkansdk-20260920">unstable-with-vulkansdk-20260920</a>
+            
+          </td>
+          
+        </tr>
+        
+        <tr>
+          <td>2026-09-13</td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-20260913">bookworm-20260913</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-with-vulkansdk-20260913">bookworm-with-vulkansdk-20260913</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-20260913">trixie-20260913</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-with-vulkansdk-20260913">trixie-with-vulkansdk-20260913</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-20260913">forky-20260913</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-with-vulkansdk-20260913">forky-with-vulkansdk-20260913</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-20260913">unstable-20260913</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-with-vulkansdk-20260913">unstable-with-vulkansdk-20260913</a>
+            
+          </td>
+          
+        </tr>
+        
+        <tr>
+          <td>2026-09-06</td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-20260906">bookworm-20260906</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-with-vulkansdk-20260906">bookworm-with-vulkansdk-20260906</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-20260906">trixie-20260906</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-with-vulkansdk-20260906">trixie-with-vulkansdk-20260906</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-20260906">forky-20260906</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-with-vulkansdk-20260906">forky-with-vulkansdk-20260906</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-20260906">unstable-20260906</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-with-vulkansdk-20260906">unstable-with-vulkansdk-20260906</a>
+            
+          </td>
+          
+        </tr>
+        
+        <tr>
+          <td>2026-08-30</td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-20260830">bookworm-20260830</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-with-vulkansdk-20260830">bookworm-with-vulkansdk-20260830</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-20260830">trixie-20260830</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-with-vulkansdk-20260830">trixie-with-vulkansdk-20260830</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-20260830">forky-20260830</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-with-vulkansdk-20260830">forky-with-vulkansdk-20260830</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-20260830">unstable-20260830</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-with-vulkansdk-20260830">unstable-with-vulkansdk-20260830</a>
+            
+          </td>
+          
+        </tr>
+        
+        <tr>
+          <td>2026-08-23</td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-20260823">bookworm-20260823</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-with-vulkansdk-20260823">bookworm-with-vulkansdk-20260823</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-20260823">trixie-20260823</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-with-vulkansdk-20260823">trixie-with-vulkansdk-20260823</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-20260823">forky-20260823</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-with-vulkansdk-20260823">forky-with-vulkansdk-20260823</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-20260823">unstable-20260823</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-with-vulkansdk-20260823">unstable-with-vulkansdk-20260823</a>
+            
+          </td>
+          
+        </tr>
+        
+        <tr>
+          <td>2026-08-16</td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-20260816">bookworm-20260816</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-with-vulkansdk-20260816">bookworm-with-vulkansdk-20260816</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-20260816">trixie-20260816</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-with-vulkansdk-20260816">trixie-with-vulkansdk-20260816</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-20260816">forky-20260816</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-with-vulkansdk-20260816">forky-with-vulkansdk-20260816</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-20260816">unstable-20260816</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-with-vulkansdk-20260816">unstable-with-vulkansdk-20260816</a>
+            
+          </td>
+          
+        </tr>
+        
+        <tr>
+          <td>2026-08-09</td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-20260809">bookworm-20260809</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-with-vulkansdk-20260809">bookworm-with-vulkansdk-20260809</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-20260809">trixie-20260809</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-with-vulkansdk-20260809">trixie-with-vulkansdk-20260809</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-20260809">forky-20260809</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-with-vulkansdk-20260809">forky-with-vulkansdk-20260809</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-20260809">unstable-20260809</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-with-vulkansdk-20260809">unstable-with-vulkansdk-20260809</a>
+            
+          </td>
+          
+        </tr>
+        
+        <tr>
+          <td>2026-08-02</td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-20260802">bookworm-20260802</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-with-vulkansdk-20260802">bookworm-with-vulkansdk-20260802</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-20260802">trixie-20260802</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-with-vulkansdk-20260802">trixie-with-vulkansdk-20260802</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-20260802">forky-20260802</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-with-vulkansdk-20260802">forky-with-vulkansdk-20260802</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-20260802">unstable-20260802</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-with-vulkansdk-20260802">unstable-with-vulkansdk-20260802</a>
+            
+          </td>
+          
+        </tr>
+        
+        <tr>
+          <td>2026-07-26</td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-20260726">bookworm-20260726</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-with-vulkansdk-20260726">bookworm-with-vulkansdk-20260726</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-20260726">trixie-20260726</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-with-vulkansdk-20260726">trixie-with-vulkansdk-20260726</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-20260726">forky-20260726</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-with-vulkansdk-20260726">forky-with-vulkansdk-20260726</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-20260726">unstable-20260726</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-with-vulkansdk-20260726">unstable-with-vulkansdk-20260726</a>
+            
+          </td>
+          
+        </tr>
+        
+        <tr>
+          <td>2026-07-19</td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-20260719">bookworm-20260719</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-with-vulkansdk-20260719">bookworm-with-vulkansdk-20260719</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-20260719">trixie-20260719</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-with-vulkansdk-20260719">trixie-with-vulkansdk-20260719</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-20260719">forky-20260719</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-with-vulkansdk-20260719">forky-with-vulkansdk-20260719</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-20260719">unstable-20260719</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-with-vulkansdk-20260719">unstable-with-vulkansdk-20260719</a>
+            
+          </td>
+          
+        </tr>
+        
+        <tr>
+          <td>2026-07-12</td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-20260712">bookworm-20260712</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=bookworm-with-vulkansdk-20260712">bookworm-with-vulkansdk-20260712</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-20260712">trixie-20260712</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=trixie-with-vulkansdk-20260712">trixie-with-vulkansdk-20260712</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-20260712">forky-20260712</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=forky-with-vulkansdk-20260712">forky-with-vulkansdk-20260712</a>
+            
+          </td>
+          
+          
+          <td>
+            
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-20260712">unstable-20260712</a>
+            
+            
+            <br />
+            <a href="https://hub.docker.com/r/jakoch/cpp-devbox/tags?name=unstable-with-vulkansdk-20260712">unstable-with-vulkansdk-20260712</a>
+            
+          </td>
+          
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</div>
+<p class="table-legend">
+  Upper tag: <strong>base</strong> &middot; lower tag: <strong>with-vulkansdk</strong>
+</p>
+
 
 			
 
 			<div class="version-matrix">
 			<h2 id="version-matrix">Version Matrix</h2>
+			<p class="table-legend">
+				The floating tags below move to every new build. The dated tags of
+				the individual scheduled builds are listed on the
+				<a href="/cpp-devbox/releases/#recent-builds">releases page</a>.
+			</p>
 			<div style="overflow-x:auto;">
 				<table>
 				<thead>

@@ -1,0 +1,242 @@
+[
+  {
+    "date": "2026-09-24",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20260924",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20260924"
+      }
+    }
+  },
+  {
+    "date": "2026-09-20",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20260920",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20260920"
+      },
+      "forky": {
+        "base": "forky-20260920",
+        "with-vulkansdk": "forky-with-vulkansdk-20260920"
+      },
+      "trixie": {
+        "base": "trixie-20260920",
+        "with-vulkansdk": "trixie-with-vulkansdk-20260920"
+      },
+      "unstable": {
+        "base": "unstable-20260920",
+        "with-vulkansdk": "unstable-with-vulkansdk-20260920"
+      }
+    }
+  },
+  {
+    "date": "2026-09-13",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20260913",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20260913"
+      },
+      "forky": {
+        "base": "forky-20260913",
+        "with-vulkansdk": "forky-with-vulkansdk-20260913"
+      },
+      "trixie": {
+        "base": "trixie-20260913",
+        "with-vulkansdk": "trixie-with-vulkansdk-20260913"
+      },
+      "unstable": {
+        "base": "unstable-20260913",
+        "with-vulkansdk": "unstable-with-vulkansdk-20260913"
+      }
+    }
+  },
+  {
+    "date": "2026-09-06",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20260906",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20260906"
+      },
+      "forky": {
+        "base": "forky-20260906",
+        "with-vulkansdk": "forky-with-vulkansdk-20260906"
+      },
+      "trixie": {
+        "base": "trixie-20260906",
+        "with-vulkansdk": "trixie-with-vulkansdk-20260906"
+      },
+      "unstable": {
+        "base": "unstable-20260906",
+        "with-vulkansdk": "unstable-with-vulkansdk-20260906"
+      }
+    }
+  },
+  {
+    "date": "2026-08-30",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20260830",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20260830"
+      },
+      "forky": {
+        "base": "forky-20260830",
+        "with-vulkansdk": "forky-with-vulkansdk-20260830"
+      },
+      "trixie": {
+        "base": "trixie-20260830",
+        "with-vulkansdk": "trixie-with-vulkansdk-20260830"
+      },
+      "unstable": {
+        "base": "unstable-20260830",
+        "with-vulkansdk": "unstable-with-vulkansdk-20260830"
+      }
+    }
+  },
+  {
+    "date": "2026-08-23",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20260823",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20260823"
+      },
+      "forky": {
+        "base": "forky-20260823",
+        "with-vulkansdk": "forky-with-vulkansdk-20260823"
+      },
+      "trixie": {
+        "base": "trixie-20260823",
+        "with-vulkansdk": "trixie-with-vulkansdk-20260823"
+      },
+      "unstable": {
+        "base": "unstable-20260823",
+        "with-vulkansdk": "unstable-with-vulkansdk-20260823"
+      }
+    }
+  },
+  {
+    "date": "2026-08-16",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20260816",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20260816"
+      },
+      "forky": {
+        "base": "forky-20260816",
+        "with-vulkansdk": "forky-with-vulkansdk-20260816"
+      },
+      "trixie": {
+        "base": "trixie-20260816",
+        "with-vulkansdk": "trixie-with-vulkansdk-20260816"
+      },
+      "unstable": {
+        "base": "unstable-20260816",
+        "with-vulkansdk": "unstable-with-vulkansdk-20260816"
+      }
+    }
+  },
+  {
+    "date": "2026-08-09",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20260809",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20260809"
+      },
+      "forky": {
+        "base": "forky-20260809",
+        "with-vulkansdk": "forky-with-vulkansdk-20260809"
+      },
+      "trixie": {
+        "base": "trixie-20260809",
+        "with-vulkansdk": "trixie-with-vulkansdk-20260809"
+      },
+      "unstable": {
+        "base": "unstable-20260809",
+        "with-vulkansdk": "unstable-with-vulkansdk-20260809"
+      }
+    }
+  },
+  {
+    "date": "2026-08-02",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20260802",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20260802"
+      },
+      "forky": {
+        "base": "forky-20260802",
+        "with-vulkansdk": "forky-with-vulkansdk-20260802"
+      },
+      "trixie": {
+        "base": "trixie-20260802",
+        "with-vulkansdk": "trixie-with-vulkansdk-20260802"
+      },
+      "unstable": {
+        "base": "unstable-20260802",
+        "with-vulkansdk": "unstable-with-vulkansdk-20260802"
+      }
+    }
+  },
+  {
+    "date": "2026-07-26",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20260726",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20260726"
+      },
+      "forky": {
+        "base": "forky-20260726",
+        "with-vulkansdk": "forky-with-vulkansdk-20260726"
+      },
+      "trixie": {
+        "base": "trixie-20260726",
+        "with-vulkansdk": "trixie-with-vulkansdk-20260726"
+      },
+      "unstable": {
+        "base": "unstable-20260726",
+        "with-vulkansdk": "unstable-with-vulkansdk-20260726"
+      }
+    }
+  },
+  {
+    "date": "2026-07-19",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20260719",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20260719"
+      },
+      "forky": {
+        "base": "forky-20260719",
+        "with-vulkansdk": "forky-with-vulkansdk-20260719"
+      },
+      "trixie": {
+        "base": "trixie-20260719",
+        "with-vulkansdk": "trixie-with-vulkansdk-20260719"
+      },
+      "unstable": {
+        "base": "unstable-20260719",
+        "with-vulkansdk": "unstable-with-vulkansdk-20260719"
+      }
+    }
+  },
+  {
+    "date": "2026-07-12",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20260712",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20260712"
+      },
+      "forky": {
+        "base": "forky-20260712",
+        "with-vulkansdk": "forky-with-vulkansdk-20260712"
+      },
+      "trixie": {
+        "base": "trixie-20260712",
+        "with-vulkansdk": "trixie-with-vulkansdk-20260712"
+      },
+      "unstable": {
+        "base": "unstable-20260712",
+        "with-vulkansdk": "unstable-with-vulkansdk-20260712"
+      }
+    }
+  }
+]
