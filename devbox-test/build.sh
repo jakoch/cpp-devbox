@@ -13,10 +13,14 @@ case "$VERSION_CODENAME" in
     CLANG_VERSION=22
     GCC_VERSION=14
     ;;
-  *)
-    echo -e "\e[33m ⚠ Unknown Debian release ($VERSION_CODENAME). Defaulting to clang++-22 & g++-14 (trixie).\e[0m"
+  forky)
     CLANG_VERSION=22
-    GCC_VERSION=14
+    GCC_VERSION=15
+    ;;
+  *)
+    echo -e "\e[33m ⚠ Unknown Debian release ($VERSION_CODENAME). Defaulting to clang++-22 & g++-15 (forky).\e[0m"
+    CLANG_VERSION=22
+    GCC_VERSION=15
     ;;
 esac
 
