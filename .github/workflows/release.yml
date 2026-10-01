@@ -57,9 +57,9 @@ jobs:
 
     steps:
       - name: ✂️ Free Disk Space
-        uses: jlumbroso/free-disk-space@v1.3.1 # https://github.com/jlumbroso/free-disk-space
+        uses: jlumbroso/free-disk-space@v2.0.0 # https://github.com/jlumbroso/free-disk-space
         with:
-          tool-cache: true
+          preinstalled-runtimes: true
           docker-images: false
 
       - name: 🤘 Checkout Code
