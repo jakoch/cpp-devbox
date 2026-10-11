@@ -416,23 +416,19 @@ RUN echo "LLVM udate-alternatives" && \
 #  888       888  "Y88P"  888  "Y88888
 #
 
-# Mold is compiled from source with Clang to produce a glibc-linked binary,
-# ensuring ABI compatibility with LTO and LLVM plugins at runtime.
-# We are using Clang++ for compilation, so this download + compile step must happen after installing LLVM+Clang.
-# We don't need to call mold's ./install-build-deps.sh, because all build dependencies are present.
 # Note to overwrite ld: sudo ln -sf /opt/mold/bin/mold $(realpath /usr/bin/ld)
-# Note: mold is also added as "ld.mold". why is "-fuse-ld=ld.mold" and not "-fuse-ld=mold" used in CMake?
+# Note: mold is also added as "ld.mold", because "-fuse-ld=mold" makes GCC and Clang look for an "ld.mold" linker.
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "MOLD" && \
     version="$(curl $CURL_OPTIONS https://api.github.com/repos/rui314/mold/releases/latest | jq -r '.tag_name' | cut -c 2-)"; echo "Latest Version: \"$version\"" && \
-    git clone --branch "v$version" --single-branch --depth 1 --no-tags https://github.com/rui314/mold.git "/tmp/mold" && \
-    cmake -S /tmp/mold -B /tmp/mold/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ && \
-    cmake --build /tmp/mold/build -j "$(nproc)" && \
-    cmake --install /tmp/mold/build --prefix=/opt/mold && \
+    url="https://github.com/rui314/mold/releases/download/v$version/mold-$version-x86_64-linux.tar.gz"; echo "Download URL: \"$url\"" && \
+    curl $CURL_OPTIONS -O $url && \
+    mkdir -p /opt/mold && \
+    tar xf mold-$version-x86_64-linux.tar.gz --strip-components=1 -C /opt/mold && \
     ln -s /opt/mold/bin/mold /usr/bin && \
     ln -sf /usr/bin/mold /usr/bin/ld.mold && \
-    rm -rf /tmp/mold
+    rm mold-$version-x86_64-linux.tar.gz
 
 #
 #   .d8888b.   .d8888b.   .d8888b.

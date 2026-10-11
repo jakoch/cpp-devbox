@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+**Changed**
+
+- mold is now installed from the official prebuilt binary instead of being compiled from source,
+  because mold 3.0 is an upstream Rust rewrite of the linker and no longer has a CMake build system
+
 ## [1.0.20] - 2026-09-24
 
 **Changed**
