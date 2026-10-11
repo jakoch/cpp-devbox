@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - mold is now installed from the official prebuilt binary instead of being compiled from source,
   because mold 3.0 is an upstream Rust rewrite of the linker and no longer has a CMake build system
 
+**Fixed**
+
+- fixed the GCC 15 package pin on the Forky image: it now matches "${GCC_VERSION}-*" instead of an exact
+  Debian revision, so revision updates in the Debian archive no longer break the image build
+
 ## [1.0.20] - 2026-09-24
 
 **Changed**

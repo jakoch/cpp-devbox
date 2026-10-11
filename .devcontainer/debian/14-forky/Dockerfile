@@ -470,16 +470,16 @@ RUN echo "MOLD" && \
 
 RUN echo "GCC 15" && \
     apt-get update && apt-get install --no-install-recommends --assume-yes --allow-downgrades \
-    cpp-15=15.3.0-3 \
-    cpp-15-x86-64-linux-gnu=15.3.0-3 \
-    g++-15=15.3.0-3 \
-    g++-15-x86-64-linux-gnu=15.3.0-3 \
-    gcc-15=15.3.0-3 \
-    gcc-15-base=15.3.0-3 \
-    gcc-15-x86-64-linux-gnu=15.3.0-3 \
-    libgcc-15-dev=15.3.0-3 \
-    libobjc-15-dev=15.3.0-3 \
-    libstdc++-15-dev=15.3.0-3 && \
+    cpp-15=${GCC_VERSION}-* \
+    cpp-15-x86-64-linux-gnu=${GCC_VERSION}-* \
+    g++-15=${GCC_VERSION}-* \
+    g++-15-x86-64-linux-gnu=${GCC_VERSION}-* \
+    gcc-15=${GCC_VERSION}-* \
+    gcc-15-base=${GCC_VERSION}-* \
+    gcc-15-x86-64-linux-gnu=${GCC_VERSION}-* \
+    libgcc-15-dev=${GCC_VERSION}-* \
+    libobjc-15-dev=${GCC_VERSION}-* \
+    libstdc++-15-dev=${GCC_VERSION}-* && \
     # Cleanup
     apt-get autoremove -y && \
     apt-get clean autoclean && \
