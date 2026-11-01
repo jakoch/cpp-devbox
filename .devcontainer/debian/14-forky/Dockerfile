@@ -152,7 +152,8 @@ RUN echo "Packages" && \
     build-essential \
     wget git nano jq ripgrep fd-find fzf \
     # benchmarking
-    hyperfine \
+    # rust-hyperfine is not available in Debian Forky, ref: https://github.com/jakoch/cpp-devbox/issues/56
+    #hyperfine \
     # code analysis
     cppcheck \
     valgrind \
