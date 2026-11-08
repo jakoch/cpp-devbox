@@ -1,5 +1,26 @@
 [
   {
+    "date": "2026-11-08",
+    "tags": {
+      "bookworm": {
+        "base": "bookworm-20261108",
+        "with-vulkansdk": "bookworm-with-vulkansdk-20261108"
+      },
+      "forky": {
+        "base": "forky-20261108",
+        "with-vulkansdk": "forky-with-vulkansdk-20261108"
+      },
+      "trixie": {
+        "base": "trixie-20261108",
+        "with-vulkansdk": "trixie-with-vulkansdk-20261108"
+      },
+      "unstable": {
+        "base": "unstable-20261108",
+        "with-vulkansdk": "unstable-with-vulkansdk-20261108"
+      }
+    }
+  },
+  {
     "date": "2026-11-01",
     "tags": {
       "bookworm": {
@@ -211,27 +232,6 @@
       "unstable": {
         "base": "unstable-20260823",
         "with-vulkansdk": "unstable-with-vulkansdk-20260823"
-      }
-    }
-  },
-  {
-    "date": "2026-08-16",
-    "tags": {
-      "bookworm": {
-        "base": "bookworm-20260816",
-        "with-vulkansdk": "bookworm-with-vulkansdk-20260816"
-      },
-      "forky": {
-        "base": "forky-20260816",
-        "with-vulkansdk": "forky-with-vulkansdk-20260816"
-      },
-      "trixie": {
-        "base": "trixie-20260816",
-        "with-vulkansdk": "trixie-with-vulkansdk-20260816"
-      },
-      "unstable": {
-        "base": "unstable-20260816",
-        "with-vulkansdk": "unstable-with-vulkansdk-20260816"
       }
     }
   }
